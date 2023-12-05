@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 4.2.0
  */
 class WP_Webhooks_Integrations_wp_webhooks {
+    
+    public $helpers  = '';
+    public $actions  = '';
+    public $triggers = '';
 
     public function is_active(){
         return true;

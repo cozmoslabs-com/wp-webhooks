@@ -18,16 +18,55 @@
 class WP_Webhooks_Pro_Authentication {
 
 	/**
+     * Page Name
+     *
+     * @var array
+     */
+    private $page_name = null;
+
+	/**
+     * Authentication table data
+     *
+     * @var array
+     */
+    private $authentication_table_data = null;
+
+	/**
+     * Authentication methods
+     *
+     * @var array
+     */
+    private $auth_methods = null;
+
+	/**
+     * Cache authentication
+     *
+     * @var array
+     */
+    private $cache_authentication = array();
+
+	/**
+     * Cache authentication count
+     *
+     * @var array
+     */
+    private $cache_authentication_count = 0;
+
+	/**
+     * Table Exists
+     *
+     * @var array
+     */
+    private $table_exists = false;
+
+
+	/**
 	 * Init everything
 	 */
 	public function __construct() {
-		$this->page_name    = WPWHPRO()->settings->get_page_name();
-        $this->authentication_table_data = WPWHPRO()->settings->get_authentication_table_data();
-        $this->auth_methods = WPWHPRO()->settings->get_authentication_methods();
-		$this->cache_authentication = array();
-		$this->cache_authentication_count = 0;
-		$this->table_exists = false;
-
+		$this->page_name                 = WPWHPRO()->settings->get_page_name();
+		$this->authentication_table_data = WPWHPRO()->settings->get_authentication_table_data();
+		$this->auth_methods              = WPWHPRO()->settings->get_authentication_methods();
 	}
 
 	/**

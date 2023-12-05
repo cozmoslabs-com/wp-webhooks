@@ -61,7 +61,7 @@ class WP_Webhooks_Pro_Integrations {
      }
 
      /**
-      * Get an array contianing all of the currently given default integrations
+      * Get an array containing all of the currently given default integrations
       * The directory folder name acts as well as the integration slug.
       *
       * @return array The available default integrations

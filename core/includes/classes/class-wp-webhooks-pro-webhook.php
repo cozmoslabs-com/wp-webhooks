@@ -40,6 +40,22 @@ class WP_Webhooks_Pro_Webhook {
 	 */
 	private $current_webhook_action;
 
+	/**
+	 * Webhook identify parameter
+	 *
+	 * @since 4.0.0
+	 * @var - The currently present action webhook
+	 */
+	private $webhook_ident_param;
+
+	/**
+	 * Webhook options
+	 *
+	 * @since 4.0.0
+	 * @var - The currently present action webhook
+	 */
+	private $webhook_options;
+
 	public function __construct() {
 		$this->webhook_options_key = WPWHPRO()->settings->get_webhook_option_key();
 		$this->webhook_ident_param = WPWHPRO()->settings->get_webhook_ident_param();

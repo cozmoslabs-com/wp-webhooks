@@ -9,6 +9,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Actions_bulk_webhooks' 
 	 */
 	class WP_Webhooks_Integrations_wordpress_Actions_bulk_webhooks {
 
+		private $page_title = '';
+
 		function __construct(){
 			$this->page_title   = WPWHPRO()->settings->get_page_title();
 		}

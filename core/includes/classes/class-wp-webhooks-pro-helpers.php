@@ -26,6 +26,14 @@ class WP_Webhooks_Pro_Helpers {
     private $activate_translations = false;
 
 	/**
+     * Variable to check if debugging
+     * are active or not
+     *
+	 * @var bool - False as default
+	 */
+    private $activate_debugging = false;
+
+	/**
      * The current content of the incoming response
      *
 	 * @var mixed - the current content

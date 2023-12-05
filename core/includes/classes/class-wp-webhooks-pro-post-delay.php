@@ -29,6 +29,13 @@ class WP_Webhooks_Pro_Post_Delay {
     private $post_delay_triggers = array();
 
     /**
+     * Is Post Delay active
+     *
+     * @var array
+     */
+    private $is_active = true;
+
+    /**
 	 * WP_Webhooks_Pro_Post_Delay constructor.
 	 */
     function __construct(){

@@ -29,6 +29,14 @@ class WP_Webhooks_Pro_Settings{
 	private $page_name;
 
 	/**
+	 * The main page title
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
+	private $page_title;
+
+	/**
 	 * Our global array for translateable strings
 	 *
 	 * @var array
@@ -62,6 +70,117 @@ class WP_Webhooks_Pro_Settings{
 	private $active_webhooks = null;
 
 	/**
+	 * Webhooks Settings key
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $webhook_settings_key = null;
+
+	/**
+	 * News Transient key
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $news_transient_key = null;
+
+	/**
+	 * Extensions Transient key
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $extensions_transient_key = null;
+
+	/**
+	 * Webhook identity parameter
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $webhook_ident_param = null;
+
+	/**
+	 * Active webhooks identity parameter
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $active_webhook_ident_param = null;
+
+	/**
+	 * Default Settings
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $default_settings = null;
+	
+	/**
+	 * Required Trigger Settings
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $required_trigger_settings = null;
+
+	/**
+	 * Default Settings
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $default_trigger_settings = null;
+
+	/**
+	 * Required Action Settings
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $required_action_settings = null;
+
+	/**
+	 * Authentication Methods
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $authentication_methods = null;
+
+	/**
+	 * Authenticaion Table Data
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $authentication_table_data = null;
+
+	/**
+	 * Default Integration Depenencies
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $default_integration_dependencies = null;
+
+	/**
+	 * Settings Nonce
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $settings_nonce = null;
+
+	/**
+	 * Authentication nonce
+	 *
+	 * @var array
+	 * @since 3.0.0
+	 */
+	private $authentication_nonce = null;
+
+	/**
 	 * WP_Webhooks_Pro_Settings constructor.
 	 *
 	 * We define all of our necessary settings in here.
@@ -69,20 +188,20 @@ class WP_Webhooks_Pro_Settings{
 	 * be available in this file.
 	 */
 	function __construct(){
-		$this->admin_cap            = 'manage_options';
-		$this->page_name            = 'wp-webhooks-pro';
-		$this->page_title           = WPWH_NAME;
-		$this->webhook_settings_key = 'ironikus_webhook_webhooks';
-		$this->news_transient_key   = 'ironikus_cached_news';
-		$this->extensions_transient_key   = 'ironikus_cached_extensions';
-		$this->webhook_ident_param  = 'wpwhpro_action';
-		$this->active_webhook_ident_param  = 'wpwhpro_active_webhooks';
-		$this->default_settings     = $this->load_default_settings();
-		$this->required_trigger_settings     = $this->load_required_trigger_settings();
-		$this->default_trigger_settings     = $this->load_default_trigger_settings();
-		$this->required_action_settings     = $this->load_required_action_settings();
-		$this->authentication_methods     = $this->load_authentication_methods();
-		$this->authentication_table_data   = $this->setup_authentication_table_data();
+		$this->admin_cap                        = 'manage_options';
+		$this->page_name                        = 'wp-webhooks-pro';
+		$this->page_title                       = WPWH_NAME;
+		$this->webhook_settings_key             = 'ironikus_webhook_webhooks';
+		$this->news_transient_key               = 'ironikus_cached_news';
+		$this->extensions_transient_key         = 'ironikus_cached_extensions';
+		$this->webhook_ident_param              = 'wpwhpro_action';
+		$this->active_webhook_ident_param       = 'wpwhpro_active_webhooks';
+		$this->default_settings                 = $this->load_default_settings();
+		$this->required_trigger_settings        = $this->load_required_trigger_settings();
+		$this->default_trigger_settings         = $this->load_default_trigger_settings();
+		$this->required_action_settings         = $this->load_required_action_settings();
+		$this->authentication_methods           = $this->load_authentication_methods();
+		$this->authentication_table_data        = $this->setup_authentication_table_data();
 		$this->default_integration_dependencies = array(
             'helpers',
             'actions',

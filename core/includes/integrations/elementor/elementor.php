@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Webhooks_Integrations_elementor {
 
+    public $helpers  = '';
+    public $actions  = '';
+    public $triggers = '';
+
     public function is_active(){
         return defined( 'ELEMENTOR_PRO_VERSION' );
     }

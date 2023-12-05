@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Webhooks_Integrations_wordpress {
 
+    public $helpers  = '';
+    public $actions  = '';
+    public $triggers = '';
+    
     public function is_active(){
 
         //Backwards compatibility for the "Manage Plugins" integration
