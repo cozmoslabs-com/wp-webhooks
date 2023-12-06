@@ -150,6 +150,7 @@ class WP_Webhooks_Pro_Run{
 	public function enqueue_scripts_and_styles() {
 		if( WPWHPRO()->helpers->is_page( $this->page_name ) && is_admin() ) {
 			$is_dev_mode = defined( 'WPWH_DEV' ) && WPWH_DEV === true;
+			$is_dev_mode = true;
 			wp_enqueue_style( 'wpwhpro-google-fonts', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&family=Poppins:wght@500&display=swap', array(), null );
 
 			// wp_enqueue_style( 'wpwhpro-admin-styles-old', WPWH_PLUGIN_URL . 'core/includes/assets/dist/css/styles.min.css', array(), WPWH_VERSION, 'all' );

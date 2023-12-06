@@ -1665,7 +1665,7 @@ a.text-dark:hover, a.text-dark:focus { color: black !important; }
 
 @keyframes rotation { to { -webkit-transform: rotate(359deg); transform: rotate(359deg); } }
 
-.wpwh .wpwh-header { background-color: #264653; margin-top: 20px; margin-top:  1.25rem; padding-top: 21px; padding-top:  1.3125rem; padding-bottom: 22px; padding-bottom:  1.375rem; margin-bottom: 35px; margin-bottom:  2.1875rem; color: #fff; }
+.wpwh .wpwh-header { background-color: #264653; padding-top: 21px; padding-top:  1.3125rem; padding-bottom: 22px; padding-bottom:  1.375rem; margin-bottom: 35px; margin-bottom:  2.1875rem; color: #fff; }
 
 .wpwh .wpwh-header__logo-text { color: #fff; font-size: 1.5rem; font-weight: 300; line-height: 1; }
 
