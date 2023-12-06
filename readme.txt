@@ -1,21 +1,24 @@
-=== WP Webhooks - Create powerful automation workflows directly within WordPress ===
+=== WP Webhooks - Automate repetitive tasks by creating powerful automation workflows directly within WordPress ===
 Author URI: https://wp-webhooks.com/about/
 Plugin URI: https://wp-webhooks.com/
 Contributors: ironikus
-Donate link: https://paypal.me/ironikus
-Tags: webhooks, automation, zapier, api, connector, integrations, automator, create user, ironikus
+Donate link: https://wp-webhooks.com/pricing/
+Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
-Tested up to: 6.1.1
+Tested up to: 6.4.1
 Stable Tag: 3.3.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Put your website on autopilot by using webhooks to get rid of manual tasks and focus on what's really important for your business.
+Automate everything & connect your website, plugins and services together with no-code automations. Browse 100+ integrations...
 
 == Description ==
+Put your website on autopilot by automating manual tasks to leverage your time and resources for what's really important to your project or business.
+WP Webhooks lets you connect your website, plugins and apps together using powerful no-code automations.
 
-Put your website on autopilot by automating manual tasks to leverage your time and ressources for what's really important to your project or business.
-WP Webhooks can be used in three different ways: 
+[Browse 100+ Integrations](https://wp-webhooks.com/integrations/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro) | [Compare Free vs Pro](https://wp-webhooks.com/compare-wp-webhooks-pro/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro%20Compare) | [Features](https://wp-webhooks.com/features/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro)
+
+WP Webhooks Automations can be used in three different ways: 
 
 **Trigger (Send Data):**
 A trigger sends information from your WordPress website on a specific event (e.g. when a user logs in), to any API or external service of your choice (e.g. Zapier, Integromat, Pabbly, ...).
@@ -26,8 +29,7 @@ An action is the reversed way of the trigger. It allows you to receive data on y
 **Flows ([Pro](https://wp-webhooks.com/))**
 A Flow allows you to connect both the triggers and actions together and create tasks that are executed in a consecutive order. E.g. When [a new user is created](https://wp-webhooks.com/integrations/wordpress/triggers/create_user/) (trigger), [send an email](https://wp-webhooks.com/integrations/wordpress/actions/send_email/) to the user.
 
-
-To give you some practical examples, here's what you can do via our plugin: 
+To give you some practical automation examples, here are a few things you can do via our plugin: 
 
 = Usage examples =
 * Create a WordPress user as soon as a new signup happens on Teachable
@@ -41,7 +43,7 @@ To give you some practical examples, here's what you can do via our plugin:
 
 https://www.youtube.com/watch?v=EfagA_9Uy7o
 
-= Features =
+== Automation Features & Integrations ==
 
 **Plugin related**
 
@@ -57,7 +59,7 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Optimized settings page for more control
 * Supports XML, JSON, plain text/HTML, forms, and form urlencode
 * Supports the following request methods: POST (Default), GET, HEAD, PUT, DELETE, TRACE, OPTIONS, PATCH
-* Supports Pabbly, Integromat, Integrately, automate.io, Zapier and much more
+* Supports Zapier, Pabbly, Integromat, Integrately, automate.io and many more
 
 **[WordPress](https://wp-webhooks.com/integrations/wordpress/) related integrations**
 
@@ -197,21 +199,21 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * **Trigger**: Send data once an action of "WP Webhooks" was fired
 * **Action**: Fire an existing trigger within "WP Webhooks"
 
-= The best Pro version you have ever seen! =
+== Turbocharge automations with WP Webhooks Pro ==
 
-Sounds like a catchy title, right? Actually, it really is the truth. Why? We will show you!
+[**WP Webhooks Pro**](https://wp-webhooks.com/pricing/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro) comes packed with many extra features to help take your automations to the next level:
 
-* A lot of awesome plugin features (Details down below)
+* Extra plugin features (see [full list](https://wp-webhooks.com/compare-wp-webhooks-pro/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro%20Compare))
 * Unlimited triggers and actions
 * Unlimited [Flows](https://wp-webhooks.com/features/)
-* All of our [pro integrations](https://wp-webhooks.com/integrations/)
-* All of our [pro features](https://wp-webhooks.com/features/)
-* All of our [pro extensions](https://wp-webhooks.com/downloads/)
+* All of our [Pro Integrations](https://wp-webhooks.com/integrations/)
+* All of our [Pro Features](https://wp-webhooks.com/features/)
+* All of our [Pro Extensions](https://wp-webhooks.com/downloads/)
 * Advanced security features
 * Whitelabel feature
 * Completely free premium extensions
 
-[Compare WP Webhooks and WP Webhooks Pro now!](https://wp-webhooks.com/compare-wp-webhooks-pro/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro%20Compare)
+[**Compare WP Webhooks and WP Webhooks Pro now!**](https://wp-webhooks.com/compare-wp-webhooks-pro/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro%20Compare)
 
 Here are some of our premium features for [WP Webhooks Pro](https://wp-webhooks.com/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro)
 
@@ -240,7 +242,7 @@ Our premium extensions for [WP Webhooks Pro](https://wp-webhooks.com/?utm_source
 
 = Questions? =
 
-In case you have questions, feel free to reach out to us at any time. We also offer conculting in case you want to archive a bigger project with our plugin.
+In case you have questions, feel free to reach out to us at any time. We also offer consulting in case you want to archive a bigger project with our plugin.
 
 = For devs =
 
@@ -255,12 +257,12 @@ For a full manual, please visit our [help file](https://wp-webhooks.com/docs/kno
 
 == Frequently Asked Questions ==
 
-= How do I get started with WP Webhooks? =
+= How do I get started with WP Webhooks Automations? =
 
 If you already have a specific picture about what webhook automation you want to create, you can check out each endpoint directly on our website. Here is an example for the LearnDash "Course completed" webhook trigger: [https://wp-webhooks.com/integrations/learndash/triggers/ld_course_completed/](https://wp-webhooks.com/integrations/learndash/triggers/ld_course_completed/).
 In case you would like to get started from scratch, we have a full documentation available here: [https://wp-webhooks.com/docs/article-categories/get-started/](https://wp-webhooks.com/docs/article-categories/get-started/)
 
-= Can I request an integration or new feature? =
+= Can I request an integration or new automation feature? =
 
 Yes, you can! Please visit our [Request an integration](https://wp-webhooks.com/request-integrations/) page and add your request there in case you cannot find it already.
 
@@ -270,10 +272,11 @@ If you are looking for a full list of differences between our free and pro versi
 
 == Screenshots ==
 
-1. Exchange data between your website and different services
+1. Automate everything: exchange data between your website and different services
 2. Send data to external services on specific events
 3. Receive data from external services to do something on your website
-4. Add authentication to every trigger and action
+4. List of available webhook actions that you can use to send data from an external service to your WordPress site
+5. Add authentication to every trigger and action for workflow automations
 
 == Changelog ==
 
