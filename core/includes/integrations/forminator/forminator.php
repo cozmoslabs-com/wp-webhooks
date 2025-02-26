@@ -12,6 +12,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Webhooks_Integrations_forminator {
 
+    // PHP 8.2 compatibility requires the declaration of all properties
+    public $details;
+    public $helpers;
+    public $auth;
+    public $actions;
+    public $triggers;
+
     public function is_active(){
         return class_exists( 'Forminator' );
     }

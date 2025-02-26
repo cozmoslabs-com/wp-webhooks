@@ -11,7 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 4.2.0
  */
 class WP_Webhooks_Integrations_woocommerce {
-    
+
+    // PHP 8.2 compatibility requires the declaration of all properties
+    public $details;
+    public $auth;
     public $helpers  = '';
     public $actions  = '';
     public $triggers = '';

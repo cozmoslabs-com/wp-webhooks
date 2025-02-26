@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Webhooks_Integrations_wordpress {
 
+    // PHP 8.2 compatibility requires the declaration of all properties
+    public $details;
+    public $auth;
     public $helpers  = '';
     public $actions  = '';
     public $triggers = '';

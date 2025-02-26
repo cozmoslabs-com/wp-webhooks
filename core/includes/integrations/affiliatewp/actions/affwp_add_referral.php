@@ -8,6 +8,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_affiliatewp_Actions_affwp_add_ref
 	 * @author Ironikus <info@ironikus.com>
 	 */
 	class WP_Webhooks_Integrations_affiliatewp_Actions_affwp_add_referral {
+        // PHP 8.2 compatibility requires the declaration of all properties
+        public $page_title;
 
 		function __construct(){
 			$this->page_title   = WPWHPRO()->settings->get_page_title();

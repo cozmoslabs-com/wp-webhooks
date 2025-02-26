@@ -211,6 +211,11 @@ if ( empty( $active_trigger ) ) {
                         $status = 'inactive';
                         $status_name = 'Activate';
                     }
+
+                    //webook_data api_key might not be set
+                    if( ! isset( $webhook_data['api_key'] ) ){
+                        $webhook_data['api_key'] = '';
+                    }
                     ?>
                     <tr id="webhook-action-<?php echo $webhook; ?>" class="is-<?php echo $status; ?>" data-wpwh-webhook-search-name="<?php echo $webhook; ?>" data-wpwh-webhook-search-url="<?php echo WPWHPRO()->webhook->built_url( $webhook, $webhook_data['api_key'] ); ?>">
                         <td class="align-middle wpwh-status-cell wpwh-status-cell--<?php echo $status; ?>"><span data-tippy data-tippy-content="<?php echo WPWHPRO()->helpers->translate( $status, 'wpwhpro-page-actions' ); ?>"></span></td>
@@ -663,6 +668,11 @@ if ( empty( $active_trigger ) ) {
     if( isset( $webhook_data['status'] ) && $webhook_data['status'] == 'inactive' ){
         $status = 'inactive';
         $status_name = 'Activate';
+    }
+
+    //webook_data api_key might not be set
+    if( ! isset( $webhook_data['api_key'] ) ){
+        $webhook_data['api_key'] = '';
     }
     ?>
     <div class="modal modal--lg fade" id="wpwhActionSettings<?php echo $webhook; ?>" tabindex="-1" role="dialog">

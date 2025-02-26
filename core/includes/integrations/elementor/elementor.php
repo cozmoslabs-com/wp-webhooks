@@ -12,9 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Webhooks_Integrations_elementor {
 
+    // PHP 8.2 compatibility requires the declaration of all properties
     public $helpers  = '';
     public $actions  = '';
     public $triggers = '';
+    public $details;
+    public $auth;
 
     public function is_active(){
         return defined( 'ELEMENTOR_PRO_VERSION' );
