@@ -104,7 +104,7 @@ if( ! empty( $grouped_triggers_pro ) ){
 	}
 }
 
-$active_trigger = isset( $_GET['wpwh-trigger'] ) ? filter_var( $_GET['wpwh-trigger'], FILTER_SANITIZE_STRING ) : 'create_user';
+$active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['wpwh-trigger'] ) : 'create_user';
 
 ?>
 <?php add_ThickBox(); ?>
