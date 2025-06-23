@@ -243,16 +243,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
          */
         public function wc_order_created_callback( $arg ) {
             $order_id = is_numeric( $arg ) ? intval( $arg ) : 0;
-            $order = wc_get_order( $order_id );
-
-            // Return if we don't have an Order
-            if ( !$order )
-                return;
-
             $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'wc_order_created' );
             $response_data_array = array();
             $payload = array();
             $payload_track = array();
+            $topic = 'order.created';
+
+            // Load the Woocommerce helpers
+            $wc_helpers = WPWHPRO()->integrations->get_helper( 'woocommerce', 'wc_helpers' );
 
             foreach ( $webhooks as $webhook ) {
                 $webhook_url_name = isset( $webhook['webhook_url_name'] ) ? $webhook['webhook_url_name'] : null;
@@ -260,26 +258,25 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
                 // Make sure we automatically prevent the webhook from firing twice due to the Woocommerce hook notation
                 $webhook['settings']['wpwhpro_trigger_single_instance_execution'] = 1;
 
+                // Prepare Order data for response
+                $payload = $wc_helpers->build_payload( $order_id, $webhook['settings'], $topic );
+
                 // Revalidate the given Woocommerce status
                 $trigger_statuses = isset( $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] ) ? $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] : array();
-                $wc_order_status = $order->get_status();
-                $order_status = strpos( $wc_order_status, 'wc-' ) === 0 ? $wc_order_status : 'wc-' . $wc_order_status;
+                $order_status = isset( $payload['status'] ) ? $payload['status'] : '';
+                $status = strpos( $order_status, 'wc-' ) === 0 ? $order_status : 'wc-' . $order_status;
 
-                if ( !empty( $trigger_statuses ) && !in_array( $order_status, $trigger_statuses, true ) )
+                if ( !empty( $order_status ) && !empty( $trigger_statuses ) && !in_array( $status, $trigger_statuses, true ) )
                     continue;
 
-                // Prepare Order data for response
-                $payload = $this->build_payload( $order_id, $order );
-
                 // Create signature
-                $secret = isset( $webhook['settings']['wpwhpro_woocommerce_set_secret'] ) ? $webhook['settings']['wpwhpro_woocommerce_set_secret'] : '';
-                $signature = base64_encode( hash_hmac( 'sha256', wp_json_encode( $payload ), $secret, true ) );
+                $signature = $wc_helpers->create_signature( $order_id, $webhook['settings'], $payload );
 
                 // Setup headers
                 $headers = array(
                     'Content-Type'               => 'application/json',
                     'X-WC-Webhook-Source'        => home_url( '/' ),
-                    'X-WC-Webhook-Topic'         => 'order.created',
+                    'X-WC-Webhook-Topic'         => $topic,
                     'X-WC-Webhook-Resource'      => 'order',
                     'X-WC-Webhook-Event'         => 'created',
                     'X-WC-Webhook-Signature'     => $signature,
@@ -301,126 +298,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
             }
 
             do_action( 'wpwhpro/webhooks/trigger_wc_order_created', $payload, $response_data_array, $payload_track );
-        }
-
-
-        /**
-         * Prepare Order data for response
-         *
-         * @param $order_id
-         * @param $order
-         * @return array|WP_Error
-         */
-        private function build_payload( $order_id, $order ) {
-
-            if ( ! $order instanceof WC_Order ) {
-                return new WP_Error( 'invalid_order', 'Invalid order object' );
-            }
-
-            $data = array(
-                'id'                   => $order->get_id(),
-                'parent_id'            => $order->get_parent_id(),
-                'status'               => $order->get_status(),
-                'order_key'            => $order->get_order_key(),
-                'number'               => $order->get_order_number(),
-                'currency'             => $order->get_currency(),
-                'version'              => WC()->version,
-                'prices_include_tax'   => wc_prices_include_tax(),
-                'date_created'         => $order->get_date_created() ? $order->get_date_created()->date( 'c' ) : null,
-                'date_modified'        => $order->get_date_modified() ? $order->get_date_modified()->date( 'c' ) : null,
-                'customer_id'          => $order->get_customer_id(),
-                'discount_total'       => $order->get_discount_total(),
-                'discount_tax'         => $order->get_discount_tax(),
-                'shipping_total'       => $order->get_shipping_total(),
-                'shipping_tax'         => $order->get_shipping_tax(),
-                'cart_tax'             => $order->get_cart_tax(),
-                'total'                => $order->get_total(),
-                'total_tax'            => $order->get_total_tax(),
-                'billing'              => $order->get_address( 'billing' ),
-                'shipping'             => $order->get_address( 'shipping' ),
-                'payment_method'       => $order->get_payment_method(),
-                'payment_method_title' => $order->get_payment_method_title(),
-                'transaction_id'       => $order->get_transaction_id(),
-                'customer_ip_address'  => $order->get_customer_ip_address(),
-                'customer_user_agent'  => $order->get_customer_user_agent(),
-                'created_via'          => $order->get_created_via(),
-                'customer_note'        => $order->get_customer_note(),
-                'date_completed'       => $order->get_date_completed() ? $order->get_date_completed()->date( 'c' ) : null,
-                'date_paid'            => $order->get_date_paid() ? $order->get_date_paid()->date( 'c' ) : null,
-                'cart_hash'            => $order->get_cart_hash(),
-                'line_items'           => array(),
-                'tax_lines'            => array(),
-                'shipping_lines'       => array(),
-                'fee_lines'            => array(),
-                'coupon_lines'         => array(),
-                'refunds'              => array(),
-                '_links'               => array(
-                    'self' => array(
-                        array( 'href' => rest_url( '/wc/v3/orders/' . $order_id ) ),
-                    ),
-                    'collection' => array(
-                        array( 'href' => rest_url( '/wc/v3/orders' ) ),
-                    ),
-                    'customer' => array(
-                        array( 'href' => rest_url( '/wc/v3/customers/' . $order->get_customer_id() ) ),
-                    ),
-                ),
-            );
-
-            // Add line items
-            // - at this point WooCommerce functions wc_format_decimal() and wc_get_price_decimals() used bellow should be accessible
-            foreach ( $order->get_items() as $item_id => $item ) {
-                $data['line_items'][] = array(
-                    'id'           => $item_id,
-                    'name'         => $item->get_name(),
-                    'sku'          => $item->get_product() ? $item->get_product()->get_sku() : '',
-                    'product_id'   => $item->get_product_id(),
-                    'variation_id' => $item->get_variation_id(),
-                    'quantity'     => $item->get_quantity(),
-                    'tax_class'    => $item->get_tax_class(),
-                    'price'        => wc_format_decimal( $item->get_total() / $item->get_quantity(), wc_get_price_decimals() ),
-                    'subtotal'     => wc_format_decimal( $item->get_subtotal(), wc_get_price_decimals() ),
-                    'subtotal_tax' => wc_format_decimal( $item->get_subtotal_tax(),  wc_get_price_decimals() ),
-                    'total'        => wc_format_decimal( $item->get_total(),  wc_get_price_decimals() ),
-                    'total_tax'    => wc_format_decimal( $item->get_total_tax(), wc_get_price_decimals() ),
-                    'taxes'        => $item->get_taxes(),
-                    'meta'         => $item->get_meta_data(),
-                );
-            }
-
-            // Shipping
-            foreach ( $order->get_items( 'shipping' ) as $shipping_id => $shipping ) {
-                $data['shipping_lines'][] = $shipping->get_data();
-            }
-
-            // Fee
-            foreach ( $order->get_items( 'fee' ) as $fee_id => $fee ) {
-                $data['fee_lines'][] = $fee->get_data();
-            }
-
-            // Coupons
-            foreach ( $order->get_items( 'coupon' ) as $coupon_id => $coupon ) {
-                $data['coupon_lines'][] = $coupon->get_data();
-            }
-
-            // Taxes
-            foreach ( $order->get_items( 'tax' ) as $tax_id => $tax ) {
-                $data['tax_lines'][] = $tax->get_data();
-            }
-
-            // Refunds
-            foreach ( $order->get_refunds() as $refund ) {
-                $data['refunds'][] = $refund->get_data();
-            }
-
-            // Load the Woocommerce helpers
-            $wc_helpers = WPWHPRO()->integrations->get_helper( 'woocommerce', 'wc_helpers' );
-
-            // Append additional data
-            $data['wpwh_meta_data'] = get_post_meta( $order_id );
-            $data['wpwh_tax_data']  = $wc_helpers->get_validated_taxonomies( $order_id );
-
-            return $data;
         }
 
 
@@ -494,12 +371,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
                   array (
                     'id' => 43,
                     'name' => 'Bookable Product',
-                    'sku' => '',
                     'product_id' => 604,
                     'variation_id' => 0,
                     'quantity' => 1,
                     'tax_class' => '',
-                    'price' => '0.00',
                     'subtotal' => '0.00',
                     'subtotal_tax' => '0.00',
                     'total' => '0.00',
@@ -507,9 +382,17 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
                     'taxes' =>
                     array (
                     ),
-                    'meta' =>
+                    'meta_data' =>
                     array (
                     ),
+                    'sku' => '',
+                    'price' => '0.00',
+                    'image' =>
+                        array (
+                            'id' => '',
+                            'src' => '',
+                        ),
+                    'parent_name' => '',
                   ),
                 ),
                 'tax_lines' =>
@@ -527,6 +410,15 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
                 'refunds' =>
                 array (
                 ),
+                'payment_url' => '',
+                'is_editable' => '',
+                'needs_payment' => '',
+                'needs_processing' => '',
+                'date_created_gmt' => '',
+                'date_modified_gmt' => '',
+                'date_completed_gmt' => '',
+                'date_paid_gmt' => '',
+                'currency_symbol' => '',
                 '_links' =>
                 array (
                   'self' =>
