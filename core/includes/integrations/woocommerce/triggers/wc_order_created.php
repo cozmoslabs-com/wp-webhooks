@@ -29,13 +29,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
         public function get_details(){
 
             $translation_ident = "trigger-wc_order_created-description";
-//            $validated_api_versions = array();
-//
-//            if( class_exists( 'WooCommerce' ) ){
-//                $wc_helpers = WPWHPRO()->integrations->get_helper( 'woocommerce', 'wc_helpers' );
-//
-//                $validated_api_versions = $wc_helpers->get_wc_api_versions();
-//            }
 
             $validated_statuses = array();
             if( function_exists( 'wc_get_order_statuses' ) ){
@@ -65,33 +58,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
             $settings = array(
                 'load_default_settings' => true,
                 'data' => array(
-//                    'wpwhpro_woocommerce_set_user' => array(
-//                        'id'		  => 'wpwhpro_woocommerce_set_user',
-//                        'type'		=> 'text',
-//                        'label'	   => WPWHPRO()->helpers->translate( 'Set user id', $translation_ident ),
-//                        'placeholder' => '',
-//                        'required'	=> false,
-//                        'description' => WPWHPRO()->helpers->translate( 'Set the id of a user that has permission to view the Woocommerce REST API. If you do not set a valid user id, the response will not be verified.', $translation_ident )
-//                    ),
-//                    'wpwhpro_woocommerce_set_api_version' => array(
-//                        'id'		  => 'wpwhpro_woocommerce_set_api_version',
-//                        'type'		=> 'select',
-//                        'multiple'	=> false,
-//                        'choices'	  => $validated_api_versions,
-//                        'label'	   => WPWHPRO()->helpers->translate( 'Set API version', $translation_ident ),
-//                        'placeholder' => '',
-//                        'required'	=> false,
-//                        'default_value'	=> 'wp_api_v2',
-//                        'description' => WPWHPRO()->helpers->translate( 'Select the Woocommerce API version you want to use for this request. By default, we use wp_api_v2', $translation_ident )
-//                    ),
-                    'wpwhpro_woocommerce_set_secret' => array(
-                        'id'		  => 'wpwhpro_woocommerce_set_secret',
-                        'type'		=> 'text',
-                        'label'	   => WPWHPRO()->helpers->translate( 'Set secret', $translation_ident ),
-                        'placeholder' => '',
-                        'required'	=> false,
-                        'description' => WPWHPRO()->helpers->translate( 'Set a custom secret that gets validated by Woocommerce, just as you know it from the default Woocommerce webhooks.', $translation_ident )
-                    ),
                     'wpwhpro_woocommerce_trigger_on_statuses' => array(
                         'id'		  => 'wpwhpro_woocommerce_trigger_on_statuses',
                         'type'		=> 'select',
@@ -112,128 +78,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
                 'parameter'		 => $parameter,
                 'settings'		  => $settings,
                 'returns_code'	  => $this->get_demo( array() ),
-                'short_description' => WPWHPRO()->helpers->translate( 'This webhook fires as soon as an order was created within Woocommerce.', $translation_ident ),
+                'short_description' => sprintf( WPWHPRO()->helpers->translate( 'This webhook fires as soon as an order was created within Woocommerce. <br><br> For this webhook to work as expected, you need to include an %1$sAuthentication Template%3$s that contains WooCommerce API Credentials. <br><br> You can generate the credentials necessary for the Authentication Template within %2$sWooCommerce REST API Settings%3$s.', $translation_ident ), '<a href="' . admin_url( 'admin.php?page=wp-webhooks-pro&wpwhprovrs=authentication' ) . '">', '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=advanced&section=keys' ) . '">', '</a>' ),
                 'description'	   => $description,
                 'integration'	   => 'woocommerce',
                 'premium'		   => false,
             );
 
         }
-
-        /**
-         * Triggers once an order was created
-         *
-         * @param mixed $arg
-         */
-    //	public function wc_order_created_callback( $arg ){
-    //
-    //		$webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'wc_order_created' );
-    //		$payload = array();
-    //		$payload_track = array();
-    //
-    //		$topic = 'order.created';
-    //		$api_version = 'wp_api_v2';
-    //
-    //		if( ! class_exists( 'WC_Webhook' ) ){
-    //			return;
-    //		}
-    //
-    //		$wc_helpers = WPWHPRO()->integrations->get_helper( 'woocommerce', 'wc_helpers' );
-    //		$post_id = ( is_numeric( $arg ) ) ? intval( $arg ) : 0;
-    //
-    //		$wc_webhook = new WC_Webhook();
-    //		$wc_webhook->set_name( 'wpwh-' . $topic );
-    //		$wc_webhook->set_status( 'active' );
-    //		$wc_webhook->set_topic( $topic );
-    //		$wc_webhook->set_user_id( 0 );
-    //		$wc_webhook->set_pending_delivery( false );
-    //		#$wc_webhook->set_delivery_url(  );
-    //
-    //		$response_data_array = array();
-    //
-    //		foreach( $webhooks as $webhook ){
-    //
-    //			$webhook_url_name = ( is_array($webhook) && isset( $webhook['webhook_url_name'] ) ) ? $webhook['webhook_url_name'] : null;
-    //			$is_valid = true;
-    //
-    //			if( isset( $webhook['settings'] ) ){
-    //
-    //				if( $is_valid && isset( $webhook['settings']['wpwhpro_woocommerce_set_api_version'] ) && ! empty( $webhook['settings']['wpwhpro_woocommerce_set_api_version'] ) ){
-    //					$api_version = $webhook['settings']['wpwhpro_woocommerce_set_api_version'];
-    //				}
-    //
-    //				if( $is_valid && isset( $webhook['settings']['wpwhpro_woocommerce_set_secret'] ) && ! empty( $webhook['settings']['wpwhpro_woocommerce_set_secret'] ) ){
-    //					$wc_webhook->set_secret( $webhook['settings']['wpwhpro_woocommerce_set_secret'] );
-    //				}
-    //
-    //				if( $is_valid
-    //					&& isset( $webhook['settings']['wpwhpro_woocommerce_set_user'] )
-    //					&& ! empty( $webhook['settings']['wpwhpro_woocommerce_set_user'] )
-    //					&& is_numeric( $webhook['settings']['wpwhpro_woocommerce_set_user'] )
-    //				){
-    //					$wc_webhook->set_user_id( intval( $webhook['settings']['wpwhpro_woocommerce_set_user'] ) );
-    //				}
-    //
-    //				//Make sure we automatically prevent the webhook from firing twice due to the Woocommerce hook notation
-    //				$webhook['settings']['wpwhpro_trigger_single_instance_execution'] = 1;
-    //			} else {
-    //				$webhook['settings'] = array(
-    //					'wpwhpro_trigger_single_instance_execution' => 1,
-    //				);
-    //			}
-    //
-    //			if( $is_valid ){
-    //
-    //				$wc_webhook->set_api_version( $api_version );
-    //				$payload = $wc_webhook->build_payload( $arg );
-    //
-    //				//Revalidate the given Woocommerce status
-    //				if( is_array( $payload ) && isset( $payload['status'] ) && isset( $webhook['settings'] ) ){
-    //
-    //					$status_ident = 'wc-';
-    //					if( substr( $payload['status'], 0, strlen( $status_ident ) ) !== $status_ident ){
-    //						$status = $status_ident . $payload['status'];
-    //					} else {
-    //						$status = $payload['status'];
-    //					}
-    //
-    //					if( isset( $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] ) && ! empty( $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] ) ){
-    //						if( ! in_array( $status, $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] ) ){
-    //							continue;
-    //						}
-    //					}
-    //				}
-    //
-    //				//Append additional data
-    //				if( ! empty( $post_id ) && is_array( $payload ) ){
-    //					$payload['wpwh_meta_data'] = get_post_meta( $post_id );
-    //					$payload['wpwh_tax_data'] = $wc_helpers->get_validated_taxonomies( $post_id );
-    //				}
-    //
-    //				//setup headers
-    //				$headers	                                      = array();
-    //				$headers['Content-Type']      		 = 'application/json';
-    //				$headers['X-WC-Webhook-Source']      = home_url( '/' ); // Since 2.6.0.
-    //				$headers['X-WC-Webhook-Topic']       = $wc_webhook->get_topic();
-    //				$headers['X-WC-Webhook-Resource']    = $wc_webhook->get_resource();
-    //				$headers['X-WC-Webhook-Event']       = $wc_webhook->get_event();
-    //				$headers['X-WC-Webhook-Signature']   = $wc_webhook ->generate_signature( trim( wp_json_encode( $payload ) ) );
-    //				$headers['X-WC-Webhook-ID']          = 0;
-    //				$headers['X-WC-Webhook-Delivery-ID'] = 0;
-    //
-    //				if( $webhook_url_name !== null ){
-    //					$response_data_array[ $webhook_url_name ] = WPWHPRO()->webhook->post_to_webhook( $webhook, $payload, array( 'headers' => $headers ) );
-    //					$payload_track[] = $payload;
-    //				} else {
-    //					$response_data_array[] = WPWHPRO()->webhook->post_to_webhook( $webhook, $payload, array( 'headers' => $headers ) );
-    //				}
-    //			}
-    //
-    //		}
-    //
-    //		do_action( 'wpwhpro/webhooks/trigger_wc_order_created', $payload, $response_data_array, $payload_track );
-    //	}
-
 
         /**
          * Triggers once an order was created
@@ -253,7 +104,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
             $wc_helpers = WPWHPRO()->integrations->get_helper( 'woocommerce', 'wc_helpers' );
 
             foreach ( $webhooks as $webhook ) {
-                $webhook_url_name = isset( $webhook['webhook_url_name'] ) ? $webhook['webhook_url_name'] : null;
+
+                // skip inactive webhook
+                if ( isset( $webhook['status'] ) && $webhook['status'] == 'inactive' )
+                    continue;
 
                 // Make sure we automatically prevent the webhook from firing twice due to the Woocommerce hook notation
                 $webhook['settings']['wpwhpro_trigger_single_instance_execution'] = 1;
@@ -263,14 +117,11 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
 
                 // Revalidate the given Woocommerce status
                 $trigger_statuses = isset( $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] ) ? $webhook['settings']['wpwhpro_woocommerce_trigger_on_statuses'] : array();
-                $order_status = isset( $payload['status'] ) ? $payload['status'] : '';
-                $status = strpos( $order_status, 'wc-' ) === 0 ? $order_status : 'wc-' . $order_status;
+                $payload_status = isset( $payload['status'] ) ? $payload['status'] : '';
+                $status = strpos( $payload_status, 'wc-' ) === 0 ? $payload_status : 'wc-' . $payload_status;
 
-                if ( !empty( $order_status ) && !empty( $trigger_statuses ) && !in_array( $status, $trigger_statuses, true ) )
+                if ( !empty( $payload_status ) && !empty( $trigger_statuses ) && !in_array( $status, $trigger_statuses, true ) )
                     continue;
-
-                // Create signature
-                $signature = $wc_helpers->create_signature( $order_id, $webhook['settings'], $payload );
 
                 // Setup headers
                 $headers = array(
@@ -279,10 +130,11 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Triggers_wc_order_cre
                     'X-WC-Webhook-Topic'         => $topic,
                     'X-WC-Webhook-Resource'      => 'order',
                     'X-WC-Webhook-Event'         => 'created',
-                    'X-WC-Webhook-Signature'     => $signature,
                     'X-WC-Webhook-ID'            => 0,
                     'X-WC-Webhook-Delivery-ID'   => 0,
                 );
+
+                $webhook_url_name = isset( $webhook['webhook_url_name'] ) ? $webhook['webhook_url_name'] : null;
 
                 // Post data to webhook
                 if ( $webhook_url_name !== null ) {

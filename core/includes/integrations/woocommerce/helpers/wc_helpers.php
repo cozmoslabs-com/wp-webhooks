@@ -177,21 +177,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_woocommerce_Helpers_wc_helpers' )
             
         }
 
-        /**
-         * Create WooCommerce Signature
-         *
-         * @param $resource_id
-         * @param $webhook_settings
-         * @param $payload
-         * @return string
-         */
-        public function create_signature( $resource_id, $webhook_settings, $payload ) {
-            $hash_algorithm = apply_filters( 'woocommerce_webhook_hash_algorithm', 'sha256', $payload, $resource_id );
-            $secret = isset( $webhook_settings['wpwhpro_woocommerce_set_secret'] ) ? $webhook_settings['wpwhpro_woocommerce_set_secret'] : '';
-
-            return base64_encode( hash_hmac( $hash_algorithm, wp_json_encode( $payload ), $secret, true ) );
-        }
-
 	}
 
 endif; // End if class_exists check.
