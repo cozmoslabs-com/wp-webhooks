@@ -63,7 +63,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Triggers_pbp_prof
 			'parameter'		 => $parameter,
 			'settings'		  => $settings,
 			'returns_code'	  => $this->get_demo( array() ),
-			'short_description' => __( 'This webhook fires as soon as a user profile is edited within Profile Builder by Cozmoslabs.', 'wp-webhooks' ),
+			'short_description' => __( 'This webhook fires as soon as a user profile is edited within Profile Builder.', 'wp-webhooks' ),
 			'description'	   => $description,
 			'integration'	   => 'profile-builder',
 			'premium'		   => false,

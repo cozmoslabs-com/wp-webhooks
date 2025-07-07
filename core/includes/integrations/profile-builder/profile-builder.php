@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * WP_Webhooks_Integrations_profile_builder Class
  *
- * This class integrates all Profile Builder by Cozmoslabs related features and endpoints
+ * This class integrates all Profile Builder related features and endpoints
  *
  * @since 6.1.5
  */
@@ -27,7 +27,7 @@ class WP_Webhooks_Integrations_profile_builder {
         $integration_url = plugin_dir_url( __FILE__ );
 
         return array(
-            'name' => 'Profile Builder by Cozmoslabs',
+            'name' => 'Profile Builder',
             'icon' => $integration_url . 'assets/img/icon-profile-builder.svg',
         );
     }
