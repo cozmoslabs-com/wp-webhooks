@@ -2,13 +2,13 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_member_subscription_abandoned' ) ) :
+if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_subscription_activated' ) ) :
 
     /**
-     * Load the pmsp_member_subscription_abandoned trigger
+     * Load the pmsp_subscription_activated trigger
      *
      */
-    class WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_member_subscription_abandoned {
+    class WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_subscription_activated {
 
         // PHP 8.2 compatibility requires the declaration of all properties
         public $details;
@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 array(
                     'type' => 'action',
                     'hook' => 'pms_member_subscription_update',
-                    'callback' => array( $this, 'pms_member_subscription_abandoned_callback' ),
+                    'callback' => array( $this, 'pms_member_subscription_activated_callback' ),
                     'priority' => 20,
                     'arguments' => 3,
                     'delayed' => true,
@@ -36,8 +36,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             );
 
             $description = WPWHPRO()->webhook->get_endpoint_description( 'trigger', array(
-                'webhook_name' => 'Member Subscription Abandoned',
-                'webhook_slug' => 'pmsp_member_subscription_abandoned',
+                'webhook_name' => 'Subscription Activated',
+                'webhook_slug' => 'pmsp_subscription_activated',
                 'post_delay' => true,
                 'trigger_hooks' => array(
                     array(
@@ -54,13 +54,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             );
 
             return array(
-                'trigger'		   => 'pmsp_member_subscription_abandoned',
-                'name'			  => __( 'Member Subscription Abandoned', 'wp-webhooks' ),
-                'sentence'			  => __( 'a member subscription has been abandoned', 'wp-webhooks' ),
+                'trigger'		   => 'pmsp_subscription_activated',
+                'name'			  => __( 'Subscription Activated', 'wp-webhooks' ),
+                'sentence'			  => __( 'a member subscription has been activated', 'wp-webhooks' ),
                 'parameter'		 => $parameter,
                 'settings'		  => $settings,
                 'returns_code'	  => $this->get_demo( array() ),
-                'short_description' => __( 'This webhook fires as soon as a member subscription has been abandoned within Paid Member Subscriptions.', 'wp-webhooks' ),
+                'short_description' => __( 'This webhook fires as soon as a member subscription has been activated within Paid Member Subscriptions.', 'wp-webhooks' ),
                 'description'	   => $description,
                 'integration'	   => 'paid-member-subscriptions',
                 'premium'		   => false,
@@ -68,22 +68,22 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
         }
 
-        public function pms_member_subscription_abandoned_callback( $id, $new_data, $old_data ){
+        public function pms_member_subscription_activated_callback( $id, $new_data, $old_data ){
 
             if ( empty( $id ) || empty( $new_data ) || empty( $old_data ) )
                 return;
 
-            if ( $new_data['status'] == $old_data['status'] || $new_data['status'] != 'abandoned' )
+            if ( $new_data['status'] == $old_data['status'] || $new_data['status'] != 'active' )
                 return;
 
             $subscription_id = intval( $id );
 
-            $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_member_subscription_abandoned' );
+            $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_subscription_activated' );
 
             $payload = array(
                 'member_id' => $old_data['user_id'],
                 'subscription_id' => $subscription_id,
-                'subscription_status' => 'abandoned',
+                'subscription_status' => 'active',
             );
 
             $response_data_array = array();
@@ -100,7 +100,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             }
 
-            do_action( 'wpwhpro/webhooks/trigger_pmsp_member_subscription_abandoned', $payload, $response_data_array );
+            do_action( 'wpwhpro/webhooks/trigger_pmsp_subscription_activated', $payload, $response_data_array );
         }
 
         public function get_demo( $options = array() ) {
@@ -108,7 +108,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             $data = array (
                 'member_id' => 21,
                 'subscription_id' => 1,
-                'subscription_status' => 'abandoned',
+                'subscription_status' => 'active',
             );
 
             return $data;

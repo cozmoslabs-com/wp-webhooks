@@ -2,13 +2,13 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_new_member_subscription' ) ) :
+if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_subscription_pending' ) ) :
 
     /**
-     * Load the pmsp_new_member_subscription trigger
+     * Load the pmsp_subscription_pending trigger
      *
      */
-    class WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_new_member_subscription {
+    class WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_subscription_pending {
 
         // PHP 8.2 compatibility requires the declaration of all properties
         public $details;
@@ -18,10 +18,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             return array(
                 array(
                     'type' => 'action',
-                    'hook' => 'pms_member_subscription_insert',
-                    'callback' => array( $this, 'pms_member_subscription_insert_callback' ),
+                    'hook' => 'pms_member_subscription_update',
+                    'callback' => array( $this, 'pms_member_subscription_pending_callback' ),
                     'priority' => 20,
-                    'arguments' => 2,
+                    'arguments' => 3,
                     'delayed' => true,
                 ),
             );
@@ -32,16 +32,16 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             $parameter = array(
                 'member_id' => array( 'short_description' => __( '(Integer) ID of the user who owns the subscription.', 'wp-webhooks' ) ),
                 'subscription_id' => array( 'short_description' => __( '(Integer) Member subscription ID.', 'wp-webhooks' ) ),
-                'subscription_data' => array( 'short_description' => __( '(Array) Member subscription data.', 'wp-webhooks' ) ),
+                'subscription_status' => array( 'short_description' => __( '(String) Member subscription status.', 'wp-webhooks' ) ),
             );
 
             $description = WPWHPRO()->webhook->get_endpoint_description( 'trigger', array(
-                'webhook_name' => 'Member Subscription Created',
-                'webhook_slug' => 'pmsp_new_member_subscription',
+                'webhook_name' => 'Subscription Pending',
+                'webhook_slug' => 'pmsp_subscription_pending',
                 'post_delay' => true,
                 'trigger_hooks' => array(
                     array(
-                        'hook' => 'pms_member_subscription_insert',
+                        'hook' => 'pms_member_subscription_update',
                     ),
                 ),
                 'tipps' => array(
@@ -54,13 +54,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             );
 
             return array(
-                'trigger'		   => 'pmsp_new_member_subscription',
-                'name'			  => __( 'Member Subscription Created', 'wp-webhooks' ),
-                'sentence'			  => __( 'a member subscription has been created', 'wp-webhooks' ),
+                'trigger'		   => 'pmsp_subscription_pending',
+                'name'			  => __( 'Subscription Pending', 'wp-webhooks' ),
+                'sentence'			  => __( 'a member subscription is pending', 'wp-webhooks' ),
                 'parameter'		 => $parameter,
                 'settings'		  => $settings,
                 'returns_code'	  => $this->get_demo( array() ),
-                'short_description' => __( 'This webhook fires as soon as a member subscription has been created within Paid Member Subscriptions.', 'wp-webhooks' ),
+                'short_description' => __( 'This webhook fires as soon as a member subscription is pending within Paid Member Subscriptions.', 'wp-webhooks' ),
                 'description'	   => $description,
                 'integration'	   => 'paid-member-subscriptions',
                 'premium'		   => false,
@@ -68,19 +68,22 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
         }
 
-        public function pms_member_subscription_insert_callback( $id, $data ){
+        public function pms_member_subscription_pending_callback( $id, $new_data, $old_data ){
 
-            if ( empty( $id ) || empty( $data ) )
+            if ( empty( $id ) || empty( $new_data ) || empty( $old_data ) )
+                return;
+
+            if ( $new_data['status'] == $old_data['status'] || $new_data['status'] != 'pending' )
                 return;
 
             $subscription_id = intval( $id );
 
-            $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_new_member_subscription' );
+            $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_subscription_pending' );
 
             $payload = array(
-                'member_id' => $data['user_id'],
+                'member_id' => $old_data['user_id'],
                 'subscription_id' => $subscription_id,
-                'subscription_data' => $data,
+                'subscription_status' => 'pending',
             );
 
             $response_data_array = array();
@@ -97,30 +100,15 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             }
 
-            do_action( 'wpwhpro/webhooks/trigger_pmsp_new_member_subscription', $payload, $response_data_array );
+            do_action( 'wpwhpro/webhooks/trigger_pmsp_subscription_pending', $payload, $response_data_array );
         }
 
         public function get_demo( $options = array() ) {
 
             $data = array (
                 'member_id' => 21,
-                'subscription_id' => 2,
-                'subscription_data' =>
-                array (
-                    'user_id' => '21',
-                    'subscription_plan_id' => '90',
-                    'expiration_date' => '2025-08-07 12:27:22',
-                    'status' => 'pending',
-                    'payment_gateway' => 'stripe_connect',
-                    'billing_amount' => '30',
-                    'billing_cycles' => '',
-                    'start_date' => '2025-07-08 12:27:22',
-                    'trial_end' => '',
-                    'payment_profile_id' => '',
-                    'billing_duration' => '',
-                    'billing_duration_unit' => '',
-                    'billing_next_payment' => ''
-                ),
+                'subscription_id' => 1,
+                'subscription_status' => 'pending',
             );
 
             return $data;

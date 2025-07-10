@@ -2,13 +2,13 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_member_subscription_updated' ) ) :
+if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_subscription_deleted_before' ) ) :
 
     /**
-     * Load the pmsp_member_subscription_updated trigger
+     * Load the pmsp_subscription_deleted_before trigger
      *
      */
-    class WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_member_subscription_updated {
+    class WP_Webhooks_Integrations_paid_member_subscriptions_Triggers_pmsp_subscription_deleted_before {
 
         // PHP 8.2 compatibility requires the declaration of all properties
         public $details;
@@ -18,10 +18,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             return array(
                 array(
                     'type' => 'action',
-                    'hook' => 'pms_member_subscription_update',
-                    'callback' => array( $this, 'pms_member_subscription_update_callback' ),
+                    'hook' => 'pms_member_subscription_before_metadata_delete',
+                    'callback' => array( $this, 'pms_member_subscription_before_metadata_delete_callback' ),
                     'priority' => 20,
-                    'arguments' => 3,
+                    'arguments' => 2,
                     'delayed' => true,
                 ),
             );
@@ -32,17 +32,16 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             $parameter = array(
                 'member_id' => array( 'short_description' => __( '(Integer) ID of the user who owns the subscription.', 'wp-webhooks' ) ),
                 'subscription_id' => array( 'short_description' => __( '(Integer) Member subscription ID.', 'wp-webhooks' ) ),
-                'new_data' => array( 'short_description' => __( '(Array) Member subscription updated data.', 'wp-webhooks' ) ),
-                'old_data' => array( 'short_description' => __( '(Array) Member subscription data before the update.', 'wp-webhooks' ) ),
+                'subscription_data' => array( 'short_description' => __( '(Array) Member subscription data.', 'wp-webhooks' ) ),
             );
 
             $description = WPWHPRO()->webhook->get_endpoint_description( 'trigger', array(
-                'webhook_name' => 'Member Subscription Updated',
-                'webhook_slug' => 'pmsp_member_subscription_updated',
+                'webhook_name' => 'Subscription Deleted Before',
+                'webhook_slug' => 'pmsp_subscription_deleted_before',
                 'post_delay' => true,
                 'trigger_hooks' => array(
                     array(
-                        'hook' => 'pms_member_subscription_update',
+                        'hook' => 'pms_member_subscription_before_metadata_delete',
                     ),
                 ),
                 'tipps' => array(
@@ -55,13 +54,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             );
 
             return array(
-                'trigger'		   => 'pmsp_member_subscription_updated',
-                'name'			  => __( 'Member Subscription Updated', 'wp-webhooks' ),
-                'sentence'			  => __( 'a member subscription has been updated', 'wp-webhooks' ),
+                'trigger'		   => 'pmsp_subscription_deleted_before',
+                'name'			  => __( 'Subscription Deleted Before', 'wp-webhooks' ),
+                'sentence'			  => __( 'a member subscription has been deleted', 'wp-webhooks' ),
                 'parameter'		 => $parameter,
                 'settings'		  => $settings,
                 'returns_code'	  => $this->get_demo( array() ),
-                'short_description' => __( 'This webhook fires as soon as a member subscription has been updated within Paid Member Subscriptions.', 'wp-webhooks' ),
+                'short_description' => __( 'This webhook fires before metadata is removed, when a member subscription is being deleted within Paid Member Subscriptions.', 'wp-webhooks' ),
                 'description'	   => $description,
                 'integration'	   => 'paid-member-subscriptions',
                 'premium'		   => false,
@@ -69,20 +68,19 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
         }
 
-        public function pms_member_subscription_update_callback( $id, $new_data, $old_data  ){
+        public function pms_member_subscription_before_metadata_delete_callback( $id, $data ){
 
-            if ( empty( $id ) || empty( $new_data ) || empty( $old_data ) )
+            if ( empty( $id ) || empty( $data ) )
                 return;
 
             $subscription_id = intval( $id );
 
-            $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_member_subscription_updated' );
+            $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_subscription_deleted_before' );
 
             $payload = array(
-                'member_id' => $old_data['user_id'],
+                'member_id' => $data['user_id'],
                 'subscription_id' => $subscription_id,
-                'new_data' => $new_data,
-                'old_data' => $old_data,
+                'subscription_data' => $data,
             );
 
             $response_data_array = array();
@@ -99,39 +97,30 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             }
 
-            do_action( 'wpwhpro/webhooks/trigger_pmsp_member_subscription_updated', $payload, $response_data_array );
+            do_action( 'wpwhpro/webhooks/trigger_pmsp_subscription_deleted_before', $payload, $response_data_array );
         }
 
         public function get_demo( $options = array() ) {
 
             $data = array (
                 'member_id' => 21,
-                'subscription_id' => 1,
-                'new_data' =>
+                'subscription_id' => 2,
+                'subscription_data' =>
                 array (
+                    'id' => '2',
                     'user_id' => '21',
                     'subscription_plan_id' => '90',
-                    'start_date' => '2025-07-08 00:00:00',
+                    'start_date' => '2025-07-08 12:27:22',
                     'expiration_date' => '2025-08-07 23:59:59',
                     'status' => 'active',
-                    'trial_end' => ''
-                ),
-                'old_data' =>
-                array (
-                    'id' => '1',
-                    'user_id' => '21',
-                    'subscription_plan_id' => '90',
-                    'start_date' => '2025-07-08 00:00:00',
-                    'expiration_date' => '2025-08-07 00:00:00',
-                    'status' => 'pending',
                     'payment_profile_id' => '',
-                    'payment_gateway' => '',
-                    'billing_amount' => '0',
+                    'payment_gateway' => 'stripe_connect',
+                    'billing_amount' => '30',
                     'billing_duration' => '0',
                     'billing_duration_unit' => '',
                     'billing_cycles' => '0',
-                    'billing_next_payment' => null,
-                    'billing_last_payment' => null,
+                    'billing_next_payment' => '',
+                    'billing_last_payment' => '2025-07-08 12:27:24',
                     'trial_end' => ''
                 ),
             );
