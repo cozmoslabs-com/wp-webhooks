@@ -30,9 +30,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
         public function get_details(){
 
             $parameter = array(
-                'member_id' => array( 'short_description' => __( '(Integer) ID of the user who owns the subscription.', 'wp-webhooks' ) ),
-                'subscription_id' => array( 'short_description' => __( '(Integer) Member subscription ID.', 'wp-webhooks' ) ),
-                'subscription_data' => array( 'short_description' => __( '(Array) Member subscription data.', 'wp-webhooks' ) ),
+                'user_data' => array( 'short_description' => __( '(Array) User data.', 'wp-webhooks' ) ),
             );
 
             $description = WPWHPRO()->webhook->get_endpoint_description( 'trigger', array(
@@ -103,16 +101,20 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
         public function get_demo( $options = array() ) {
 
             $data = array (
-                'user_login' => 'john',
-                'user_email' => 'john@test.ts',
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'user_pass' => 'password',
-                'role' => 'subscriber',
-                'subscription_data' =>
-                array (
-                    '504'
-                ),
+                'user_data' =>
+                    array (
+                        'user_id' => '25',
+                        'user_login' => 'john',
+                        'user_email' => 'john@test.ts',
+                        'first_name' => 'John',
+                        'last_name' => 'Doe',
+                        'user_pass' => 'password',
+                        'role' => 'subscriber',
+                        'subscription_data' =>
+                            array (
+                                '504'
+                            ),
+                    ),
             );
 
             return $data;
