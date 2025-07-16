@@ -12,6 +12,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
         // PHP 8.2 compatibility requires the declaration of all properties
         public $details;
+        public $helpers;
+
+        public function __construct() {
+
+            // Load the PMS helpers
+            $this->helpers = WPWHPRO()->integrations->get_helper( 'paid-member-subscriptions', 'pms_helpers' );
+
+        }
 
         public function get_callbacks(){
 
@@ -50,7 +58,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             $settings = array(
                 'load_default_settings' => true,
-                'data' => array()
+                'data' => $this->helpers->get_subscription_settings()
             );
 
             return array(
@@ -77,6 +85,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 return;
 
             $subscription_id = intval( $id );
+            $subscription_plan_id = isset( $new_data['subscription_plan_id'] ) ? $new_data['subscription_plan_id'] : ( isset( $old_data['subscription_plan_id'] ) ? $old_data['subscription_plan_id'] : 0 );
 
             $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_subscription_expired' );
 
@@ -89,6 +98,11 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){
+
+                $selected_feature = isset( $webhook['settings']['wpwhpro_pms_subscription_feature'] ) ? $webhook['settings']['wpwhpro_pms_subscription_feature'] : 0;
+
+                if ( !empty( $selected_feature ) && !$this->helpers->validate_subscription_feature( $selected_feature, $subscription_plan_id ) )
+                    continue;
 
                 $webhook_url_name = ( is_array( $webhook ) && isset( $webhook['webhook_url_name'] ) ) ? $webhook['webhook_url_name'] : null;
 
