@@ -79,7 +79,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             // remove unnecessary data
             foreach ( $user_subscription as $key => $value ) {
-                if ( strpos( $key, 'payment_' ) === 0 || strpos( $key, 'billing_' ) === 0 || $key = 'trial_end' )
+                if ( strpos( $key, 'payment_' ) === 0 || strpos( $key, 'billing_' ) === 0 || $key == 'trial_end' )
                     unset( $user_subscription->$key );
             }
 
