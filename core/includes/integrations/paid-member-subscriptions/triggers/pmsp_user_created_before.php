@@ -103,7 +103,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
             $data = array (
                 'user_data' =>
                     array (
-                        'user_id' => '25',
                         'user_login' => 'john',
                         'user_email' => 'john@test.ts',
                         'first_name' => 'John',
