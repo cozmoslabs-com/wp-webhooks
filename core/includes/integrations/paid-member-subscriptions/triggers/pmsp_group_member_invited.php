@@ -45,6 +45,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                     ),
                 ),
                 'tipps' => array(
+                    sprintf( __( 'This trigger relates to the %1$sGroup Memberships%2$s add-on from Paid Member Subscriptions.', 'wp-webhooks' ), '<a href="https://www.cozmoslabs.com/docs/paid-member-subscriptions/add-ons/group-memberships/?utm_source=wpbackend&utm_medium=clientsite&utm_content=wp-webhooks&utm_campaign=PMS" target="_blank">', '</a>' ),
+                    __( 'It will trigger once a user is invited to join a group subscription, before they accept the invitation or register on the website.', 'wp-webhooks' ),
                 )
             ) );
 
