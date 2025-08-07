@@ -24,6 +24,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                     'arguments' => 2,
                     'delayed' => true,
                 ),
+                array(
+                    'type' => 'action',
+                    'hook' => 'pms_member_subscription_delete',
+                    'callback' => array( $this, 'pms_gm_member_removed_callback' ),
+                    'priority' => 20,
+                    'arguments' => 2,
+                    'delayed' => true,
+                ),
             );
         }
 
@@ -80,7 +88,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             $payload = array(
                 'member_subscription_id' => $user_id,
-                'owner_subscription_data' => $owner_subscription,
+                'owner_subscription_data' => is_object( $owner_subscription ) ? get_object_vars( $owner_subscription ) : $owner_subscription,
             );
 
             $response_data_array = array();

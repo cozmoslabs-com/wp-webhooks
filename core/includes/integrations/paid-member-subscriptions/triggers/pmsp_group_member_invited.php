@@ -79,7 +79,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             $payload = array(
                 'member_email' => $user_email,
-                'owner_subscription_data' => $owner_subscription,
+                'owner_subscription_data' => is_object( $owner_subscription ) ? get_object_vars( $owner_subscription ) : $owner_subscription,
                 'invite_key' => $invite_key,
             );
 

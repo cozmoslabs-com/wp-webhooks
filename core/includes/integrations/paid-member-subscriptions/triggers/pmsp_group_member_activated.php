@@ -31,8 +31,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
 
             $parameter = array(
                 'member_id' => array( 'short_description' => __( '(Integer) Member Subscription ID.', 'wp-webhooks' ) ),
-                'member_subscription_data' => array( 'short_description' => __( '(Array) Group member subscription data.', 'wp-webhooks' ) ),
-                'owner_subscription_data' => array( 'short_description' => __( '(Array) Group owner subscription data.', 'wp-webhooks' ) )
+                'member_subscription_data' => array( 'short_description' => __( '(Object) Group member subscription data.', 'wp-webhooks' ) ),
+                'owner_subscription_data' => array( 'short_description' => __( '(Object) Group owner subscription data.', 'wp-webhooks' ) )
             );
 
             $description = WPWHPRO()->webhook->get_endpoint_description( 'trigger', array(
@@ -76,19 +76,19 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 return;
 
             $user_id = intval( $id );
-
             $webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'pmsp_group_member_activated' );
+            $user_subscription_data = is_object( $user_subscription ) ? get_object_vars( $user_subscription ) : $user_subscription;
 
             // remove unnecessary data
-            foreach ( $user_subscription as $key => $value ) {
+            foreach ( $user_subscription_data as $key => $value ) {
                 if ( strpos( $key, 'payment_' ) === 0 || strpos( $key, 'billing_' ) === 0 || $key == 'trial_end' )
-                    unset( $user_subscription->$key );
+                    unset( $user_subscription_data[$key] );
             }
 
             $payload = array(
                 'member_id' => $user_id,
-                'member_subscription_data' => $user_subscription,
-                'owner_subscription_data' => $owner_subscription,
+                'member_subscription_data' => $user_subscription_data,
+                'owner_subscription_data' => is_object( $owner_subscription ) ? get_object_vars( $owner_subscription ) : $owner_subscription,
             );
 
             $response_data_array = array();
