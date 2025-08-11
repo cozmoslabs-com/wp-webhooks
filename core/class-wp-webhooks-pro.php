@@ -210,7 +210,7 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 		 * @return void
 		 */
 		private function base_hooks() {
-			add_action( 'plugins_loaded', array( self::$instance, 'load_textdomain' ) );
+			add_action( 'init', array( self::$instance, 'load_textdomain' ) );
 			register_deactivation_hook( WPWH_PLUGIN_FILE, array( self::$instance, 'register_deactivation_hook_callback' ) );
 		}
 
