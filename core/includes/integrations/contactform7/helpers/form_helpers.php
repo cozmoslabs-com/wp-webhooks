@@ -105,6 +105,11 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 
         public function validate_path( $path ){
 
+            // If the file is not within the cf7 upload directory, return
+            if( strpos( $path, 'wpcf7_uploads' ) === FALSE ){
+                return false;
+            }
+
             if( strpos( $path, ABSPATH ) !== FALSE ){
 				$path = str_replace( ABSPATH, '', $path );
 			}
@@ -201,9 +206,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 				}
 
 				if ( is_array( $uploaded_files ) && ! empty( $uploaded_files[ $stag->name ] ) ) {
-                    var_dump( $uploaded_files[ $stag->name ] );
-                    die();
-					$file_name = wp_basename( $uploaded_files[ $stag->name ] );
+
+                    $file_name = $uploaded_files[ $stag->name ];
+
+                    if( is_array( $file_name ) ){
+                        $file_name = $file_name[0];
+                    }
+
+					$file_name = wp_basename( $file_name );
 					$value = array(
 						'file_name' => $file_name,
 						'file_url' => str_replace( ABSPATH, trim( home_url(), '/' ) . '/', $uploaded_files[ $stag->name ] ),

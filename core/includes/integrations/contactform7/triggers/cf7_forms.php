@@ -285,11 +285,23 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 								if( is_array( $single_form_data ) && isset( $single_form_data['file_name'] ) ){
 									$path = $form_helpers->get_upload_dir( true, $sub_directory );
                                     
-                                    // Validate file_name and absolute_path before copying
-                                    $file_name     = $form_helpers->validate_filename( $single_form_data['file_name'] );
-                                    $absolute_path = $form_helpers->validate_path( $single_form_data['absolute_path'] );
+                                    // Think this changed at some point for CF7 and they return an array of files. We allow both variants to work.
+                                    $file_name     = $single_form_data['file_name'];
+                                    $absolute_path = $single_form_data['absolute_path'];
 
-									if( ! file_exists( $path . '/' . $file_name ) ){
+                                    if( is_array( $single_form_data['file_name'] ) ){
+                                        $file_name = $single_form_data['file_name'][0];
+                                    }
+
+                                    if( is_array( $single_form_data['absolute_path'] ) ){
+                                        $absolute_path = $single_form_data['absolute_path'][0];
+                                    }
+
+                                    // Validate file_name and absolute_path before copying
+                                    $file_name     = $form_helpers->validate_filename( $file_name );
+                                    $absolute_path = $form_helpers->validate_path( $absolute_path );
+
+									if( ! file_exists( $path . '/' . $file_name ) && !empty( $absolute_path ) ){
 										copy( $absolute_path, $path . '/' . $file_name );
 										$single_data_array['form_submit_data'][ $single_form_data_key ] = array(
 											'file_name'     => wp_basename( $path . '/' . $file_name ),
