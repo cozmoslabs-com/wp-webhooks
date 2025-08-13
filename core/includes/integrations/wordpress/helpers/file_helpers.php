@@ -20,12 +20,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
             }
 
 			$content_dir = WP_CONTENT_DIR;
-			$custom_folder = ( defined( 'WP_CONTENT_FOLDERNAME' ) && WP_CONTENT_FOLDERNAME ) ? WP_CONTENT_FOLDERNAME : 'wp-content'; //In case a custom folder name is used
+			//$custom_folder = ( defined( 'WP_CONTENT_FOLDERNAME' ) && WP_CONTENT_FOLDERNAME ) ? WP_CONTENT_FOLDERNAME : 'wp-content'; //In case a custom folder name is used
 
 			//validate Root Folder
-			$root_dir = substr($content_dir, 0, -1 * strlen( $custom_folder ));
+			//$root_dir = substr($content_dir, 0, -1 * strlen( $custom_folder ));
+			//$root_dir = substr($content_dir, 0, -1 * strlen( $custom_folder ));
 
-		    return rtrim( $root_dir, '/' );
+		    return rtrim( $content_dir, '/' );
         }
 
 		/**
@@ -47,6 +48,21 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 			if( strpos( $path, ABSPATH ) !== FALSE ){
 				$path = str_replace( ABSPATH, '', $path );
 			}
+
+            $custom_folder = ( defined( 'WP_CONTENT_FOLDERNAME' ) && WP_CONTENT_FOLDERNAME ) ? WP_CONTENT_FOLDERNAME : 'wp-content';
+
+			if( strpos( $path, $custom_folder ) !== FALSE ){
+				$path = str_replace( $custom_folder, '', $path );
+			}
+            
+            // Remove any path traversal sequences
+            $path = str_replace( [ '../', '..\\' ] , '', $path);
+    
+            // Remove null bytes
+            $path = str_replace( chr(0), '', $path );
+            
+            // Decode any URL encoding
+            $path = urldecode( $path );
 
             //Backwards compatibility
             $validate = true;

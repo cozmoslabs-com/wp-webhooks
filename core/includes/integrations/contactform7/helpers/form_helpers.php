@@ -103,6 +103,48 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 			return $path;
 		}
 
+        public function validate_path( $path ){
+
+            // If the file is not within the cf7 upload directory, return
+            if( strpos( $path, 'wpcf7_uploads' ) === FALSE ){
+                return false;
+            }
+
+            if( strpos( $path, ABSPATH ) !== FALSE ){
+				$path = str_replace( ABSPATH, '', $path );
+			}
+
+            $custom_folder = ( defined( 'WP_CONTENT_FOLDERNAME' ) && WP_CONTENT_FOLDERNAME ) ? WP_CONTENT_FOLDERNAME : 'wp-content';
+
+			if( strpos( $path, $custom_folder ) !== FALSE ){
+				$path = str_replace( $custom_folder, '', $path );
+			}
+
+            // Remove any path traversal sequences
+            $path = str_replace( [ '../', '..\\' ] , '', $path);
+    
+            // Remove null bytes
+            $path = str_replace( chr(0), '', $path );
+            
+            // Decode any URL encoding
+            $path = urldecode( $path );
+
+            $path = WP_CONTENT_DIR . '/' . ltrim( $path, '/' );
+
+            return $path;
+
+        }
+
+        public function validate_filename( $filename ){
+
+            $filename = str_replace( [ '../', '..\\' ] , '', $filename);
+            $filename = str_replace( chr(0), '', $filename );
+            $filename = urldecode( $filename );
+
+            return $filename;
+
+        }
+
 		public function htaccess_exists() {
 			$upload_path = $this->get_upload_dir();
 		
@@ -164,7 +206,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 				}
 
 				if ( is_array( $uploaded_files ) && ! empty( $uploaded_files[ $stag->name ] ) ) {
-					$file_name = wp_basename( $uploaded_files[ $stag->name ] );
+
+                    $file_name = $uploaded_files[ $stag->name ];
+
+                    if( is_array( $file_name ) ){
+                        $file_name = $file_name[0];
+                    }
+
+					$file_name = wp_basename( $file_name );
 					$value = array(
 						'file_name' => $file_name,
 						'file_url' => str_replace( ABSPATH, trim( home_url(), '/' ) . '/', $uploaded_files[ $stag->name ] ),
