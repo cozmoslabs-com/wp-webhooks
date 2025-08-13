@@ -284,20 +284,25 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 							foreach( $single_data_array['form_submit_data'] as $single_form_data_key => $single_form_data ){
 								if( is_array( $single_form_data ) && isset( $single_form_data['file_name'] ) ){
 									$path = $form_helpers->get_upload_dir( true, $sub_directory );
-									if( ! file_exists( $path . '/' . $single_form_data['file_name'] ) ){
-										copy( $single_form_data['absolute_path'], $path . '/' . $single_form_data['file_name'] );
+                                    
+                                    // Validate file_name and absolute_path before copying
+                                    $file_name     = $form_helpers->validate_filename( $single_form_data['file_name'] );
+                                    $absolute_path = $form_helpers->validate_path( $single_form_data['absolute_path'] );
+
+									if( ! file_exists( $path . '/' . $file_name ) ){
+										copy( $absolute_path, $path . '/' . $file_name );
 										$single_data_array['form_submit_data'][ $single_form_data_key ] = array(
-											'file_name' => wp_basename( $path . '/' . $single_form_data['file_name'] ),
-											'file_url' => str_replace( ABSPATH, trim( home_url(), '/' ) . '/', $path . '/' . $single_form_data['file_name'] ),
-											'absolute_path' => $path . '/' . $single_form_data['file_name'],
+											'file_name'     => wp_basename( $path . '/' . $file_name ),
+											'file_url'      => str_replace( ABSPATH, trim( home_url(), '/' ) . '/', $path . '/' . $file_name ),
+											'absolute_path' => $path . '/' . $file_name,
 										);
 
 										if( $preserve_files_duration !== 0 ){
 											$preserved_files = $form_helpers->get_preserved_files();
 											$preserved_files[] = array(
-												'time_created' => time(),
+												'time_created'   => time(),
 												'time_to_delete' => ( time() + $preserve_files_duration ),
-												'file_path' => $path . '/' . $single_form_data['file_name'],
+												'file_path'      => $path . '/' . $file_name,
 											);
 											$form_helpers->update_preserved_files( $preserved_files );
 										}
