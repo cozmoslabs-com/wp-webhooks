@@ -12,6 +12,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
   */
   class WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms {
 
+  public $details;
+
   /**
    * Register the actual functionality of the webhook
    *
