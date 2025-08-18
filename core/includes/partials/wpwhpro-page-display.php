@@ -149,7 +149,11 @@ if( is_array( $menu_endpoints ) ){
 <div class="wpwh">
     <div class="wpwh-header">
         <div class="wpwh-container">
-            <span class="wpwh-header__logo-text"><?php echo $this->page_title; ?></span>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span class="wpwh-header__logo-text"><?php echo $this->page_title; ?></span>
+
+                <a href="https://wordpress.org/support/plugin/wp-webhooks/" target="_blank" class="wpwh-btn wpwh-btn--secondary" rel="noopener noreferrer" style="font-size:1rem;">Get Support</a>
+            </div>
         </div>
     </div>
     <!-- ./wpwh-header -->
