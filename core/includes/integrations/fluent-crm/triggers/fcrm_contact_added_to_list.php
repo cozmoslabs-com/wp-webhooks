@@ -138,9 +138,9 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_fluent_crm_Triggers_fcrm_contact_
 		$status = ( isset( $contact->status ) ) ? $contact->status : '';
 
 		$payload = array(
-			'list_ids' => $list_ids,
-			'contact' => $contact,
-			'user' => $user,
+			'list_ids'  => $list_ids,
+			'contact'   => $contact,
+			'user'      => $user,
 			'user_meta' => ( ! empty( $user ) && isset( $user->ID ) ) ? get_user_meta( $user->ID ) : array(),
 		);
 
