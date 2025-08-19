@@ -31,6 +31,40 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_events_manager_Helpers_emng_helpe
             return $validated_forms;
 
         }
+        
+        public function transform_nested_object_to_array( $data, $seen = [] ){
+
+            $keys_to_skip = array( 'fields', 'required_fields' );
+
+            // Handle objects
+            if (is_object($data)) {
+                $hash = spl_object_hash($data);
+
+                // Break circular references
+                if (isset($seen[$hash])) {
+                    return '';
+                }
+                $seen[$hash] = true;
+
+                $data = get_object_vars($data);
+            }
+
+            // Handle arrays
+            if (is_array($data)) {
+                $result = [];
+                foreach ($data as $key => $value) {
+                    if( !in_array( $key, $keys_to_skip ) ){
+                        $result[$key] = $this->transform_nested_object_to_array( $value, $seen );
+                    }
+                }
+                return $result;
+            }
+
+            // Handle scalars
+            return $data;
+
+
+        }
 
 	}
 

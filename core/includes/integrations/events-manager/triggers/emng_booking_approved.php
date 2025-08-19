@@ -93,10 +93,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_events_manager_Triggers_emng_book
 
 		$webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'emng_booking_approved' );
 		$response_data_array = array();
+
+        $helpers = WPWHPRO()->integrations->get_helper( 'events-manager', 'emng_helpers' );
+
+        $booking_data = $helpers->transform_nested_object_to_array( $booking );
         
 		$payload = array(
 			'event_id' => $booking->event->post_id,
-			'booking'  => $booking,
+			'booking'  => $booking_data,
 		);
 
 		foreach( $webhooks as $webhook ){
