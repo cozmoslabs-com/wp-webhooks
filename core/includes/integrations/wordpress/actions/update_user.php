@@ -21,7 +21,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Actions_update_user' ) 
 			'user_email'		=> array( 'required' => true, 'short_description' => WPWHPRO()->helpers->translate( '(Optional if user_id or user_login is defined) Include the email correlated to the account.', $translation_ident ) ),
 			'user_login'		=> array(
 				'required' => true,
-				'short_description' => WPWHPRO()->helpers->translate( '(Optional if user_email or user_id is defined) A string with which the user can log in to your site. This value can also be used ot update a user.', $translation_ident ),
+				'short_description' => WPWHPRO()->helpers->translate( '(Optional if user_email or user_id is defined) A string with which the user can log in to your site. This value can also be used to update a user.', $translation_ident ),
 				'description' => WPWHPRO()->helpers->translate( "This argument can also be used to identify a user by the login name. E.g. If you do not provide the user email or user id, we will try to fetch the user from the user login.", $translation_ident )
 			),
 			'first_name'		=> array( 'short_description' => WPWHPRO()->helpers->translate( 'The first name of the user.', $translation_ident ) ),
