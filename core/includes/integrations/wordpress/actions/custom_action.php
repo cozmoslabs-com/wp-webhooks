@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Actions_custom_action' 
 		$parameter = array(
 			'wpwh_identifier'	   => array(
 				'short_description' => WPWHPRO()->helpers->translate( 'This value is send over within the WordPress hooks to identify the incoming action. You can use it to fire your customizatios only on specific webhooks.', $translation_ident ),
-				'description' => WPWHPRO()->helpers->translate( "Set this argument to identify your webhook call within the add_filter() function. It can be used to diversify between multiple calls that use this custom action. You can set it to e.g. <strong>validate-user</strong> and then check within the add_filter() callback against it to only fire it for this specific webhook call. You can also define this argument within the URL as a parameter, e.g. <code>&wpwh_identifier=my-custom-identifier</code>. In case you have defined the wpwh_identifier within the payload and the URL, we prioritize the parameter set within the payload.", $translation_ident ),
+				'description' => WPWHPRO()->helpers->translate( "Set this argument to identify your webhook call within the add_filter() function. It can be used to diversify between multiple calls that use this custom action. You can set it to e.g. <strong>validate-user</strong> and then check within the add_filter() callback against it to only fire it for this specific webhook call. You can also define this argument within the URL as a parameter, e.g. <strong>&wpwh_identifier=my-custom-identifier</strong>. In case you have defined the wpwh_identifier within the payload and the URL, we prioritize the parameter set within the payload.", $translation_ident ),
 			),
 		);
 
