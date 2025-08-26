@@ -61,6 +61,17 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Supports the following request methods: POST (Default), GET, HEAD, PUT, DELETE, TRACE, OPTIONS, PATCH
 * Supports Zapier, Pabbly, Integromat, Integrately, automate.io and many more
 
+**[Paid Member Subscriptions](https://wp-webhooks.com/integrations/paid-member-subscriptions/) related integrations**
+* **Trigger**: Send data once a Payment is created or a specific status is reached
+* **Trigger**: Send data once a Subscription is created or a specific status is reached
+* **Trigger**: Send data before or after a user is created
+
+**[Profile Builder](https://wp-webhooks.com/integrations/profile-builder-by-cozmoslabs/) related integrations**
+* **Trigger**: Send data once a user edits his profile
+* **Trigger**: Send data once a user logs in or registers
+* **Trigger**: Send data once a user confirms his email address
+* **Trigger**: Send data once a user is Approved or Unapproved through the Admin Approval functionality
+
 **[WordPress](https://wp-webhooks.com/integrations/wordpress/) related integrations**
 
 * **Action**: Create, Delete, Search and Retrieve users via webhooks on your website
