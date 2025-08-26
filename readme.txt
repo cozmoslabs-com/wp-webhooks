@@ -21,10 +21,10 @@ WP Webhooks lets you connect your website, plugins and apps together using power
 WP Webhooks Automations can be used in three different ways: 
 
 **Trigger (Send Data):**
-A trigger sends information from your WordPress website on a specific event (e.g. when a user logs in), to any API or external service of your choice (e.g. Zapier, Integromat, Pabbly, ...).
+A trigger sends information from your WordPress website on a specific event (e.g. when a user logs in), to any API or external service of your choice (e.g. Zapier, Make, Pabbly, ...).
 
 **Action (Receive Data):**
-An action is the reversed way of the trigger. It allows you to receive data on your website from any API or external service (e.g. Zapier, Integromat, Pabbly) which then executes a specific functionality on your WordPress website (e.g. creating a user or post).
+An action is the reversed way of the trigger. It allows you to receive data on your website from any API or external service (e.g. Zapier, Make, Pabbly) which then executes a specific functionality on your WordPress website (e.g. creating a user or post).
 
 **Flows ([Pro](https://wp-webhooks.com/))**
 A Flow allows you to connect both the triggers and actions together and create tasks that are executed in a consecutive order. E.g. When [a new user is created](https://wp-webhooks.com/integrations/wordpress/triggers/create_user/) (trigger), [send an email](https://wp-webhooks.com/integrations/wordpress/actions/send_email/) to the user.
@@ -34,7 +34,7 @@ To give you some practical automation examples, here are a few things you can do
 = Usage examples =
 * Create a WordPress user as soon as a new signup happens on Teachable
 * Create a WordPress post using Alexa (Voice Control)
-* Use Integromat, Pabbly, Zapier, etc. to update a user and its meta values
+* Use Make, Pabbly, Zapier, etc. to update a user and its meta values
 * Create a Woocommerce order from some Airtable data
 * Send data once a Gravity Form submission was received
 * Send data after a user filled out a WPForms form
@@ -59,7 +59,7 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Optimized settings page for more control
 * Supports XML, JSON, plain text/HTML, forms, and form urlencode
 * Supports the following request methods: POST (Default), GET, HEAD, PUT, DELETE, TRACE, OPTIONS, PATCH
-* Supports Zapier, Pabbly, Integromat, Integrately, automate.io and many more
+* Supports Zapier, Pabbly, Make, Integrately, automate.io and many more
 
 **[Paid Member Subscriptions](https://wp-webhooks.com/integrations/paid-member-subscriptions/) related integrations**
 * **Trigger**: Send data once a Payment is created or a specific status is reached
