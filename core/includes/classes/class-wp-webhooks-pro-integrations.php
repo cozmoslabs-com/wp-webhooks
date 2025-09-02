@@ -73,7 +73,8 @@ class WP_Webhooks_Pro_Integrations {
         try {
             $integrations = WPWHPRO()->helpers->get_folders( $this->get_integrations_folder() );
         } catch ( Exception $e ) {
-            throw WPWHPRO()->helpers->log_issue( $e->getTraceAsString() );
+            WPWHPRO()->helpers->log_issue( $e->getTraceAsString() );
+            throw $e;
         }
 
 		return apply_filters( 'wpwhpro/integrations/get_integrations_directories', $integrations );
@@ -146,7 +147,8 @@ class WP_Webhooks_Pro_Integrations {
                                         'index.php'
                                     ) );
                                 } catch ( Exception $e ) {
-                                    throw WPWHPRO()->helpers->log_issue( $e->getTraceAsString() );
+                                    WPWHPRO()->helpers->log_issue( $e->getTraceAsString() );
+                                    throw $e;
                                 }
     
                                 if( is_array( $dependencies ) && ! empty( $dependencies ) ){
