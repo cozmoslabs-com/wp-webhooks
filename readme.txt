@@ -6,7 +6,7 @@ Donate link: https://wp-webhooks.com/pricing/
 Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
 Tested up to: 6.8.2
-Stable Tag: 3.3.6
+Stable Tag: 3.3.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -290,6 +290,13 @@ If you are looking for a full list of differences between our free and pro versi
 5. Add authentication to every trigger and action for workflow automations
 
 == Changelog ==
+
+= 3.3.7: Sep 02, 2025 =
+**Fixed issues:**
+
+* Fixed exception handling issue when loading integrations 
+* Fixed descriptions for the WP Update User and WP Custom PHP actions
+* Updated example payload for the create woocommerce order action
 
 = 3.3.6: Aug 20, 2025 =
 **New Features:**
