@@ -46,6 +46,16 @@ class WP_Webhooks_Pro_Helpers {
     public function __construct() {
         $this->activate_translations = ( get_option( 'wpwhpro_activate_translations' ) == 'yes' ) ? true : false;
         $this->activate_debugging = ( get_option( 'wpwhpro_activate_debug_mode' ) == 'yes' ) ? true : false;
+
+        if( isset( $_GET['page'] ) && $_GET['page'] == 'wp-webhooks-pro' ){
+            add_action( 'wpwh_after_header', array( $this, 'throw_admin_notices' ), 100 );
+        } else {
+            add_action( 'admin_notices', array( $this, 'throw_admin_notices' ), 100 );
+        }
+
+        // Dismiss notifications
+        add_action( 'admin_init', array( $this, 'dismiss_notifications' ) );
+
     }
 
 	/**
@@ -120,7 +130,7 @@ class WP_Webhooks_Pro_Helpers {
 	 * @param bool $is_dismissible - If the message should be dismissible
 	 * @return string - The formatted admin notice
 	 */
-	public function create_admin_notice($content, $type = 'info', $is_dismissible = true){
+	public function create_admin_notice($content, $type = 'info', $is_dismissible = true, $is_dismissable_forever = false){
 		if(empty($content))
 			return '';
 
@@ -138,6 +148,25 @@ class WP_Webhooks_Pro_Helpers {
 			$isit = 'is-dismissible';
 			$bs_isit = 'alert-dismissible fade show';
 		}
+
+        // If not empty, we will receive the notification ID here so we can dismiss
+        if( !empty( $is_dismissable_forever ) ){
+
+            // Check if the notification is dismissed
+            if( get_user_meta( get_current_user_id(), $is_dismissable_forever, true ) ){
+                return '';
+            }
+
+            // Create output to be able to dismiss the notification
+            $nonce = wp_create_nonce('wpwh_dismiss_notification');
+            $dismiss_url = add_query_arg( array(
+                'action'       => 'wpwh_dismiss_notification',
+                'notification' => $is_dismissable_forever,
+                'nonce'        => $nonce
+            ) );
+
+            $dismiss_output = '<a href="' . esc_url( $dismiss_url ) . '" class="notice-dismiss" data-dismiss="notification" data-notification-id="' . esc_attr($is_dismissable_forever) . '"></a>';
+        }
 
 
 		switch($type){
@@ -168,6 +197,7 @@ class WP_Webhooks_Pro_Helpers {
         } else {
 			$validated_content = $this->translate($content, 'create-admin-notice');
 		}
+        
 
 		$bootstrap_layout = apply_filters('wpwhpro/helpers/throw_admin_notice_bootstrap', false, $content, $type, $is_dismissible);
 		if( $bootstrap_layout ){
@@ -186,8 +216,11 @@ class WP_Webhooks_Pro_Helpers {
 		} else {
 			ob_start();
 			?>
-			<div class="notice <?php echo $notice; ?> <?php echo $isit; ?>">
+			<div class="notice <?php echo $notice; ?> <?php echo $isit; ?>" style="position:relative">
 				<p class="m-0"><?php echo $validated_content; ?></p>
+                <?php if( ! empty( $dismiss_output ) ) : ?>
+                    <?php echo $dismiss_output; ?>
+                <?php endif; ?>
 			</div>
 			<?php
 			$res = ob_get_clean();
@@ -195,6 +228,19 @@ class WP_Webhooks_Pro_Helpers {
 
 		return $res;
 	}
+
+    function dismiss_notifications(){
+        if( !empty( $_GET['action'] ) && $_GET['action'] === 'wpwh_dismiss_notification' ){
+            if( !empty( $_GET['notification'] ) && !empty( $_GET['nonce'] ) ){
+                if( wp_verify_nonce( $_GET['nonce'], 'wpwh_dismiss_notification' ) ){
+                    update_user_meta( get_current_user_id(), sanitize_text_field( $_GET['notification'] ), 'true' );
+
+                    wp_redirect( remove_query_arg( array( 'action', 'notification', 'nonce' ) ) );
+                    die();
+                }
+            }
+        }
+    }
 
 	/**
 	 * Formats a specific date to datetime
@@ -909,6 +955,40 @@ class WP_Webhooks_Pro_Helpers {
 
 		return base64_encode( hash_hmac( $hash_signature, $data, $secret, true ) );
 	}
+
+    public function throw_admin_notices(){
+        if( $this->bf_show_promotion() ){
+            $message = '<p><strong>Black Friday SALE is live! Get WP Webhooks at a special price.</strong></p>';
+            $message .= '<p>Don\'t miss out on our <strong>only sale of the year & best price you can get</strong>. <br><a class="button-primary" style="margin-top:6px;" href="https://wp-webhooks.com/cyber-monday-black-friday/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=bf2025" target="_blank">Get Deal</a></p>';
+
+            echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_bf_notification' ) . '</div>';
+        }
+    }
+
+    public function bf_show_promotion(){
+
+        if( !$this->bf_promotion_is_active() )
+            return false;
+    
+        return true;
+
+    }
+    
+    public function bf_promotion_is_active(){
+        
+        $black_friday = array(
+            'start_date' => '11/24/2025 00:00',
+            'end_date'   => '12/02/2025 23:59',
+        );
+    
+        $current_date = time();
+    
+        if( $current_date > strtotime( $black_friday['start_date'] ) && $current_date < strtotime( $black_friday['end_date'] ) )
+            return true;
+    
+        return false;
+    
+    }
 
 
 }

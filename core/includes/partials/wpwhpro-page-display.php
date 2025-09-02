@@ -157,6 +157,9 @@ if( is_array( $menu_endpoints ) ){
         </div>
     </div>
     <!-- ./wpwh-header -->
+
+    <?php do_action( 'wpwh_after_header' ); ?>
+
     <div class="wpwh-menu">
         <div class="wpwh-container">
             <ul class="wpwh-menu__nav">
@@ -171,6 +174,9 @@ if( is_array( $menu_endpoints ) ){
     </div>
 
 </div>
+
+
+
 <!--
 <div class="ironikus-wrap">
     <nav class="navbar ironikus-navbar navbar-expand-lg navbar-dark">
