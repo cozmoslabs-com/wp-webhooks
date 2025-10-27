@@ -230,7 +230,7 @@ function my_custom_callback_function( $return_args, $post_id, $thumbnail_size, $
 				$post_id = attachment_url_to_postid( $attachment_url_url );
 			}
 
-			if( empty( $post_id ) ){
+			if( empty( $post_id ) || ! get_post( $post_id ) ){
 				$return_args['msg'] = WPWHPRO()->helpers->translate( "We did not find any post for your given post_value.", 'action-get_post-failure' );
 
 				return $return_args;
