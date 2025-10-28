@@ -1,10 +1,10 @@
 <?php
 
-$webhooks = WPWHPRO()->webhook->get_hooks( 'action' );
-$current_url = WPWHPRO()->helpers->get_current_url(false);
-$clear_form_url = WPWHPRO()->helpers->get_current_url();
-$action_nonce_data = WPWHPRO()->settings->get_action_nonce();
-$actions = WPWHPRO()->webhook->get_actions();
+$webhooks                 = WPWHPRO()->webhook->get_hooks( 'action' );
+$current_url              = WPWHPRO()->helpers->get_current_url(false);
+$clear_form_url           = WPWHPRO()->helpers->get_current_url();
+$action_nonce_data        = WPWHPRO()->settings->get_action_nonce();
+$actions                  = WPWHPRO()->webhook->get_actions();
 $authentication_templates = WPWHPRO()->auth->get_auth_templates();
 
 if( ! empty( $actions ) ){
@@ -100,10 +100,10 @@ if( ! empty( $grouped_actions_pro ) ){
 	}
 }
 
-$active_trigger = isset( $_GET['wpwh-action'] ) ? filter_var( $_GET['wpwh-action'], FILTER_SANITIZE_STRING ) : 'create_user';
+$active_trigger = isset( $_GET['wpwh-action'] ) ? sanitize_text_field( $_GET['wpwh-action'] ) : 'create_user';
 
 if ( empty( $active_trigger ) ) {
-    $active_trigger = isset( $_GET['wpwh-trigger'] ) ? filter_var( $_GET['wpwh-trigger'], FILTER_SANITIZE_STRING ) : 'create_user';
+    $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['wpwh-trigger'] ) : 'create_user';
 }
 
 ?>
@@ -532,7 +532,11 @@ if ( empty( $active_trigger ) ) {
                                                     
                                                     if( strpos( $subwebhook, 'wpwh-flow-' ) !== FALSE && substr( $subwebhook, 0, 10 ) === 'wpwh-flow-' ){
                                                         continue;
-                                                    }  
+                                                    }
+
+                                                    if( !isset( $subwebhook_data['api_key'] ) ){
+                                                        continue;
+                                                    }
 
                                                     ?>
                                                         <option class="<?php echo $subwebhook; ?>" value="<?php echo WPWHPRO()->webhook->built_url( $subwebhook, $subwebhook_data['api_key'] ) . '&wpwhpro_direct_test=1'; ?>"><?php echo $subwebhook; ?></option>
