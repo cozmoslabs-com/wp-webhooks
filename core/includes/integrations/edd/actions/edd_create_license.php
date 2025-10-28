@@ -480,7 +480,7 @@ function my_custom_callback_function( $license_id, $license, $return_args ){
                                         $license->update_meta( $skey, $serialized_value );
 
                                     } else {
-                                        $license->update_meta( $skey, maybe_unserialize( $sval ) );
+                                        $license->update_meta( $skey, $sval );
                                     }
                                 }
                             }

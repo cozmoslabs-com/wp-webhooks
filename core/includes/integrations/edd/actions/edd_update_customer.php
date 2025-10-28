@@ -471,7 +471,7 @@ function my_custom_callback_function( $customer_id, $return_args ){
 										$customer->update_meta( $skey, $serialized_value );
 
 									} else {
-										$customer->update_meta( $skey, maybe_unserialize( $sval ) );
+										$customer->update_meta( $skey, $sval );
 									}
 								}
 							}
