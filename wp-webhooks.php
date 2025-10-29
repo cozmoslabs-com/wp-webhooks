@@ -4,7 +4,7 @@
  * Plugin URI: https://wp-webhooks.com/
  * Description: Put your website on autopilot by using webhooks to get rid of manual tasks and focus on what's really important for your business.
  * Version: 3.3.8
- * Author: Ironikus
+ * Author: Cozmoslabs
  * Author URI: https://wp-webhooks.com/about/
  * License: GPL2
  *

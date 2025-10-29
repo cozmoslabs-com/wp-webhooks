@@ -1,7 +1,7 @@
 === WP Webhooks - Automate repetitive tasks by creating powerful automation workflows directly within WordPress ===
 Author URI: https://wp-webhooks.com/about/
 Plugin URI: https://wp-webhooks.com/
-Contributors: ironikus
+Contributors: ironikus, cozmoslabs
 Donate link: https://wp-webhooks.com/pricing/
 Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
