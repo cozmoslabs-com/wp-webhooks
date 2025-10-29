@@ -24,22 +24,22 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Actions_create_comment'
 			$translation_ident = "action-create_comment-description";
 
 			$parameter = array(
-				'comment_agent' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The HTTP user agent of the comment_author when the comment was submitted. Default empty.', $translation_ident ) ),
-				'comment_approved' => array( 'short_description' => WPWHPRO()->helpers->translate( '(int|string) Whether the comment has been approved. Default 1.', $translation_ident ) ),
-				'comment_author' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The name of the author of the comment. Default empty.', $translation_ident ) ),
+				'comment_agent'        => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The HTTP user agent of the comment_author when the comment was submitted. Default empty.', $translation_ident ) ),
+				'comment_approved'     => array( 'short_description' => WPWHPRO()->helpers->translate( '(int|string) Whether the comment has been approved. Default 1.', $translation_ident ) ),
+				'comment_author'       => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The name of the author of the comment. Default empty.', $translation_ident ) ),
 				'comment_author_email' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The email address of the $comment_author. Default empty.', $translation_ident ) ),
-				'comment_author_IP' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The IP address of the $comment_author. Default empty.', $translation_ident ) ),
-				'comment_author_url' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The URL address of the $comment_author. Default empty.', $translation_ident ) ),
-				'comment_content' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The content of the comment. Default empty.', $translation_ident ) ),
-				'comment_date' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The date the comment was submitted. To set the date manually, comment_date_gmt must also be specified. Default is the current time.', $translation_ident ) ),
-				'comment_date_gmt' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The date the comment was submitted in the GMT timezone. Default is comment_date in the site\'s GMT timezone.', $translation_ident ) ),
-				'comment_karma' => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) The karma of the comment. Default 0.', $translation_ident ) ),
-				'comment_parent' => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) ID of this comment\'s parent, if any. Default 0.', $translation_ident ) ),
-				'comment_post_ID' => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) ID of the post that relates to the comment, if any. Default 0.', $translation_ident ) ),
-				'comment_type' => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) Comment type. Default empty.', $translation_ident ) ),
-				'comment_meta' => array( 'short_description' => WPWHPRO()->helpers->translate( '(array) Optional. Array of key/value pairs to be stored in commentmeta for the new comment. More info within the description.', $translation_ident ) ),
-				'user_id' => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) ID of the user who submitted the comment. Default 0.', $translation_ident ) ),
-				'do_action'	 => array( 'short_description' => WPWHPRO()->helpers->translate( 'Advanced: Register a custom action after this webhook was fired.', $translation_ident ) ),
+				'comment_author_IP'    => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The IP address of the $comment_author. Default empty.', $translation_ident ) ),
+				'comment_author_url'   => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The URL address of the $comment_author. Default empty.', $translation_ident ) ),
+				'comment_content'      => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The content of the comment. Default empty.', $translation_ident ) ),
+				'comment_date'         => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The date the comment was submitted. To set the date manually, comment_date_gmt must also be specified. Default is the current time.', $translation_ident ) ),
+				'comment_date_gmt'     => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) The date the comment was submitted in the GMT timezone. Default is comment_date in the site\'s GMT timezone.', $translation_ident ) ),
+				'comment_karma'        => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) The karma of the comment. Default 0.', $translation_ident ) ),
+				'comment_parent'       => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) ID of this comment\'s parent, if any. Default 0.', $translation_ident ) ),
+				'comment_post_ID'      => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) ID of the post that relates to the comment, if any. Default 0.', $translation_ident ) ),
+				'comment_type'         => array( 'short_description' => WPWHPRO()->helpers->translate( '(string) Comment type. Default empty.', $translation_ident ) ),
+				'meta_input'           => array( 'short_description' => WPWHPRO()->helpers->translate( '(array) Optional. Array of key/value pairs to be stored in commentmeta for the new comment. More info within the description.', $translation_ident ) ),
+				'user_id'              => array( 'short_description' => WPWHPRO()->helpers->translate( '(int) ID of the user who submitted the comment. Default 0.', $translation_ident ) ),
+				'do_action'            => array( 'short_description' => WPWHPRO()->helpers->translate( 'Advanced: Register a custom action after this webhook was fired.', $translation_ident ) ),
 			);
 
 			ob_start();
@@ -59,7 +59,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Actions_create_comment'
 }
 </pre>
 		<?php
-		$parameter['comment_meta']['description'] = ob_get_clean();
+		$parameter['meta_input']['description'] = ob_get_clean();
 
 			ob_start();
 		?>
@@ -151,16 +151,16 @@ function my_custom_callback_function( $comment_id, $commentdata, $return_args ){
 			) );
 
 			return array(
-				'action'			=> 'create_comment',
-				'name'			  => WPWHPRO()->helpers->translate( 'Create comment', $translation_ident ),
-				'sentence'			  => WPWHPRO()->helpers->translate( 'create a comment', $translation_ident ),
-				'parameter'		 => $parameter,
-				'returns'		   => $returns,
-				'returns_code'	  => $returns_code,
+				'action'            => 'create_comment',
+				'name'              => WPWHPRO()->helpers->translate( 'Create comment', $translation_ident ),
+				'sentence'          => WPWHPRO()->helpers->translate( 'create a comment', $translation_ident ),
+				'parameter'         => $parameter,
+				'returns'           => $returns,
+				'returns_code'      => $returns_code,
 				'short_description' => WPWHPRO()->helpers->translate( 'Create a comment using webhooks.', $translation_ident ),
-				'description'	   => $description,
-				'integration'	   => 'wordpress',
-				'premium' 			=> false,
+				'description'       => $description,
+				'integration'       => 'wordpress',
+				'premium'           => false,
 			);
 
 		}
