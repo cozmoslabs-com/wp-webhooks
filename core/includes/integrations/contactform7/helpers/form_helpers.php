@@ -105,6 +105,9 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 
         public function validate_path( $path ){
 
+            // Decode any URL encoding
+            $path = urldecode( $path );
+
             // If the file is not within the cf7 upload directory, return
             if( strpos( $path, 'wpcf7_uploads' ) === FALSE ){
                 return false;
@@ -126,9 +129,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
             // Remove null bytes
             $path = str_replace( chr(0), '', $path );
             
-            // Decode any URL encoding
-            $path = urldecode( $path );
-
             $path = WP_CONTENT_DIR . '/' . ltrim( $path, '/' );
 
             return $path;
@@ -137,9 +137,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 
         public function validate_filename( $filename ){
 
-            $filename = str_replace( [ '../', '..\\' ] , '', $filename);
-            $filename = str_replace( chr(0), '', $filename );
             $filename = urldecode( $filename );
+            $filename = explode( '/', $filename );
+
+            if( empty( $filename ) ){
+                return '';
+            }
+
+            $filename = $filename[ count( $filename ) - 1 ];
 
             return $filename;
 
