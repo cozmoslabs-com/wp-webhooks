@@ -31,22 +31,20 @@ class WP_Webhooks_Upgrader_Skin extends WP_Upgrader_Skin {
   public function header() { }
   public function footer() { }
 
-  public function feedback( $string, $args = array() ) {
-    if ( isset( $this->upgrader->strings[$string] ) )
-      $string = $this->upgrader->strings[$string];
+  public function feedback( $feedback, ...$args ) {
+    if ( isset( $this->upgrader->strings[$feedback] ) )
+      $feedback = $this->upgrader->strings[$feedback];
 
-    if ( strpos($string, '%') !== false ) {
-      $args = func_get_args();
-      $args = array_splice($args, 1);
+    if ( strpos($feedback, '%') !== false ) {
       if ( $args ) {
         $args = array_map( 'strip_tags', $args );
         $args = array_map( 'esc_html', $args );
-        $string = vsprintf($string, $args);
+        $feedback = vsprintf($feedback, $args);
       }
     }
-    if ( empty($string) )
+    if ( empty($feedback) )
       return;
 
-    $this->messages[] = $string;
+    $this->messages[] = $feedback;
   }
 }
