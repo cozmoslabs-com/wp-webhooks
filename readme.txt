@@ -6,7 +6,7 @@ Donate link: https://wp-webhooks.com/pricing/
 Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
 Tested up to: 6.8.2
-Stable Tag: 3.3.8
+Stable Tag: 3.3.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -290,9 +290,19 @@ If you are looking for a full list of differences between our free and pro versi
 5. Add authentication to every trigger and action for workflow automations
 
 == Changelog ==
+= 3.3.9: Nov 17, 2025 =
+
+**Fixed issues:**
+
+* Further fixes regarding unauthenticated arbitrary file copy issue coming from the Contact Form 7 integration when a certain setting was activated. Thanks to Phat RiO - BlueRock and the Patchstack team
+* Fix security issue regarding PHP Object Injection in some cases. Thanks to Phat RiO - BlueRock and the Patchstack team
+* Added allowed file extensions setting for the Contact Form 7 preserve uploaded files functionality. If you have this feature configured, you should edit the trigger and update the allowed extensions. By default only jpg, jpeg and png are allowed
+* Fix installation of custom extensions
+* Fix a PHP 8 deprecation notice
+
 = 3.3.8: Oct 29, 2025 =
 
-** Fixed issues: **
+**Fixed issues:**
 
 * Fixed issue with the WordPress get_post action returning success even when a post was not actually retrieved
 * Fixed descriptions for the WordPress Create Comment and Update Comment actions, now the interface correctly mentions the meta_input key that is used to populate comment meta
