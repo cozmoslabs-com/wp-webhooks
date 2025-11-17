@@ -532,7 +532,11 @@ if ( empty( $active_trigger ) ) {
                                                     
                                                     if( strpos( $subwebhook, 'wpwh-flow-' ) !== FALSE && substr( $subwebhook, 0, 10 ) === 'wpwh-flow-' ){
                                                         continue;
-                                                    }  
+                                                    }
+
+                                                    if( !isset( $subwebhook_data['api_key'] ) ){
+                                                        continue;
+                                                    }
 
                                                     if( !isset( $subwebhook_data['api_key'] ) ){
                                                         continue;

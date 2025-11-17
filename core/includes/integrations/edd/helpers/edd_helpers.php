@@ -88,7 +88,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_edd_Helpers_edd_helpers' ) ) :
 									update_post_meta( $post_id, $skey, $serialized_value );
 
 								} else {
-									update_post_meta( $post_id, $skey, maybe_unserialize( $svalue ) );
+									update_post_meta( $post_id, $skey, $svalue );
 								}
 
 							}
@@ -119,7 +119,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_edd_Helpers_edd_helpers' ) ) :
 									update_post_meta( $post_id, $meta_key, $serialized_value );
 
 								} else {
-									update_post_meta( $post_id, $meta_key, maybe_unserialize( $meta_value ) );
+									update_post_meta( $post_id, $meta_key, $meta_value );
 								}
 							}
 						}

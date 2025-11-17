@@ -136,6 +136,15 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 					'required'      => false,
 					'description'   => WPWHPRO()->helpers->translate('By default, files are automatically removed once the contact form was sent. Please set a number of the duration on how long the file should be preserved (In seconds). E.g. 180 is equal to three minutes. Type "0" to never delete them or "none" to not save them at all.', 'wpwhpro-fields-cf7-forms-tip')
 				),
+				'wpwhpro_cf7_preserve_files_allowed_extensions' => array(
+					'id'            => 'wpwhpro_cf7_preserve_files_allowed_extensions',
+					'type'          => 'text',
+					'default_value' => 'jpg,jpeg,png',
+					'label'         => WPWHPRO()->helpers->translate('Allowed file extensions', 'wpwhpro-fields-cf7-forms'),
+					'placeholder'   => 'jpg,jpeg,png',
+					'required'      => false,
+					'description'   => WPWHPRO()->helpers->translate('Comma-separated list of allowed file extensions that should be preserved. E.g.: jpg,jpeg,png', 'wpwhpro-fields-cf7-forms-tip')
+				),
 				'wpwhpro_cf7_customize_payload' => array(
 					'id'          => 'wpwhpro_cf7_customize_payload',
 					'type'        => 'select',
@@ -300,10 +309,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
                                     }
 
                                     // Validate file_name and absolute_path before copying
-                                    $file_name     = $form_helpers->validate_filename( $file_name );
-                                    $absolute_path = $form_helpers->validate_path( $absolute_path );
+                                    $file_name     = $form_helpers->validate_filename( $file_name, $webhook['settings']['wpwhpro_cf7_preserve_files_allowed_extensions'] );
+                                    $absolute_path = $form_helpers->validate_path( $absolute_path, $webhook['settings']['wpwhpro_cf7_preserve_files_allowed_extensions'] );
 
-									if( ! file_exists( $path . '/' . $file_name ) && !empty( $absolute_path ) ){
+									if( ! file_exists( $path . '/' . $file_name ) && !empty( $absolute_path ) && !empty( $file_name )){
 										copy( $absolute_path, $path . '/' . $file_name );
 										$single_data_array['form_submit_data'][ $single_form_data_key ] = array(
 											'file_name'     => wp_basename( $path . '/' . $file_name ),
