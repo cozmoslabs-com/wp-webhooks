@@ -538,6 +538,10 @@ if ( empty( $active_trigger ) ) {
                                                         continue;
                                                     }
 
+                                                    if( !isset( $subwebhook_data['api_key'] ) ){
+                                                        continue;
+                                                    }
+
                                                     ?>
                                                         <option class="<?php echo $subwebhook; ?>" value="<?php echo WPWHPRO()->webhook->built_url( $subwebhook, $subwebhook_data['api_key'] ) . '&wpwhpro_direct_test=1'; ?>"><?php echo $subwebhook; ?></option>
                                                     <?php endforeach; ?>
