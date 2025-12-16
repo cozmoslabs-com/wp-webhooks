@@ -1,0 +1,100 @@
+<?php
+
+if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprove_user')) :
+
+    /**
+     * Load the pbp_unapprove_user action
+     *
+     * @since 6.1.1
+     * @author Ironikus <info@ironikus.com>
+     */
+    class WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprove_user
+    {
+        // PHP 8.2 compatibility requires the declaration of all properties
+        public $details;
+
+        public function get_details()
+        {
+
+            $parameter = array(
+                'user_id' => array(
+                    'required' => true,
+                    'label' => __('User ID', 'wp-webhooks'),
+                    'short_description' => __('A unique identifier representing your end-user.', 'wp-webhooks'),
+                ),
+            );
+
+            $returns = array(
+                'success' => array('short_description' => __('(Bool) True if the action was successful, false if not. E.g. array( \'success\' => true )', 'wp-webhooks')),
+                'msg' => array('short_description' => __('(string) A message with more information about the current request. E.g. array( \'msg\' => "This action was successful." )', 'wp-webhooks')),
+                'data' => array('short_description' => __('(Array) Further data about the request.', 'wp-webhooks')),
+            );
+
+            $returns_code = array(
+                'success' => true,
+                'msg' => 'The user was successfully unapproved.',
+                'data' => array(
+                    'user_id' => 75,
+                    'action' => 'unapprove'
+                ),
+            );
+
+            $description = array(
+                'tipps' => array(
+                    __('To learn more about this endpoint, please visit the following URL: ', 'wp-webhooks') . '<a title="OpenAI" target="_blank" href="https://platform.openai.com/docs/api-reference/chat">https://platform.openai.com/docs/api-reference/chat</a>',
+                ),
+            );
+
+            return array(
+                'action' => 'pbp_unapprove_user', //required
+                'name' => __('Unapprove user', 'wp-webhooks'),
+                'sentence' => __('unapprove user', 'wp-webhooks'),
+                'parameter' => $parameter,
+                'returns' => $returns,
+                'returns_code' => $returns_code,
+                'short_description' => __('Unapprove a user with Profile Builder', 'wp-webhooks'),
+                'description' => $description,
+                'integration' => 'profile-builder',
+                'premium' => false
+            );
+
+        }
+
+        public function execute($return_data, $response_body)
+        {
+
+            $return_args = array(
+                'success' => false,
+                'msg' => 'User not found!',
+                'data' => array(),
+            );
+
+            $user_id = WPWHPRO()->helpers->validate_request_value($response_body['content'], 'user_id');
+
+            if ($user_id) {
+
+                wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', array( 'unapproved' ), $user_id ), 'user_status', false );
+                clean_object_term_cache( $user_id, 'user_status' );
+
+                do_action( 'wppb_after_user_unapproval', $user_id );
+
+                wppb_send_new_user_status_email( $user_id, 'unapproved' );
+
+
+                $return_args = array(
+                    'success' => true,
+                    'msg' => 'The user was successfully unapproved.',
+                    'data' => array(
+                        'user_id' => $user_id,
+                        'action' => 'unapprove'
+                    ),
+                );
+            }
+
+            return $return_args;
+
+        }
+
+    }
+
+endif; // End if class_exists check.
