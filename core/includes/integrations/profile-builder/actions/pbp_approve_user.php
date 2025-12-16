@@ -36,12 +36,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
                 ),
             );
 
-            $description = array(
-                'tipps' => array(
-                    __( 'To learn more about this endpoint, please visit the following URL: ', 'wp-webhooks' ) . '<a title="OpenAI" target="_blank" href="https://platform.openai.com/docs/api-reference/chat">https://platform.openai.com/docs/api-reference/chat</a>',
-                ),
-            );
-
             return array(
                 'action'			=> 'pbp_approve_user', //required
                 'name'			   	=> __( 'Approve user', 'wp-webhooks' ),
@@ -50,7 +44,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
                 'returns'		   	=> $returns,
                 'returns_code'	  	=> $returns_code,
                 'short_description' => __( 'Approve a user with Profile Builder', 'wp-webhooks' ),
-                'description'	   	=> $description,
+                'description'	   	=> '',
                 'integration'	   	=> 'profile-builder',
                 'premium'	   		=> false
             );
