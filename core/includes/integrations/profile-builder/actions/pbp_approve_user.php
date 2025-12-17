@@ -59,6 +59,18 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
                 'data' => array(),
             );
 
+            $wppb_generalSettings = get_option('wppb_general_settings', 'not_found');
+
+            if( empty( $wppb_generalSettings ) || !isset( $wppb_generalSettings['adminApproval'] ) || $wppb_generalSettings['adminApproval'] != 'yes' ){
+                $return_args = array(
+                    'success' => false,
+                    'msg' => 'Admin Approval option is not enabled in Profile Builder settings!',
+                    'data' => array(),
+                );
+
+                return $return_args;
+            }
+
             $user_id = WPWHPRO()->helpers->validate_request_value( $response_body['content'], 'user_id' );
 
             if ( $user_id ) {
