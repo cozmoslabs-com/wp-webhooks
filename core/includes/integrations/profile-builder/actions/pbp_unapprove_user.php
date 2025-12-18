@@ -34,8 +34,16 @@ if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprov
                 'success' => true,
                 'msg' => 'The user was successfully unapproved.',
                 'data' => array(
-                    'user_id' => 75,
-                    'action' => 'unapprove'
+                    'ID' => '75',
+                    'user_login' => 'test',
+                    'user_pass' => '$wp$2y$10$LWQaSMuS80tL5brpHjkDnu0VXR2IQEuyI532hHDnPuxKqV8PPgCE2',
+                    'user_nicename' => 'test',
+                    'user_email' => 'test@yahoo.com',
+                    'user_url' => '',
+                    'user_registered' => '2025-12-18 15:13:44',
+                    'user_activation_key' => '',
+                    'user_status' => '0',
+                    'display_name' => 'test',
                 ),
             );
 
@@ -79,6 +87,8 @@ if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprov
 
             if ($user_id) {
 
+                $user_data      = get_userdata( $user_id );
+
                 wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', array( 'unapproved' ), $user_id ), 'user_status', false );
                 clean_object_term_cache( $user_id, 'user_status' );
 
@@ -90,10 +100,7 @@ if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprov
                 $return_args = array(
                     'success' => true,
                     'msg' => 'The user was successfully unapproved.',
-                    'data' => array(
-                        'user_id' => $user_id,
-                        'action' => 'unapprove'
-                    ),
+                    'data' => $user_data->data
                 );
             }
 

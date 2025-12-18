@@ -30,9 +30,17 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
             $returns_code = array (
                 'success' => true,
                 'msg' => 'The user was successfully approved.',
-                'data' => array (
-                    'user_id' => 75,
-                    'action' => 'approve'
+                'data' => array(
+                    'ID' => '75',
+                    'user_login' => 'test',
+                    'user_pass' => '$wp$2y$10$LWQaSMuS80tL5brpHjkDnu0VXR2IQEuyI532hHDnPuxKqV8PPgCE2',
+                    'user_nicename' => 'test',
+                    'user_email' => 'test@yahoo.com',
+                    'user_url' => '',
+                    'user_registered' => '2025-12-18 15:13:44',
+                    'user_activation_key' => '',
+                    'user_status' => '0',
+                    'display_name' => 'test',
                 ),
             );
 
@@ -74,6 +82,9 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
             $user_id = WPWHPRO()->helpers->validate_request_value( $response_body['content'], 'user_id' );
 
             if ( $user_id ) {
+
+                $user_data      = get_userdata( $user_id );
+
                 wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', NULL, $user_id ), 'user_status' );
                 clean_object_term_cache( $user_id, 'user_status' );
 
@@ -88,10 +99,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
                 $return_args = array (
                     'success' => true,
                     'msg' => 'The user was successfully approved.',
-                    'data' => array (
-                        'user_id' => $user_id,
-                        'action' => 'approve'
-                    ),
+                    'data' => $user_data->data
                 );
             }
 
