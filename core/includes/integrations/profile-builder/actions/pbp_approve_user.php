@@ -1,11 +1,11 @@
 <?php
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_approve_user' ) ) :
 
     /**
      * Load the pbp_approve_user action
-     *
-     * @since 6.1.1
-     * @author Ironikus <info@ironikus.com>
      */
     class WP_Webhooks_Integrations_profile_builder_Actions_pbp_approve_user {
         // PHP 8.2 compatibility requires the declaration of all properties
@@ -79,13 +79,18 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
                 return $return_args;
             }
 
-            $user_id = WPWHPRO()->helpers->validate_request_value( $response_body['content'], 'user_id' );
+            $user_id = absint( WPWHPRO()->helpers->validate_request_value( $response_body['content'], 'user_id' ) );
 
-            if ( $user_id ) {
+            if ( !empty( $user_id ) ) {
 
                 $user_data      = get_userdata( $user_id );
 
-                wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', NULL, $user_id ), 'user_status' );
+                if ( ! $user_data || ! ( $user_data instanceof WP_User ) ) {
+                    $return_args['msg'] = 'User not found!';
+                    return $return_args;
+                }
+
+//                wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', NULL, $user_id ), 'user_status' );
                 clean_object_term_cache( $user_id, 'user_status' );
 
                 // now that the user is approved, remove approval link key from usermeta
@@ -93,8 +98,8 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
 
                 do_action( 'wppb_after_user_approval', $user_id );
 
-                wppb_send_new_user_status_email( $user_id, 'approved' );
-
+                if ( function_exists( 'wppb_send_new_user_status_email' ) )
+                    wppb_send_new_user_status_email( $user_id, 'approved' );
 
                 $return_args = array (
                     'success' => true,

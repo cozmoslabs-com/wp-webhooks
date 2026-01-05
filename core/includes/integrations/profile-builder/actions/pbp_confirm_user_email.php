@@ -1,11 +1,11 @@
 <?php
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_confirm_user_email' ) ) :
 
     /**
      * Load the pbp_confirm_user_email action
-     *
-     * @since 6.1.1
-     * @author Ironikus <info@ironikus.com>
      */
     class WP_Webhooks_Integrations_profile_builder_Actions_pbp_confirm_user_email {
         // PHP 8.2 compatibility requires the declaration of all properties
@@ -82,13 +82,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_confi
 
             $user_email = WPWHPRO()->helpers->validate_request_value( $response_body['content'], 'user_email' );
 
-            if ( $user_email ) {
+            if ( !empty( $user_email ) ) {
 
                 global $wpdb;
 
                 $user_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $wpdb->base_prefix . "signups WHERE user_email = %s", $user_email), ARRAY_A);
 
-                if( isset( $user_data['activation_key'] ) && !empty( $user_data['activation_key'] ) ){
+                if( isset( $user_data['activation_key'] ) && !empty( $user_data['activation_key'] ) && function_exists( 'wppb_manual_activate_signup' ) ){
 
                     $activation_message = wppb_manual_activate_signup( $user_data['activation_key'] );
 

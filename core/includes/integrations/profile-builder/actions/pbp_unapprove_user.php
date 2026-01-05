@@ -1,12 +1,11 @@
 <?php
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprove_user')) :
 
     /**
      * Load the pbp_unapprove_user action
-     *
-     * @since 6.1.1
-     * @author Ironikus <info@ironikus.com>
      */
     class WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprove_user
     {
@@ -83,19 +82,24 @@ if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprov
                 return $return_args;
             }
 
-            $user_id = WPWHPRO()->helpers->validate_request_value($response_body['content'], 'user_id');
+            $user_id = absint( WPWHPRO()->helpers->validate_request_value($response_body['content'], 'user_id') );
 
-            if ($user_id) {
+            if ( !empty( $user_id ) ) {
 
                 $user_data      = get_userdata( $user_id );
+
+                if ( ! $user_data || ! ( $user_data instanceof WP_User ) ) {
+                    $return_args['msg'] = 'User not found!';
+                    return $return_args;
+                }
 
                 wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', array( 'unapproved' ), $user_id ), 'user_status', false );
                 clean_object_term_cache( $user_id, 'user_status' );
 
                 do_action( 'wppb_after_user_unapproval', $user_id );
 
-                wppb_send_new_user_status_email( $user_id, 'unapproved' );
-
+                if ( function_exists( 'wppb_send_new_user_status_email' ) )
+                    wppb_send_new_user_status_email( $user_id, 'unapproved' );
 
                 $return_args = array(
                     'success' => true,
