@@ -90,7 +90,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_profile_builder_Actions_pbp_appro
                     return $return_args;
                 }
 
-//                wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', NULL, $user_id ), 'user_status' );
+                wp_set_object_terms( $user_id, NULL, 'user_status' );
                 clean_object_term_cache( $user_id, 'user_status' );
 
                 // now that the user is approved, remove approval link key from usermeta

@@ -93,7 +93,7 @@ if (!class_exists('WP_Webhooks_Integrations_profile_builder_Actions_pbp_unapprov
                     return $return_args;
                 }
 
-                wp_set_object_terms( $user_id, apply_filters( 'wppb_admin_approval_update_user_status', array( 'unapproved' ), $user_id ), 'user_status', false );
+                wp_set_object_terms( $user_id, array( 'unapproved' ), 'user_status', false );
                 clean_object_term_cache( $user_id, 'user_status' );
 
                 do_action( 'wppb_after_user_unapproval', $user_id );
