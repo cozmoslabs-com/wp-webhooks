@@ -305,6 +305,11 @@ If you are looking for a full list of differences between our free and pro versi
 5. Add authentication to every trigger and action for workflow automations
 
 == Changelog ==
+= 3.4.0: Jan 12, 2026 =
+**New Features:**
+
+* New actions for the “Profile Builder" integration: Approve User, Unapprove User, Confirm User Email
+
 = 3.3.9: Nov 17, 2025 =
 
 **Fixed issues:**
