@@ -963,6 +963,17 @@ class WP_Webhooks_Pro_Helpers {
 
             echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_bf_notification' ) . '</div>';
         }
+
+        // AI integrations notice
+        $message = '<p><strong>New AI Integrations Available for WP Webhooks!</strong></p>';
+        $message .= '<p>Take your automations to the next level with our latest AI integrations:</p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/gemini/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">Google Gemini</a> (with Nano Bannana support)</p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/openai/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">OpenAI ChatGPT 5.2</a></p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/openrouter/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">Open Router</a></p>';
+        $message .= '<p>Unlock these integrations and more by upgrading to WP Webhooks Pro. <a class="button-primary" style="margin-top:6px;" href="https://wp-webhooks.com/pricing/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">Upgrade now</a></p>';
+
+        echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_ai_integrations_notification' ) . '</div>';
+
     }
 
     public function bf_show_promotion(){
