@@ -62,11 +62,16 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Supports Zapier, Pabbly, Make, Integrately, automate.io and many more
 
 **[Paid Member Subscriptions](https://wp-webhooks.com/integrations/paid-member-subscriptions/) related integrations**
+
 * **Trigger**: Send data once a Payment is created or a specific status is reached
 * **Trigger**: Send data once a Subscription is created or a specific status is reached
 * **Trigger**: Send data before or after a user is created
 
 **[Profile Builder](https://wp-webhooks.com/integrations/profile-builder-by-cozmoslabs/) related integrations**
+
+* **Action**: Approve user
+* **Action**: Unapprove user
+* **Action**: Confirm user email
 * **Trigger**: Send data once a user edits his profile
 * **Trigger**: Send data once a user logs in or registers
 * **Trigger**: Send data once a user confirms his email address
@@ -244,6 +249,16 @@ Here are some of our premium features for [WP Webhooks Pro](https://wp-webhooks.
 * Access token feature for enhanced security
 * Webhook URL action whitelist
 * In-plugin assistant
+
+AI Integrations
+
+WP Webhooks Pro includes powerful AI integrations to help you build smarter and more dynamic automations:
+
+* [Google Gemini (with Nano Banana support)](https://wp-webhooks.com/integrations/gemini/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
+* [OpenAI ChatGPT](https://wp-webhooks.com/integrations/openai/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
+* [Open Router](https://wp-webhooks.com/integrations/openrouter/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
+
+Use these integrations to connect your WordPress site with modern AI services via webhooks and automate content creation, data processing, and more.
 
 Our premium extensions for [WP Webhooks Pro](https://wp-webhooks.com/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro)
 
