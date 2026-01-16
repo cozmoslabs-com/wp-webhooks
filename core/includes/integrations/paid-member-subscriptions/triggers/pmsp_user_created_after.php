@@ -77,6 +77,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'user_data' => $data,
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_user_created_after" trigger
+             *
+             * @param array $payload The outgoing payload
+             * @param array $data    The user data
+             */
+            $payload = apply_filters( 'pmsp_user_created_after_payload', $payload, $data );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){

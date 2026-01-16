@@ -79,6 +79,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'payment_id' => $payment_id,
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_payment_deleted" trigger
+             *
+             * @param array $payload    The outgoing payload
+             * @param int   $payment_id The payment ID
+             */
+            $payload = apply_filters( 'pmsp_payment_deleted_payload', $payload, $payment_id );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){
