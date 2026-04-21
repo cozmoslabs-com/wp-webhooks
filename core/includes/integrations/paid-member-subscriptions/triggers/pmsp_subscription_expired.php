@@ -95,6 +95,16 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'subscription_status' => 'expired',
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_subscription_expired" trigger
+             *
+             * @param array $payload         The outgoing payload
+             * @param int   $subscription_id The subscription ID
+             * @param array $new_data        The new subscription data
+             * @param array $old_data        The old subscription data
+             */
+            $payload = apply_filters( 'pmsp_subscription_expired_payload', $payload, $subscription_id, $new_data, $old_data );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){

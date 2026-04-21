@@ -87,6 +87,16 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'payment_status' => 'failed',
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_payment_failed" trigger
+             *
+             * @param array $payload    The outgoing payload
+             * @param int   $payment_id The payment ID
+             * @param array $new_data   The new payment data
+             * @param array $old_data   The old payment data
+             */
+            $payload = apply_filters( 'pmsp_payment_failed_payload', $payload, $payment_id, $new_data, $old_data );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){

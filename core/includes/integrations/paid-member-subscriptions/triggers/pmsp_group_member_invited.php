@@ -83,6 +83,16 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'invite_key' => $invite_key,
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_group_member_invited" trigger
+             *
+             * @param array $payload            The outgoing payload
+             * @param string $user_email        Invited member email
+             * @param mixed $owner_subscription Owner subscription object/array
+             * @param string $invite_key        Invitation key
+             */
+            $payload = apply_filters( 'pmsp_group_member_invited_payload', $payload, $user_email, $owner_subscription, $invite_key );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){

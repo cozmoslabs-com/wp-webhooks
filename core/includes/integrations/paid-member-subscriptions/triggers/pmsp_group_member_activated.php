@@ -91,6 +91,16 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'owner_subscription_data' => is_object( $owner_subscription ) ? get_object_vars( $owner_subscription ) : $owner_subscription,
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_group_member_activated" trigger
+             *
+             * @param array $payload            The outgoing payload
+             * @param int   $user_id            Activated member user ID
+             * @param mixed $user_subscription  Member subscription object/array
+             * @param mixed $owner_subscription Owner subscription object/array
+             */
+            $payload = apply_filters( 'pmsp_group_member_activated_payload', $payload, $user_id, $user_subscription, $owner_subscription );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){

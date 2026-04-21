@@ -81,6 +81,15 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_paid_member_subscriptions_Trigger
                 'payment_data' => $data,
             );
 
+            /**
+             * Filter the payload sent to WP Webhooks for the "pmsp_payment_created" trigger
+             *
+             * @param array $payload    The outgoing payload
+             * @param int   $payment_id The payment ID
+             * @param array $data       The payment data
+             */
+            $payload = apply_filters( 'pmsp_payment_created_payload', $payload, $payment_id, $data );
+
             $response_data_array = array();
 
             foreach( $webhooks as $webhook ){
