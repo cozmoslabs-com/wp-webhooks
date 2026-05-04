@@ -168,7 +168,11 @@ class WP_Webhooks_Pro_Run{
 				'ajax_url'   => admin_url( 'admin-ajax.php' ),
 				'ajax_nonce' => wp_create_nonce( md5( $this->page_name ) ),
 				'plugin_url' => WPWH_PLUGIN_URL,
-				'language' => '',
+				'language'   => '',
+				'i18n'       => array(
+					'status_active'   => WPWHPRO()->helpers->translate( 'active', 'wpwhpro-page-actions' ),
+					'status_inactive' => WPWHPRO()->helpers->translate( 'inactive', 'wpwhpro-page-actions' ),
+				),
 			));
 
 			// wp_enqueue_script( 'wpwhpro-admin-scripts-old', WPWH_PLUGIN_URL . 'core/includes/assets-old/dist/js/admin-scripts.js', array( 'jquery' ), WPWH_VERSION, true );

@@ -46,13 +46,13 @@ $translation_ident = 'action-' . $webhook_slug . '-description';
 	<li><?php echo sprintf( WPWHPRO()->helpers->translate( 'The first argument you need to set within your webhook action request is the <strong>action</strong> argument. This argument is always required. Please set it to <strong>%1$s</strong>.', $translation_ident ), $webhook_slug ); ?></li>
 	<?php if( ! empty( $steps ) ) : ?>
 		<?php foreach( $steps as $step ) : ?>
-			<li><?php echo $step; ?></li>
+			<li><?php echo wp_kses_post( $step ); ?></li>
 		<?php endforeach; ?>
 	<?php endif; ?>
 	<li><?php echo WPWHPRO()->helpers->translate( 'All the other arguments are optional and just extend the functionality of the webhook action.', $translation_ident ); ?></li>
 </ol>
 <?php if( isset( $data['after_how_to'] ) ) : ?>
-    <?php echo $data['after_how_to']; ?>
+    <?php echo wp_kses_post( $data['after_how_to'] ); ?>
 <?php endif; ?>
 
 <?php if( ! empty( $tipps ) ) : ?>
@@ -60,7 +60,7 @@ $translation_ident = 'action-' . $webhook_slug . '-description';
 	<ol>
 	<?php if( ! empty( $tipps ) ) : ?>
 		<?php foreach( $tipps as $tipp ) : ?>
-			<li><?php echo $tipp; ?></li>
+			<li><?php echo wp_kses_post( $tipp ); ?></li>
 		<?php endforeach; ?>
 	<?php endif; ?>
 	</ol>

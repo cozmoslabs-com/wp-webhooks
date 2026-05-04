@@ -62,12 +62,12 @@ $translation_ident = 'trigger-' . $webhook_slug . '-description';
     <?php foreach( $trigger_hooks as $trigger_hook ) : ?>
         <li>
             <?php if( isset( $trigger_hook['url'] ) && ! empty( $trigger_hook['url'] ) ) : ?>
-                <a href="<?php echo esc_url( $trigger_hook['url'] ); ?>" target="_blank" title="<?php echo WPWHPRO()->helpers->translate( 'Visit documentation', $translation_ident ); ?>"><strong><?php echo isset( $trigger_hook['hook'] ) ? $trigger_hook['hook'] : ''; ?></strong></a>
+                <a href="<?php echo esc_url( $trigger_hook['url'] ); ?>" target="_blank" title="<?php echo esc_attr( WPWHPRO()->helpers->translate( 'Visit documentation', $translation_ident ) ); ?>"><strong><?php echo esc_html( isset( $trigger_hook['hook'] ) ? $trigger_hook['hook'] : '' ); ?></strong></a>
             <?php else : ?>
-                <strong><?php echo isset( $trigger_hook['hook'] ) ? $trigger_hook['hook'] : ''; ?></strong>
+                <strong><?php echo esc_html( isset( $trigger_hook['hook'] ) ? $trigger_hook['hook'] : '' ); ?></strong>
             <?php endif; ?>
             <?php if( isset( $trigger_hook['description'] ) ) : ?>
-                <?php echo $trigger_hook['description']; ?>
+                <?php echo wp_kses_post( $trigger_hook['description'] ); ?>
             <?php endif; ?>
         </li>
     <?php endforeach; ?>
@@ -82,14 +82,14 @@ $translation_ident = 'trigger-' . $webhook_slug . '-description';
 <?php if( isset( $data['how_to'] ) ) : ?>
     <h4><?php echo WPWHPRO()->helpers->translate( 'How to fire the trigger?', $translation_ident ); ?></h4>
     <br>
-    <?php echo $data['how_to']; ?>
+    <?php echo wp_kses_post( $data['how_to'] ); ?>
 <?php endif; ?>
 
 <h4><?php echo WPWHPRO()->helpers->translate( 'Tipps', $translation_ident ); ?></h4>
 <ol>
     <?php if( ! empty( $tipps ) ) : ?>
         <?php foreach( $tipps as $tipp ) : ?>
-            <li><?php echo $tipp; ?></li>
+            <li><?php echo wp_kses_post( $tipp ); ?></li>
         <?php endforeach; ?>
     <?php endif; ?>
     <li><?php echo WPWHPRO()->helpers->translate( 'In case you don\'t need a specified webhook URL at the moment, you can simply deactivate it by clicking the <strong>Deactivate</strong> link within the Actions menu right next to the <strong>Webhook URL</strong>. This results in the specified URL not being fired once the trigger fires.', $translation_ident ); ?></li>

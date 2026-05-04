@@ -66,7 +66,7 @@ foreach( $webhook_actions as $action_name => $wa ){
   <div class="wpwh-title-area mb-4">
     <h1><?php echo WPWHPRO()->helpers->translate( 'Authentication', 'wpwhpro-page-authentication' ); ?></h1>
     <p class="wpwh-text-small">
-        <?php echo sprintf(WPWHPRO()->helpers->translate( 'Create your own authentication template down below. This allows you to authenticate your outgoing "Send Data" webhook triggers to a given endpoint, as well as your incoming "Receive Data" actions. For more information, please check out the authentication documentation by clicking <a href="%s" target="_blank" >here</a>.', 'wpwhpro-page-authentication' ), 'https://wp-webhooks.com/docs/knowledge-base/how-to-use-authentication/'); ?>
+        <?php echo wp_kses_post( sprintf(WPWHPRO()->helpers->translate( 'Create your own authentication template down below. This allows you to authenticate your outgoing "Send Data" webhook triggers to a given endpoint, as well as your incoming "Receive Data" actions. For more information, please check out the authentication documentation by clicking <a href="%s" target="_blank" >here</a>.', 'wpwhpro-page-authentication' ), 'https://wp-webhooks.com/docs/knowledge-base/how-to-use-authentication/') ); ?>
     </p>
   </div>
 
@@ -100,10 +100,10 @@ foreach( $webhook_actions as $action_name => $wa ){
 
           ?>
             <tr>
-              <td><?php echo $template_id; ?></td>
-              <td><?php echo $template->name; ?></td>
-              <td><?php echo $auth_name; ?></td>
-              <td class="wpwh-w-50"><?php echo date( 'F j, Y, g:i a', strtotime( $template->log_time ) ); ?></td>
+              <td><?php echo esc_html( (string) $template_id ); ?></td>
+              <td><?php echo esc_html( $template->name ); ?></td>
+              <td><?php echo esc_html( $auth_name ); ?></td>
+              <td class="wpwh-w-50"><?php echo esc_html( date( 'F j, Y, g:i a', strtotime( $template->log_time ) ) ); ?></td>
               <td class="align-middle wpwh-text-left">
                 <?php
                   if( ! empty( $authentication_triggers ) ){
@@ -111,12 +111,12 @@ foreach( $webhook_actions as $action_name => $wa ){
                     foreach( $authentication_triggers as $group => $trigger_data ){
                       foreach( $trigger_data as $single_trigger_data ){
                         if( intval( $template->id ) === intval( $single_trigger_data['template'] ) ){
-                          $trigger_output .= $single_trigger_data['name'] . ' (' . $single_trigger_data['group'] . ')<br>';
+                          $trigger_output .= esc_html( $single_trigger_data['name'] ) . ' (' . esc_html( $single_trigger_data['group'] ) . ')<br />';
                         }
                       }
                     }
 
-                    echo trim( $trigger_output, '<br>' );
+                    echo wp_kses_post( trim( $trigger_output ) );
                   }
                 ?>
               </td>
@@ -126,18 +126,18 @@ foreach( $webhook_actions as $action_name => $wa ){
                     $action_output = '';
                     foreach( $authentication_actions as $single_action_data ){
                       if( intval( $template_id ) === intval( $single_action_data['template'] ) ){
-                        $action_output .= $single_action_data['name'] . '<br>';
+                        $action_output .= esc_html( $single_action_data['name'] ) . '<br />';
                       }
                     }
 
-                    echo trim( $action_output, '<br>' );
+                    echo wp_kses_post( trim( $action_output ) );
                   }
                 ?>
               </td>
               <td class="p-0 align-middle text-center">
                 <div class="dropdown">
 									<button type="button" class="wpwh-btn wpwh-btn--link px-2 py-3 wpwh-dropdown-trigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										<img src="<?php echo WPWH_PLUGIN_URL . 'core/includes/assets/img/settings.svg'; ?>" alt="Settings Icon">
+										<img src="<?php echo esc_url( WPWH_PLUGIN_URL . 'core/includes/assets/img/settings.svg' ); ?>" alt="Settings Icon">
 										<span class="sr-only">Options</span>
 									</button>
 									<div class="dropdown-menu">
@@ -146,20 +146,20 @@ foreach( $webhook_actions as $action_name => $wa ){
 											class="dropdown-item wpwh-delete-auth-template"
 											title="<?php echo WPWHPRO()->helpers->translate( 'Delete', 'wpwhpro-page-logs' ); ?>"
 
-                      data-wpwh-auth-id="<?php echo $template_id; ?>"
+                      data-wpwh-auth-id="<?php echo esc_attr( (string) $template_id ); ?>"
 										>
-											<img src="<?php echo WPWH_PLUGIN_URL . 'core/includes/assets/img/delete.svg'; ?>" alt="Delete">
+											<img src="<?php echo esc_url( WPWH_PLUGIN_URL . 'core/includes/assets/img/delete.svg' ); ?>" alt="Delete">
 											<span><?php echo WPWHPRO()->helpers->translate( 'Delete', 'wpwhpro-page-logs' ); ?></span>
 										</button>
                     <button
                       type="button"
                       class="dropdown-item wpwh-edit-auth-template"
 
-                      data-wpwh-auth-id="<?php echo $template_id; ?>"
-                      data-wpwh-template-name="<?php echo $template->name; ?>"
+                      data-wpwh-auth-id="<?php echo esc_attr( (string) $template_id ); ?>"
+                      data-wpwh-template-name="<?php echo esc_attr( $template->name ); ?>"
                       data-modal-id="#editAuthTemplateModal"
                     >
-                      <img src="<?php echo WPWH_PLUGIN_URL . 'core/includes/assets/img/cog.svg'; ?>" alt="<?php echo WPWHPRO()->helpers->translate( 'Settings', 'wpwhpro-page-logs' ); ?>">
+                      <img src="<?php echo esc_url( WPWH_PLUGIN_URL . 'core/includes/assets/img/cog.svg' ); ?>" alt="<?php echo esc_attr( WPWHPRO()->helpers->translate( 'Settings', 'wpwhpro-page-logs' ) ); ?>">
                       <span><?php echo WPWHPRO()->helpers->translate( 'Settings', 'wpwhpro-page-logs' ); ?></span>
                     </button>
 									</div>
@@ -190,7 +190,7 @@ foreach( $webhook_actions as $action_name => $wa ){
 					</svg>
         </button>
       </div>
-      <form action="<?php echo $clear_form_url; ?>" method="post">
+      <form action="<?php echo esc_url( $clear_form_url ); ?>" method="post">
         <div class="modal-body">
           <label class="wpwh-form-label" for="wpwh-authentication-name"><?php echo WPWHPRO()->helpers->translate( 'Template Name', 'wpwhpro-page-authentication' ); ?></label>
 					<input class="wpwh-form-input w-100" type="text" id="wpwh-authentication-name" name="wpwh-authentication-name" placeholder="<?php echo WPWHPRO()->helpers->translate( 'demo-template', 'wpwhpro-page-authentication' ); ?>" />
@@ -198,7 +198,7 @@ foreach( $webhook_actions as $action_name => $wa ){
           <label class="wpwh-form-label mt-4" for="wpwh-authentication-type"><?php echo WPWHPRO()->helpers->translate( 'Auth Type', 'wpwhpro-page-authentication' ); ?></label>
           <select class="wpwh-form-input w-100" id="wpwh-authentication-type" name="wpwh-authentication-type">
             <?php foreach( $auth_methods as $auth_type => $auth_data ) : ?>
-              <option value="<?php echo $auth_type; ?>"><?php echo $auth_data['name']; ?></option>
+              <option value="<?php echo esc_attr( $auth_type ); ?>"><?php echo esc_html( $auth_data['name'] ); ?></option>
             <?php endforeach; ?>
             <option value="digest_auth" disabled><?php echo WPWHPRO()->helpers->translate( 'Digest Auth (Pro)', 'wpwhpro-page-authentication' ); ?></option>
           </select>

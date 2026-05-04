@@ -50,13 +50,13 @@ if( ! is_array( $plugin_update_list ) ){
                 <div class="col-xl-3 col-lg-4 col-md-6">
                     <div class="wpwh-card">
                         <div class="wpwh-card__featured">
-                            <img src="<?php echo esc_url( $data['thumbnail'] ); ?>" alt="<?php echo sanitize_text_field( $data['name'] ); ?>">
+                            <img src="<?php echo esc_url( $data['thumbnail'] ); ?>" alt="<?php echo esc_attr( $data['name'] ); ?>">
                         </div>
                         <div class="wpwh-card__body">
-                            <h4 class="wpwh-card__title"><?php echo sanitize_text_field( $data['name'] ); ?></h4>
-                            <p class="wpwh-card__subtitle">v<?php echo sanitize_text_field( $data['version'] ); ?></p>
+                            <h4 class="wpwh-card__title"><?php echo esc_html( $data['name'] ); ?></h4>
+                            <p class="wpwh-card__subtitle">v<?php echo esc_html( $data['version'] ); ?></p>
                             <div class="wpwh-card__text">
-                                <?php echo wpautop( sanitize_text_field( $data['description'] ) ); ?>
+                                <?php echo wp_kses_post( wpautop( $data['description'] ) ); ?>
                             </div>
                             <div class="wpwh-card__actions">
                                 <?php if( $plugin_installed ) : ?>
@@ -65,8 +65,8 @@ if( ! is_array( $plugin_update_list ) ){
                                         <?php if( $plugin_premium && ( $license_status === false || $license_status !== 'valid' ) ) : ?>
                                             <a
                                                 class="text-primary wpwh-extension-manage"
-                                                href="<?php echo get_admin_url(); ?>options-general.php?page=wp-webhooks-pro&wpwhprovrs=pro"
-                                                title="<?php echo WPWHPRO()->helpers->translate( 'Activate your licene first', 'wpwhpro-page-extensions' ); ?>"
+                                                href="<?php echo esc_url( get_admin_url( null, 'options-general.php?page=wp-webhooks-pro&wpwhprovrs=pro' ) ); ?>"
+                                                title="<?php echo esc_attr( WPWHPRO()->helpers->translate( 'Activate your license first', 'wpwhpro-page-extensions' ) ); ?>"
                                             >
                                                 <?php echo WPWHPRO()->helpers->translate( 'License', 'wpwhpro-page-extensions' ); ?>
                                             </a>
@@ -78,12 +78,12 @@ if( ! is_array( $plugin_update_list ) ){
                                             <a
                                                 href="#"
                                                 class="text-primary wpwh-extension-manage"
-                                                title="<?php echo sprintf( WPWHPRO()->helpers->translate( 'Upgrade from your current version %1$s to version %2$s', 'wpwhpro-page-extensions' ), $plugin_version, $available_version ); ?>"
-                                                data-wpwh-extension-id="<?php echo intval( $data['item_id'] ); ?>"
-                                                data-wpwh-extension-version="<?php echo sanitize_text_field( $available_version ); ?>"
+                                                title="<?php echo esc_attr( sprintf( WPWHPRO()->helpers->translate( 'Upgrade from your current version %1$s to version %2$s', 'wpwhpro-page-extensions' ), $plugin_version, $available_version ) ); ?>"
+                                                data-wpwh-extension-id="<?php echo esc_attr( (string) intval( $data['item_id'] ) ); ?>"
+                                                data-wpwh-extension-version="<?php echo esc_attr( (string) $available_version ); ?>"
                                                 data-wpwh-extension-status="<?php echo $update_status; ?>"
-                                                data-wpwh-extension-slug="<?php echo sanitize_text_field( $data['extension_plugin_slug'] ); ?>"
-                                                data-wpwh-extension-dl="<?php echo sanitize_text_field( $data['extension_download_url'] ); ?>"
+                                                data-wpwh-extension-slug="<?php echo esc_attr( $data['extension_plugin_slug'] ); ?>"
+                                                data-wpwh-extension-dl="<?php echo esc_url( $data['extension_download_url'] ); ?>"
                                             >
                                                 <span><?php echo WPWHPRO()->helpers->translate( 'Update', 'wpwhpro-page-extensions' ); ?></span>
                                             </a>
@@ -96,8 +96,8 @@ if( ! is_array( $plugin_update_list ) ){
                                                 href="#"
                                                 class="text-warning wpwh-extension-manage"
                                                 data-wpwh-extension-status="activated"
-                                                data-wpwh-extension-slug="<?php echo sanitize_text_field( $data['extension_plugin_slug'] ); ?>"
-                                                data-wpwh-extension-dl="<?php echo sanitize_text_field( $data['extension_download_url'] ); ?>"
+                                                data-wpwh-extension-slug="<?php echo esc_attr( $data['extension_plugin_slug'] ); ?>"
+                                                data-wpwh-extension-dl="<?php echo esc_url( $data['extension_download_url'] ); ?>"
                                             >
                                                 <span><?php echo WPWHPRO()->helpers->translate( 'Deactivate', 'wpwhpro-page-extensions' ); ?></span>
                                             </a>
@@ -106,8 +106,8 @@ if( ! is_array( $plugin_update_list ) ){
                                                 href="#"
                                                 class="text-green wpwh-extension-manage"
                                                 data-wpwh-extension-status="deactivated"
-                                                data-wpwh-extension-slug="<?php echo sanitize_text_field( $data['extension_plugin_slug'] ); ?>"
-                                                data-wpwh-extension-dl="<?php echo sanitize_text_field( $data['extension_download_url'] ); ?>"
+                                                data-wpwh-extension-slug="<?php echo esc_attr( $data['extension_plugin_slug'] ); ?>"
+                                                data-wpwh-extension-dl="<?php echo esc_url( $data['extension_download_url'] ); ?>"
                                             >
                                                 <span><?php echo WPWHPRO()->helpers->translate( 'Activate', 'wpwhpro-page-extensions' ); ?></span>
                                             </a>
@@ -118,8 +118,8 @@ if( ! is_array( $plugin_update_list ) ){
                                     <?php if( $plugin_premium && ( $license_status === false || $license_status !== 'valid' ) ) : ?>
                                         <a
                                             class="text-primary"
-                                            href="<?php echo get_admin_url(); ?>options-general.php?page=wp-webhooks-pro&wpwhprovrs=pro"
-                                            title="<?php echo WPWHPRO()->helpers->translate( 'Activate your licene first', 'wpwhpro-page-extensions' ); ?>"
+                                            href="<?php echo esc_url( get_admin_url( null, 'options-general.php?page=wp-webhooks-pro&wpwhprovrs=pro' ) ); ?>"
+                                            title="<?php echo esc_attr( WPWHPRO()->helpers->translate( 'Activate your license first', 'wpwhpro-page-extensions' ) ); ?>"
                                         >
                                             <?php echo WPWHPRO()->helpers->translate( 'License', 'wpwhpro-page-extensions' ); ?>
                                         </a>
@@ -128,11 +128,11 @@ if( ! is_array( $plugin_update_list ) ){
                                             href="#"
                                             class="text-secondary wpwh-extension-manage"
                                             data-wpwh-extension="install"
-                                            data-wpwh-extension-id="<?php echo intval( $data['item_id'] ); ?>"
-                                            data-wpwh-extension-version="<?php echo sanitize_text_field( $data['version'] ); ?>"
+                                            data-wpwh-extension-id="<?php echo esc_attr( (string) intval( $data['item_id'] ) ); ?>"
+                                            data-wpwh-extension-version="<?php echo esc_attr( (string) $data['version'] ); ?>"
                                             data-wpwh-extension-status="uninstalled"
-                                            data-wpwh-extension-slug="<?php echo sanitize_text_field( $data['extension_plugin_slug'] ); ?>"
-                                            data-wpwh-extension-dl="<?php echo sanitize_text_field( $data['extension_download_url'] ); ?>"
+                                            data-wpwh-extension-slug="<?php echo esc_attr( $data['extension_plugin_slug'] ); ?>"
+                                            data-wpwh-extension-dl="<?php echo esc_url( $data['extension_download_url'] ); ?>"
                                         >
                                             <span><?php echo WPWHPRO()->helpers->translate( 'INSTALL', 'wpwhpro-page-extensions' ); ?></span>
                                         </a>
@@ -145,8 +145,8 @@ if( ! is_array( $plugin_update_list ) ){
                                         class="text-danger wpwh-extension-manage text-uppercase"
                                         data-wpwh-extension="delete"
                                         data-wpwh-extension-status="delete"
-                                        data-wpwh-extension-slug="<?php echo sanitize_text_field( $data['extension_plugin_slug'] ); ?>"
-                                        data-wpwh-extension-dl="<?php echo sanitize_text_field( $data['extension_download_url'] ); ?>"
+                                        data-wpwh-extension-slug="<?php echo esc_attr( $data['extension_plugin_slug'] ); ?>"
+                                        data-wpwh-extension-dl="<?php echo esc_url( $data['extension_download_url'] ); ?>"
                                     >
                                         <span><?php echo WPWHPRO()->helpers->translate( 'Delete', 'wpwhpro-page-extensions' ); ?></span>
                                     </a>

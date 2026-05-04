@@ -331,10 +331,6 @@ exports.default = function () {
     var identkey = $this.data('wpwh-identkey');
     var $form = $($this.data('wpwh-target'));
 
-    console.log('asdfasdfasdf');
-    console.log($this.data('wpwh-target'));
-    console.log($form);
-
     if (webhookUrl === 'empty') {
       $form.hide();
     } else {
@@ -1025,8 +1021,6 @@ exports.default = function () {
   $(document).on('click', '.wpwh-add-row-button-text', function () {
     var $this = $(this);
 
-    console.log('asdfasdf');
-
     // Clear empty text ares
     if ($dataEditor.find('.wpwh-empty').length) {
       $dataEditor.html('');
@@ -1045,8 +1039,6 @@ exports.default = function () {
     var $this = $(this),
         target = $this.data('wpwh-modal'),
         $target = $(target);
-
-    console.log('asdfasdfasdf');
 
     if ($target.length) {
       // First close all the existing modals.
@@ -1913,8 +1905,6 @@ exports.default = function () {
   $(document).on('click', '[data-wpwh-event]', function (e) {
     e.preventDefault();
 
-    console.log('asdfasdfasdf');
-
     var $thisEl = $(this);
     var event = $thisEl.data('wpwh-event');
     var eventType = $thisEl.data('wpwh-event-type');
@@ -2024,13 +2014,14 @@ exports.default = function () {
             // Parse JSON.
             res = JSON.parse(res);
 
-            console.log(res);
-
             // Remove loader.
             $dropdown.removeClass('dropdown-is-loading');
 
             // Remove class from all the events.
             $eventElement.removeClass('performing-event');
+
+            var statusTipActive = ironikus.i18n && ironikus.i18n.status_active ? ironikus.i18n.status_active : 'active';
+            var statusTipInactive = ironikus.i18n && ironikus.i18n.status_inactive ? ironikus.i18n.status_inactive : 'inactive';
 
             // Check if response is successful
             if (res['success'] != 'false' && res['success'] != false) {
@@ -2053,7 +2044,7 @@ exports.default = function () {
 
                   // Update Status Cell Tooltip's content
                   if ($statusCellTip.length) {
-                    $statusCellTip[0]._tippy.setContent('inactive');
+                    $statusCellTip[0]._tippy.setContent(statusTipActive);
                   }
                 } else {
                   $eventElement.addClass('is-inactive').removeClass('is-active');
@@ -2065,7 +2056,7 @@ exports.default = function () {
 
                   // Update Status Cell Tooltip's content
                   if ($statusCellTip.length) {
-                    $statusCellTip[0]._tippy.setContent('active');
+                    $statusCellTip[0]._tippy.setContent(statusTipInactive);
                   }
                 }
 

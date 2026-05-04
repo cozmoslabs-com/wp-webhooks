@@ -112,10 +112,14 @@ if( is_array( $menu_endpoints ) ){
                 <path stroke="#264653" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l7 7 7-7"></path>
             </svg>';
 
+			$tab_url = esc_url( add_query_arg( array( 'page' => $this->page_name, 'wpwhprovrs' => $hook_name ) ) );
+			$hook_esc = esc_attr( $hook_name );
+			$title_safe = wp_kses_post( $title );
+
 			if( $active_val == $hook_name ){
-				$heading .= '<li class="active' . ( $has_dropdown ? ' has-dropdown' : '' ) . '"><a class="ironikus-setting-single-tab active ' . $hook_name . '">' . $title . ( $has_dropdown ? ' ' . $dd_svg : '' ) . '</a>';
+				$heading .= '<li class="active' . ( $has_dropdown ? ' has-dropdown' : '' ) . '"><a class="ironikus-setting-single-tab active ' . $hook_esc . '">' . $title_safe . ( $has_dropdown ? ' ' . $dd_svg : '' ) . '</a>';
 			} else {
-				$heading .= '<li' . ( $has_dropdown ? ' class="has-dropdown"' : '' ) . '><a class="ironikus-setting-single-tab ' . $hook_name . '" href="?page=' . $this->page_name . '&wpwhprovrs=' . $hook_name . '">' . $title . ( $has_dropdown ? ' ' . $dd_svg : '' ) . '</a>';
+				$heading .= '<li' . ( $has_dropdown ? ' class="has-dropdown"' : '' ) . '><a class="ironikus-setting-single-tab ' . $hook_esc . '" href="' . $tab_url . '">' . $title_safe . ( $has_dropdown ? ' ' . $dd_svg : '' ) . '</a>';
             }
 
             if( $has_dropdown ){
@@ -124,10 +128,14 @@ if( is_array( $menu_endpoints ) ){
 
                 foreach( $data['items'] as $sub_menu_name => $sub_menu_title ){
 
+					$sub_tab_url = esc_url( add_query_arg( array( 'page' => $this->page_name, 'wpwhprovrs' => $sub_menu_name ) ) );
+					$sub_hook_esc = esc_attr( $sub_menu_name );
+					$sub_title_safe = wp_kses_post( $sub_menu_title );
+
                     if( $active_val == $sub_menu_name ){
-                        $heading .= '<li class="active"><a class="ironikus-setting-single-tab active ' . $sub_menu_name . '">' . $sub_menu_title . '</a></li>';
+                        $heading .= '<li class="active"><a class="ironikus-setting-single-tab active ' . $sub_hook_esc . '">' . $sub_title_safe . '</a></li>';
                     } else {
-                        $heading .= '<li><a class="ironikus-setting-single-tab ' . $sub_menu_name . '" href="?page=' . $this->page_name . '&wpwhprovrs=' . $sub_menu_name . '">' . $sub_menu_title . '</a></li>';
+                        $heading .= '<li><a class="ironikus-setting-single-tab ' . $sub_hook_esc . '" href="' . $sub_tab_url . '">' . $sub_title_safe . '</a></li>';
                     }
 
                 }
@@ -141,7 +149,8 @@ if( is_array( $menu_endpoints ) ){
 
 	}
 } else {
-	$heading = '<li class="active"><a class="ironikus-setting-single-tab" href="?page=' . $this->page_name . '">' . WPWHPRO()->helpers->translate( $subs_origin['home'], 'admin-backend' ) . '</a></li>';
+	$home_label = isset( $subs_origin['home'] ) ? $subs_origin['home'] : 'Home';
+	$heading = '<li class="active"><a class="ironikus-setting-single-tab" href="' . esc_url( add_query_arg( array( 'page' => $this->page_name ) ) ) . '">' . esc_html( WPWHPRO()->helpers->translate( $home_label, 'admin-backend' ) ) . '</a></li>';
 }
 
 ?>
@@ -150,9 +159,9 @@ if( is_array( $menu_endpoints ) ){
     <div class="wpwh-header">
         <div class="wpwh-container">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <span class="wpwh-header__logo-text"><?php echo $this->page_title; ?></span>
+                <span class="wpwh-header__logo-text"><?php echo esc_html( $this->page_title ); ?></span>
 
-                <a href="https://wordpress.org/support/plugin/wp-webhooks/" target="_blank" class="wpwh-btn wpwh-btn--secondary" rel="noopener noreferrer" style="font-size:1rem;">Get Support</a>
+                <a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/wp-webhooks/' ); ?>" target="_blank" class="wpwh-btn wpwh-btn--secondary" rel="noopener noreferrer" style="font-size:1rem;">Get Support</a>
             </div>
         </div>
     </div>
@@ -163,7 +172,7 @@ if( is_array( $menu_endpoints ) ){
     <div class="wpwh-menu">
         <div class="wpwh-container">
             <ul class="wpwh-menu__nav">
-                <?php echo $heading; ?>
+                <?php echo wp_kses_post( $heading ); ?>
             </ul>
         </div>
     </div>

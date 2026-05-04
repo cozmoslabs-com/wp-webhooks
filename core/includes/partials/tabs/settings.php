@@ -53,19 +53,19 @@ if( did_action( 'wpwh/admin/settings/settings_saved' ) ){
 			?>
 			<div class="wpwh-setting">
 				<div class="wpwh-setting__title">
-				<label for="<?php echo $setting['id']; ?>"><?php echo $setting['label']; ?><?php echo ($is_premium) ? '<span class="integration-pro">Pro</span>' : ''; ?></label>
+				<label for="<?php echo esc_attr( $setting['id'] ); ?>"><?php echo esc_html( $setting['label'] ); ?><?php echo ($is_premium) ? '<span class="integration-pro">Pro</span>' : ''; ?></label>
 				</div>
 				<div class="wpwh-setting__desc">
-				<?php echo wpautop( $setting['description'] ); ?>
+				<?php echo wp_kses_post( wpautop( $setting['description'] ) ); ?>
 				</div>
 				<div class="wpwh-setting__action">
 				<?php if( $is_checkbox ) : ?>
 					<div class="wpwh-toggle wpwh-toggle--on-off">
-					<input type="<?php echo $setting['type']; ?>" id="<?php echo $setting['id']; ?>" name="<?php echo $setting_name; ?>" class="wpwh-toggle__input" <?php echo $is_checked; ?>>
-					<label class="wpwh-toggle__btn" for="<?php echo $setting['id']; ?>"></label>
+					<input type="<?php echo esc_attr( $setting['type'] ); ?>" id="<?php echo esc_attr( $setting['id'] ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" class="wpwh-toggle__input" <?php echo $is_checked; ?>>
+					<label class="wpwh-toggle__btn" for="<?php echo esc_attr( $setting['id'] ); ?>"></label>
 					</div>
 				<?php else : ?>
-					<input id="<?php echo $setting['id']; ?>" name="<?php echo $setting_name; ?>" type="<?php echo $setting['type']; ?>" class="regular-text" value="<?php echo $value; ?>" <?php echo $is_checked; ?> />
+					<input id="<?php echo esc_attr( $setting['id'] ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" class="regular-text" value="<?php echo esc_attr( $value ); ?>" <?php echo $is_checked; ?> />
 				<?php endif; ?>
 				</div>
 			</div>
@@ -96,19 +96,19 @@ if( did_action( 'wpwh/admin/settings/settings_saved' ) ){
 			?>
 			<div class="wpwh-setting">
 				<div class="wpwh-setting__title">
-				<label for="<?php echo $setting['id']; ?>"><?php echo $setting['label']; ?></label>
+				<label for="<?php echo esc_attr( $setting['id'] ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 				</div>
 				<div class="wpwh-setting__desc">
-				<?php echo wpautop( $setting['description'] ); ?>
+				<?php echo wp_kses_post( wpautop( $setting['description'] ) ); ?>
 				</div>
 				<div class="wpwh-setting__action">
 				<?php if( $is_checkbox ) : ?>
 					<div class="wpwh-toggle wpwh-toggle--on-off">
-					<input type="<?php echo $setting['type']; ?>" id="<?php echo $setting['id']; ?>" name="<?php echo $setting_name; ?>" class="wpwh-toggle__input" <?php echo $is_checked; ?>>
-					<label class="wpwh-toggle__btn" for="<?php echo $setting['id']; ?>"></label>
+					<input type="<?php echo esc_attr( $setting['type'] ); ?>" id="<?php echo esc_attr( $setting['id'] ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" class="wpwh-toggle__input" <?php echo $is_checked; ?>>
+					<label class="wpwh-toggle__btn" for="<?php echo esc_attr( $setting['id'] ); ?>"></label>
 					</div>
 				<?php else : ?>
-					<input id="<?php echo $setting['id']; ?>" name="<?php echo $setting_name; ?>" type="<?php echo $setting['type']; ?>" class="regular-text" value="<?php echo $value; ?>" <?php echo $is_checked; ?> />
+					<input id="<?php echo esc_attr( $setting['id'] ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" class="regular-text" value="<?php echo esc_attr( $value ); ?>" <?php echo $is_checked; ?> />
 				<?php endif; ?>
 				</div>
 			</div>
