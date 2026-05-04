@@ -263,6 +263,35 @@ class WP_Webhooks_Pro_Webhook {
 	}
 
 	/**
+	 * Sanitize a trigger webhook destination URL for storage and outbound HTTP.
+	 *
+	 * Rejects values that are not valid http(s) URLs. The reserved internal token
+	 * {@see 'wpwhflow'} is accepted as-is.
+	 *
+	 * @param string $url Raw URL.
+	 * @return string Sanitized URL, the literal "wpwhflow", or an empty string if invalid.
+	 */
+	public function sanitize_trigger_webhook_url( $url ) {
+		$url = is_string( $url ) ? trim( $url ) : '';
+
+		if ( '' === $url ) {
+			return '';
+		}
+
+		if ( 'wpwhflow' === $url ) {
+			return 'wpwhflow';
+		}
+
+		$clean = esc_url_raw( $url );
+
+		if ( '' === $clean || ! wp_http_validate_url( $clean ) ) {
+			return '';
+		}
+
+		return $clean;
+	}
+
+	/**
 	 * Register a new webhook URL
 	 *
 	 * @param $webhook - The webhook name
@@ -299,7 +328,15 @@ class WP_Webhooks_Pro_Webhook {
 
 				break;
 			case 'trigger':
-				$data['webhook_url'] = $args['webhook_url'];
+				if ( ! isset( $args['webhook_url'] ) ) {
+					return false;
+				}
+
+				$data['webhook_url'] = $this->sanitize_trigger_webhook_url( $args['webhook_url'] );
+
+				if ( '' === $data['webhook_url'] ) {
+					return false;
+				}
 
 				if( isset( $args['settings'] ) && is_array( $args['settings'] ) ){
 					$data['settings'] = $args['settings'];
@@ -354,6 +391,16 @@ class WP_Webhooks_Pro_Webhook {
 		$check = false;
 		if( ! empty( $data ) ){
 			$data = array_merge( $data, $args );
+
+			if ( 'trigger' === $type && isset( $args['webhook_url'] ) ) {
+				$sanitized_url = $this->sanitize_trigger_webhook_url( $args['webhook_url'] );
+
+				if ( '' === $sanitized_url ) {
+					return false;
+				}
+
+				$data['webhook_url'] = $sanitized_url;
+			}
 
 			//Revalidate the settings data with the $data array
 			if( isset( $args['settings'] ) ){

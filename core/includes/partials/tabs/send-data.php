@@ -24,7 +24,14 @@ if( isset( $_POST['wpwh-add-webhook-url'] ) ){
 		$webhook_url 			= sanitize_text_field( $webhook_url );
 		$webhook_url 			= str_replace( $percentage_escape, '%', $webhook_url );
 
-		if( $webhook_url !== 'wpwhflow' ){
+		if( $webhook_url === 'wpwhflow' ){
+			echo WPWHPRO()->helpers->create_admin_notice( 'This webhook URL is reserved for internal use only.', 'warning', true );
+		} else {
+			$webhook_url = WPWHPRO()->webhook->sanitize_trigger_webhook_url( $webhook_url );
+
+			if( '' === $webhook_url ){
+				echo WPWHPRO()->helpers->create_admin_notice( 'Please enter a valid http(s) webhook URL.', 'warning', true );
+			} else {
 			$webhook_slug            = isset( $_POST['wpwh-add-webhook-name'] ) ? sanitize_title( $_POST['wpwh-add-webhook-name'] ) : '';
 			$webhook_group          = isset( $_POST['wpwh-add-webhook-group'] ) ? sanitize_text_field( $_POST['wpwh-add-webhook-group'] ) : '';
 			$webhooks               = WPWHPRO()->webhook->get_hooks( 'trigger', $webhook_group );
@@ -48,8 +55,7 @@ if( isset( $_POST['wpwh-add-webhook-url'] ) ){
 				$triggers = WPWHPRO()->webhook->get_triggers();
 				$triggers_data = WPWHPRO()->webhook->get_hooks( 'trigger' );
 			}
-		} else {
-			echo WPWHPRO()->helpers->create_admin_notice( 'This webhook URL is reserved for internal use only.', 'warning', true );
+			}
 		}
 
         
@@ -310,7 +316,7 @@ $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['w
 													<div class="wpwh-copy-wrapper" data-wpwh-tippy-content="<?php echo WPWHPRO()->helpers->translate( 'copied!', 'wpwhpro-page-triggers' ); ?>"><input class="wpwh-form-input w-100" type='text' name='ironikus_wp_webhooks_pro_webhook_name' value="<?php echo $webhook; ?>" readonly /></div>
 												</td>
 												<td class="wpwh-w-50">
-													<div class="wpwh-copy-wrapper" data-wpwh-tippy-content="<?php echo WPWHPRO()->helpers->translate( 'copied!', 'wpwhpro-page-triggers' ); ?>"><input class="wpwh-form-input w-100" type='text' name='ironikus_wp_webhooks_pro_webhook_url' value="<?php echo $webhook_data['webhook_url']; ?>" readonly /></div>
+													<div class="wpwh-copy-wrapper" data-wpwh-tippy-content="<?php echo WPWHPRO()->helpers->translate( 'copied!', 'wpwhpro-page-triggers' ); ?>"><input class="wpwh-form-input w-100" type='text' name='ironikus_wp_webhooks_pro_webhook_url' value="<?php echo esc_attr( $webhook_data['webhook_url'] ); ?>" readonly /></div>
 												</td>
 												<td class="p-0 align-middle text-center wpwh-table__action">
 													<div class="dropdown">
@@ -578,7 +584,7 @@ $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['w
 						<div class="modal-body">
 							<div class="d-flex align-items-center mb-3">
 								<strong class="mr-4 flex-shrink-0">Webhook url:</strong>
-								<input type="text" class="wpwh-form-input wpwh-form-input--sm rounded-lg" value="<?php echo $webhook_data['webhook_url']; ?>" readonly>
+								<input type="text" class="wpwh-form-input wpwh-form-input--sm rounded-lg" value="<?php echo esc_attr( $webhook_data['webhook_url'] ); ?>" readonly>
 							</div>
 							<div class="d-flex align-items-center mb-3">
 								<strong class="mr-4 flex-shrink-0">Webhook trigger name:</strong>
