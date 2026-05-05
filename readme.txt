@@ -6,7 +6,7 @@ Donate link: https://wp-webhooks.com/pricing/
 Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
 Tested up to: 7.0
-Stable Tag: 3.4.1
+Stable Tag: 3.4.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -305,6 +305,11 @@ If you are looking for a full list of differences between our free and pro versi
 5. Add authentication to every trigger and action for workflow automations
 
 == Changelog ==
+= 3.4.2: May 05, 2026 =
+**Fix:**
+
+* A security issue. Thanks to Artyom and the Cleantalk team
+
 = 3.4.1: Apr 28, 2026 =
 **Enhancements:**
 
