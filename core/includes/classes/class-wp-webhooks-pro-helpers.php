@@ -149,6 +149,9 @@ class WP_Webhooks_Pro_Helpers {
 			$bs_isit = 'alert-dismissible fade show';
 		}
 
+        $dismiss_output = '';
+        $bs_dismiss_output = '';
+
         // If not empty, we will receive the notification ID here so we can dismiss
         if( !empty( $is_dismissable_forever ) ){
 
@@ -166,6 +169,8 @@ class WP_Webhooks_Pro_Helpers {
             ) );
 
             $dismiss_output = '<a href="' . esc_url( $dismiss_url ) . '" class="notice-dismiss" data-dismiss="notification" data-notification-id="' . esc_attr($is_dismissable_forever) . '"></a>';
+            $bs_dismiss_output = '<a href="' . esc_url( $dismiss_url ) . '" class="close" aria-label="Close" data-dismiss="notification" data-notification-id="' . esc_attr($is_dismissable_forever) . '"><span aria-hidden="true">&times;</span></a>';
+            $bs_isit = trim( $bs_isit . ' alert-dismissible' );
         }
 
 
@@ -205,7 +210,9 @@ class WP_Webhooks_Pro_Helpers {
 			?>
 			<div class="alert <?php echo $bs_notice; ?> <?php echo $bs_isit; ?>" role="alert">
 				<p class="m-0"><?php echo $validated_content; ?></p>
-				<?php if( ! empty( $bs_isit ) ) : ?>
+				<?php if( ! empty( $bs_dismiss_output ) ) : ?>
+					<?php echo $bs_dismiss_output; ?>
+				<?php elseif( ! empty( $bs_isit ) ) : ?>
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -965,12 +972,16 @@ class WP_Webhooks_Pro_Helpers {
         }
 
         // AI integrations notice
-        $message = '<p><strong>New AI Integrations Available for WP Webhooks!</strong></p>';
-        $message .= '<p>Take your automations to the next level with our latest AI integrations:</p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/gemini/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">Google Gemini</a> (with Nano Bannana support)</p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/openai/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">OpenAI ChatGPT 5.2</a></p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/openrouter/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">Open Router</a></p>';
-        $message .= '<p>Unlock these integrations and more by upgrading to WP Webhooks Pro. <a class="button-primary" style="margin-top:6px;" href="https://wp-webhooks.com/pricing/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">Upgrade now</a></p>';
+        $message = '<p><strong>' . esc_html__( 'New AI Integrations Available for WP Webhooks!', 'wp-webhooks' ) . '</strong></p>';
+        $message .= '<p>' . esc_html__( 'Take your automations to the next level with our latest AI integrations:', 'wp-webhooks' ) . '</p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/gemini/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'Google Gemini', 'wp-webhooks' ) . '</a> ' . esc_html__( '(with Nano Banana support)', 'wp-webhooks' ) . '</p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/openai/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'OpenAI ChatGPT 5.5', 'wp-webhooks' ) . '</a></p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/claude/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'Claude Opus 4.7', 'wp-webhooks' ) . '</a></p>';
+        $message .= '<p><a href="https://wp-webhooks.com/integrations/openrouter/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'OpenRouter', 'wp-webhooks' ) . '</a></p>';
+        $message .= '<p style="display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 20px;">
+                        <span>' . esc_html__( 'Unlock these integrations and more by upgrading to WP Webhooks Pro.', 'wp-webhooks' ) . '</span>
+                        <a class="button-primary" href="https://wp-webhooks.com/pricing/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">'. esc_html__( 'Upgrade now', 'wp-webhooks' ) .'</a>
+                    </p>';
 
         echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_ai_integrations_notification' ) . '</div>';
 
