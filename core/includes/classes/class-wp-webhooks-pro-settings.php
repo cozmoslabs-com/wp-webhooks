@@ -535,7 +535,37 @@ class WP_Webhooks_Pro_Settings{
 				'default_value' => '',
 				'description' => WPWHPRO()->helpers->translate('Set a custom authentication template in case the other endpoint requires authentication.', 'wpwhpro-fields-trigger-required-settings')
 			),
-			'wpwhpro_trigger_allow_unsafe_urls' => array(
+			'wpwhpro_trigger_payload_policy_mode' => array(
+				'id'          => 'wpwhpro_trigger_payload_policy_mode',
+				'type'        => 'select',
+				'choices'     => array(
+					'send_all'        => array( 'label' => WPWHPRO()->helpers->translate('Send all fields', 'wpwhpro-fields-trigger-required-settings') ),
+					'remove_selected' => array( 'label' => WPWHPRO()->helpers->translate('Remove selected fields', 'wpwhpro-fields-trigger-required-settings') ),
+				),
+				'label'       => WPWHPRO()->helpers->translate('Payload field policy', 'wpwhpro-fields-trigger-required-settings'),
+				'placeholder' => '',
+				'default_value' => 'send_all',
+				'description' => WPWHPRO()->helpers->translate('Control which user fields are sent to the URL. "Send all fields" sends the full payload. "Remove selected fields" strips the fields and patterns selected below from the payload before it is sent.', 'wpwhpro-fields-trigger-settings')
+			),
+			'wpwhpro_trigger_payload_policy_fields' => array(
+				'id'          => 'wpwhpro_trigger_payload_policy_fields',
+				'type'        => 'select',
+				'multiple'    => true,
+				'choices'     => array(),
+				'label'       => WPWHPRO()->helpers->translate('User data to remove', 'wpwhpro-fields-trigger-required-settings'),
+				'placeholder' => '',
+				'default_value' => '',
+				'description' => WPWHPRO()->helpers->translate('Select the user fields to remove from the payload. The list is read live from your site (user table columns and user meta keys), so third-party keys appear here too. A field is removed wherever it occurs in the payload. This has no effect while "Send all fields" is selected.<br><br>Fields marked with ⚠ are potentially sensitive (for example password hashes, two-factor secrets, or session tokens).', 'wpwhpro-fields-trigger-settings')
+			),
+			'wpwhpro_trigger_payload_policy_patterns' => array(
+				'id'          => 'wpwhpro_trigger_payload_policy_patterns',
+				'type'        => 'textarea',
+				'label'       => WPWHPRO()->helpers->translate('Custom keys & patterns', 'wpwhpro-fields-trigger-required-settings'),
+				'placeholder' => '_two_factor_*',
+				'default_value' => '',
+				'description' => WPWHPRO()->helpers->translate('Comma or newline separated field keys to also remove that are not listed above, including dynamic ones. Use "*" as a wildcard. E.g.: user_pass_raw, _two_factor_*', 'wpwhpro-fields-trigger-settings')
+			),
+						'wpwhpro_trigger_allow_unsafe_urls' => array(
 				'id'          => 'wpwhpro_trigger_allow_unsafe_urls',
 				'type'        => 'checkbox',
 				'label'       => WPWHPRO()->helpers->translate('Allow unsafe URLs', 'wpwhpro-fields-trigger-required-settings'),

@@ -985,6 +985,20 @@ class WP_Webhooks_Pro_Helpers {
 
         echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_ai_integrations_notification' ) . '</div>';
 
+        // payload policy notice — make existing users aware of the new sensitive-field control
+        // - shown only to plugin managers who already have trigger webhooks (existing webhooks still send the full payload)
+        if( current_user_can( WPWHPRO()->settings->get_admin_cap( 'payload_policy_notice' ) ) && ! empty( WPWHPRO()->webhook->get_hooks( 'trigger' ) ) ){
+
+            $triggers_url = admin_url( 'admin.php?page=' . WPWHPRO()->settings->get_page_name() . '&wpwhprovrs=send-data' );
+
+            $message  = '<p><strong>' . esc_html__( 'WP Webhooks can now remove sensitive user data from your webhook payloads.', 'wp-webhooks' ) . '</strong></p>';
+            $message .= '<p>' . esc_html__( 'Trigger payloads can include password hashes, two-factor secrets, session tokens and application passwords. New webhooks now remove these by default, but your existing webhooks still send the full payload.', 'wp-webhooks' ) . '</p>';
+            $message .= '<p>' . esc_html__( 'Open a trigger webhook and use "User data to remove" to choose which fields never leave your site.', 'wp-webhooks' ) . '</p>';
+            $message .= '<p><a class="button-primary" href="' . esc_url( $triggers_url ) . '">' . esc_html__( 'Review my webhooks', 'wp-webhooks' ) . '</a></p>';
+
+            echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'warning', false, 'wpwh_payload_policy_notification' ) . '</div>';
+        }
+
     }
 
     public function bf_show_promotion(){
@@ -1012,5 +1026,89 @@ class WP_Webhooks_Pro_Helpers {
     
     }
 
+
+	/**
+	 * Render the inner markup for a <select>, supporting flat and grouped (optgroup) choices
+	 *
+	 * - a grouped choice is an array with an "options" key; anything else renders as a plain <option>
+	 * - handles the selected state for single and multi selects, plus an optional per-option title
+	 *
+	 * @param array $choices - the choices array (flat or grouped)
+	 * @param mixed $stored_value - the saved value (string, array for multi, or null)
+	 * @param string $default_value - the value to preselect when nothing is stored
+	 * @return string - the <optgroup>/<option> HTML
+	 */
+	public function render_select_options( $choices, $stored_value = null, $default_value = '' ){
+
+		if( ! is_array( $choices ) ){
+			return '';
+		}
+
+		// flip the stored values into keys, so checking whether an option is selected is an O(1) isset() lookup instead of an in_array() scan (multi selects only)
+		$multi_lookup = is_array( $stored_value ) ? array_flip( $stored_value ) : array();
+		$output = '';
+
+		foreach( $choices as $choice_key => $choice_val ){
+
+			// a choice with an "options" key is a group and renders as an <optgroup>; anything else is a single <option>
+			if( is_array( $choice_val ) && isset( $choice_val['options'] ) && is_array( $choice_val['options'] ) ){
+
+				$group_label = isset( $choice_val['group_label'] ) ? $choice_val['group_label'] : $choice_key;
+				$output .= '<optgroup label="' . esc_attr( $this->translate( $group_label, 'wpwhpro-page-triggers' ) ) . '">';
+
+				foreach( $choice_val['options'] as $opt_name => $opt_data ){
+					$output .= $this->render_select_option( $opt_name, $opt_data, $stored_value, $multi_lookup, $default_value );
+				}
+
+				$output .= '</optgroup>';
+
+			} else {
+				$output .= $this->render_select_option( $choice_key, $choice_val, $stored_value, $multi_lookup, $default_value );
+			}
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Render a single <option> for a select
+	 *
+	 * - accepts a plain string label or an array with "label"/"title"
+	 *
+	 * @param string $choice_name - the option value
+	 * @param mixed $choice_data - a label string or array( 'label', 'title' )
+	 * @param mixed $stored_value - the saved value
+	 * @param array $multi_lookup - a flipped lookup of stored values for multi selects
+	 * @param string $default_value - the value to preselect when nothing is stored
+	 * @return string - the <option> HTML
+	 */
+	private function render_select_option( $choice_name, $choice_data, $stored_value, $multi_lookup, $default_value ){
+
+		// a choice value is either a plain label string or an array( 'label', 'title' )
+		$label = is_array( $choice_data ) ? ( isset( $choice_data['label'] ) ? $choice_data['label'] : $choice_name ) : $choice_data;
+		$title = is_array( $choice_data ) ? ( isset( $choice_data['title'] ) ? $choice_data['title'] : $label ) : $choice_data;
+
+		// decide the selected state from the saved value, falling back to the field default when nothing is saved yet
+		if( null !== $stored_value ){
+			if( is_array( $stored_value ) ){
+
+				// multi select: selected when this option's value is one of the stored values
+				$selected = isset( $multi_lookup[ $choice_name ] ) ? 'selected="selected"' : '';
+
+			} else {
+
+				// single select: selected when it equals the stored value (cast so 5 and "5" match)
+				$selected = ( (string) $stored_value === (string) $choice_name ) ? 'selected="selected"' : '';
+
+			}
+		} else {
+
+			// no saved value yet: preselect the field's default
+			$selected = ( $choice_name === $default_value ) ? 'selected="selected"' : '';
+
+		}
+
+		return '<option value="' . esc_attr( $choice_name ) . '" title="' . esc_attr( $this->translate( $title, 'wpwhpro-page-triggers' ) ) . '" ' . $selected . '>' . esc_html( $this->translate( $label, 'wpwhpro-page-triggers' ) ) . '</option>';
+	}
 
 }
