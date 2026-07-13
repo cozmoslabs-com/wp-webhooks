@@ -39,7 +39,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_edd_Triggers_edd_subscription_pay
 			array(
 				'type' => 'action',
 				'hook' => 'edd_recurring_add_subscription_payment',
-				'callback' => array( $this, 'wpwh_trigger_edd_subscription_payment_init' ),
+				'callback' => array( $this, 'wpwh_trigger_edd_subscription_payment' ),
 				'priority' => 10,
 				'arguments' => 2,
 				'delayed' => true,
