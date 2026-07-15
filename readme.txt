@@ -6,7 +6,7 @@ Donate link: https://wp-webhooks.com/pricing/
 Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
 Tested up to: 7.0
-Stable Tag: 3.4.2
+Stable Tag: 3.4.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -305,6 +305,16 @@ If you are looking for a full list of differences between our free and pro versi
 5. Add authentication to every trigger and action for workflow automations
 
 == Changelog ==
+= 3.4.3: July 15, 2026 =
+**Enhancements:**
+
+* Trigger payload policy: choose which user fields are stripped from outgoing trigger data before it leaves your site. Configure per webhook on Send Data. New webhooks remove sensitive fields by default; existing webhooks are unchanged until you review them.
+
+**Fix:**
+
+* Callback name for the EDD Subscription payment trigger
+* Undismissable admin notice
+
 = 3.4.2: May 05, 2026 =
 **Fix:**
 
