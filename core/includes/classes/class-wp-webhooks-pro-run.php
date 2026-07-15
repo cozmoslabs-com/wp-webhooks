@@ -267,7 +267,9 @@ class WP_Webhooks_Pro_Run{
 		} elseif ( 'wpwhflow' === $sanitized_webhook_url ) {
 			$response['msg'] = WPWHPRO()->helpers->translate( 'This webhook URL is reserved for internal use only.', 'wpwhpro-page-actions' );
 		} elseif ( ! isset( $webhooks[ $new_webhook ] ) ) {
-			$created = WPWHPRO()->webhook->create( $new_webhook, 'trigger', array( 'group' => $webhook_group, 'webhook_url' => $sanitized_webhook_url ) );
+
+			// seed a safe default policy so a new webhook never leaks credentials before it is configured (existing webhooks are never touched)
+			$created = WPWHPRO()->webhook->create( $new_webhook, 'trigger', array( 'group' => $webhook_group, 'webhook_url' => $sanitized_webhook_url, 'settings' => WPWHPRO()->payload_policy->get_seed_settings() ) );
 
 			if ( $created ) {
 				$response['success']          = true;

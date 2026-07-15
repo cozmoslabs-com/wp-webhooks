@@ -43,7 +43,9 @@ if( isset( $_POST['wpwh-add-webhook-url'] ) ){
 			}
 	
 			if( ! isset( $webhooks[ $new_webhook ] ) ){
-				$check = WPWHPRO()->webhook->create( $new_webhook, 'trigger', array( 'group' => $webhook_group, 'webhook_url' => $webhook_url ) );
+
+				// seed a safe default policy so a new webhook never leaks credentials before it is configured (existing webhooks are never touched)
+				$check = WPWHPRO()->webhook->create( $new_webhook, 'trigger', array( 'group' => $webhook_group, 'webhook_url' => $webhook_url, 'settings' => WPWHPRO()->payload_policy->get_seed_settings() ) );
 	
 				if( $check ){
 					echo WPWHPRO()->helpers->create_admin_notice( 'The webhook URL has been added.', 'success', true );
@@ -239,6 +241,10 @@ $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['w
 								}
 							}
 
+						}
+
+						if( isset( $required_settings['wpwhpro_trigger_payload_policy_fields'] ) ){
+							$required_settings['wpwhpro_trigger_payload_policy_fields']['choices'] = WPWHPRO()->payload_policy->get_field_choices( $trigger['trigger'] );
 						}
 
 						$settings = array_merge( $settings, $required_settings );
@@ -511,6 +517,10 @@ $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['w
 
 		}
 
+		if( isset( $required_settings['wpwhpro_trigger_payload_policy_fields'] ) ){
+			$required_settings['wpwhpro_trigger_payload_policy_fields']['choices'] = WPWHPRO()->payload_policy->get_field_choices( $trigger['trigger'] );
+		}
+
 		$settings = array_merge( $settings, $required_settings );
 
 		?>
@@ -638,50 +648,17 @@ $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['w
 															</label>
 															<?php if( in_array( $setting['type'], array( 'text' ) ) ) : ?>
 																<input class="wpwh-form-input" id="iroikus-input-id-<?php echo esc_attr( $field_id_suffix ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo $is_checked; ?> />
+															<?php elseif( in_array( $setting['type'], array( 'textarea' ) ) ) : ?>
+																<textarea class="wpwh-form-input" id="iroikus-input-id-<?php echo esc_attr( $field_id_suffix ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" placeholder="<?php echo esc_attr( $placeholder ); ?>"><?php echo esc_textarea( is_array( $value ) ? '' : $value ); ?></textarea>
 															<?php elseif( in_array( $setting['type'], array( 'checkbox' ) ) ) : ?>
 																<div class="wpwh-toggle wpwh-toggle--on-off">
 																	<input type="<?php echo esc_attr( $setting['type'] ); ?>" id="iroikus-input-id-<?php echo esc_attr( $field_id_suffix ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" class="wpwh-toggle__input" value="<?php echo esc_attr( $value ); ?>" <?php echo $is_checked; ?>>
 																	<label class="wpwh-toggle__btn" for="iroikus-input-id-<?php echo esc_attr( $field_id_suffix ); ?>"></label>
 																</div>
 															<?php elseif( $setting['type'] === 'select' && isset( $setting['choices'] ) ) : ?>
-																<?php
-																	$stored_select_value = isset( $settings_data[ $setting_name ] ) ? $settings_data[ $setting_name ] : null;
-																	$multi_select_lookup = ( is_array( $stored_select_value ) ) ? array_flip( $stored_select_value ) : array();
-																?>
+																<?php $stored_select_value = isset( $settings_data[ $setting_name ] ) ? $settings_data[ $setting_name ] : null; ?>
 																<select class="wpwh-form-input" name="<?php echo esc_attr( $setting_name . ( ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? '[]' : '' ) ); ?>" <?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? 'multiple' : ''; ?>>
-																	<?php foreach( $setting['choices'] as $choice_name => $choice_label ) : 
-																		
-																		//Compatibility with 4.3.0
-																		if( is_array( $choice_label ) ){
-																			if( isset( $choice_label['label'] ) ){
-																				$choice_label = $choice_label['label'];
-																			} else {
-																				$choice_label = $choice_name;
-																			}
-																		}
-
-																		$selected = '';
-																		if( null !== $stored_select_value ){
-
-																			if( is_array( $stored_select_value ) ){
-																				if( isset( $multi_select_lookup[ $choice_name ] ) ){
-																					$selected = 'selected="selected"';
-																				}
-																			} else {
-																				if( (string) $stored_select_value === (string) $choice_name ){
-																					$selected = 'selected="selected"';
-																				}
-																			}
-
-																		} else {
-																			//Make sure we also cover webhooks that settings haven't been saved yet
-																			if( $choice_name === $value ){
-																				$selected = 'selected="selected"';
-																			}
-																		}
-																	?>
-																	<option value="<?php echo esc_attr( $choice_name ); ?>" <?php echo $selected; ?>><?php echo esc_html( WPWHPRO()->helpers->translate( $choice_label, 'wpwhpro-page-triggers' ) ); ?></option>
-																	<?php endforeach; ?>
+																	<?php echo WPWHPRO()->helpers->render_select_options( $setting['choices'], $stored_select_value, $value ); ?>
 																</select>
 															<?php endif; ?>
 														</td>

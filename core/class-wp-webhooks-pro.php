@@ -59,6 +59,13 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 		public $webhook;
 
 		/**
+		 * WPWHPRO Payload Policy Object.
+		 *
+		 * @var object|WP_Webhooks_Pro_Payload_Policy
+		 */
+		public $payload_policy;
+
+		/**
 		 * WPWHPRO Integrations Object.
 		 *
 		 * @var object|WP_Webhooks_Pro_Integrations
@@ -151,6 +158,7 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 				self::$instance->auth			= new WP_Webhooks_Pro_Authentication();
 				self::$instance->api            = new WP_Webhooks_Pro_API();
 				self::$instance->webhook        = new WP_Webhooks_Pro_Webhook();
+				self::$instance->payload_policy = new WP_Webhooks_Pro_Payload_Policy();
 				self::$instance->integrations   = new WP_Webhooks_Pro_Integrations();
 				self::$instance->extensions		= new WP_Webhooks_Pro_Extensions();
 				self::$instance->polling      	= new WP_Webhooks_Pro_Polling();
@@ -194,6 +202,7 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-auth.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-api.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-webhook.php';
+			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-payload-policy.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-integrations.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-extensions.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-polling.php';
