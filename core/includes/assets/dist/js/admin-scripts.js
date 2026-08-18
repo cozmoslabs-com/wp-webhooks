@@ -1903,8 +1903,6 @@ exports.default = function () {
 
   // Traversing: Run through each item
   $(document).on('click', '[data-wpwh-event]', function (e) {
-    e.preventDefault();
-
     var $thisEl = $(this);
     var event = $thisEl.data('wpwh-event');
     var eventType = $thisEl.data('wpwh-event-type');
@@ -1912,13 +1910,108 @@ exports.default = function () {
     var $eventElement = $(eventElement);
     var $dropdown = $thisEl.closest('.dropdown');
 
+    if (event !== 'toggle-ability') {
+      e.preventDefault();
+    }
+
+    if ($thisEl.hasClass('is-loading')) {
+      return;
+    }
+
     // Add loader class to the dropdown.
     $dropdown.addClass('dropdown-is-loading');
 
     /**
+     * Event: Toggle Ability
+     */
+    if (event === 'toggle-ability') {
+      $thisEl.addClass('is-loading');
+
+      var actionSlug = $thisEl.data('wpwh-action-slug');
+      var enabled = $thisEl.prop('checked');
+      var readonly = $thisEl.data('wpwh-ability-readonly') === 'yes';
+      var confirmed = 'no';
+
+      if (enabled && !readonly) {
+        if (!confirm("This action is not read-only and may change site data. Are you sure you want to expose it as a WordPress Ability?")) {
+          $thisEl.prop('checked', false);
+          $thisEl.removeClass('is-loading');
+          $dropdown.removeClass('dropdown-is-loading');
+          return;
+        }
+
+        confirmed = 'yes';
+      }
+
+      var toggleAbility = function toggleAbility(confirmedValue) {
+        $.ajax({
+          url: ironikus.ajax_url,
+          type: 'post',
+          data: {
+            action: 'ironikus_toggle_ability',
+            action_slug: actionSlug,
+            enabled: enabled ? 'yes' : 'no',
+            confirmed: confirmedValue,
+            ironikus_nonce: ironikus.ajax_nonce
+          },
+          success: function success(res) {
+            try {
+              res = JSON.parse(res);
+            } catch (err) {
+              console.log(err);
+              $thisEl.prop('checked', !enabled);
+              return;
+            }
+
+            if (res.requires_confirmation) {
+              if (confirm(res.msg)) {
+                toggleAbility('yes');
+              } else {
+                $thisEl.prop('checked', false);
+              }
+
+              return;
+            }
+
+            if (res.success !== true && res.success !== 'true') {
+              $thisEl.prop('checked', !enabled);
+            } else {
+              $('[data-wpwh-action-slug="' + actionSlug + '"]').prop('checked', enabled);
+              $('[data-wpwh-ability-pill="' + actionSlug + '"]').toggle(enabled).toggleClass('is-active', enabled);
+
+              var $explorerLink = $('[data-wpwh-ability-explorer="' + actionSlug + '"]');
+              if ($explorerLink.length) {
+                if (enabled && res.explorer_url) {
+                  $explorerLink.attr('href', res.explorer_url).show();
+                } else {
+                  $explorerLink.hide();
+                }
+              }
+            }
+
+            $('[data-wpwh-ability-message="' + actionSlug + '"]').text(res.msg || '');
+            setTimeout(function () {
+              $('[data-wpwh-ability-message="' + actionSlug + '"]').text('');
+            }, 5000);
+          },
+          error: function error(err) {
+            console.log(err);
+            $thisEl.prop('checked', !enabled);
+          },
+          complete: function complete() {
+            $('[data-wpwh-action-slug="' + actionSlug + '"]').removeClass('is-loading');
+            $dropdown.removeClass('dropdown-is-loading');
+          }
+        });
+      };
+
+      toggleAbility(confirmed);
+    }
+
+    /**
      * Event: Delete
      */
-    if (event === 'delete') {
+    else if (event === 'delete') {
 
       if (confirm("Are you sure you want to delete this webhook?")) {
 

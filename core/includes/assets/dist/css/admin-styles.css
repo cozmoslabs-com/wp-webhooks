@@ -2849,4 +2849,6 @@ tr.performing-event td:after { width: 100%; height: 100%; background-color: rgba
 
 .wpwh-copy-wrapper input { cursor: pointer; }
 
+.wpwh-ability-pill { display: -webkit-inline-box; display: -webkit-inline-flex; display: -ms-inline-flexbox; display: inline-flex; -webkit-box-align: center; -webkit-align-items: center; -ms-flex-align: center; align-items: center; border: 1px solid #2A9D8F; border-radius: 5px; background-color: rgba(42, 157, 143, 0.2); color: #2A9D8F; font-weight: bold; line-height: 1; padding: 4px 8px; padding:  0.25rem 0.5rem; }
+
 /*# sourceMappingURL=admin-styles.css.map */

@@ -337,6 +337,13 @@ if ( empty( $active_trigger ) ) {
 						if( isset( $action_details['name'] ) && ! empty( $action_details['name'] ) ){
 							$trigger_integration_name = esc_html( $action_details['name'] );
 						}
+
+						$ability_ui = array();
+						$show_ability_controls = false;
+						if( function_exists( 'wp_register_ability' ) && isset( WPWHPRO()->abilities ) && WPWHPRO()->abilities->is_action_allowed_for_ability( $action ) ){
+							$ability_ui = WPWHPRO()->abilities->get_action_ability_ui_data( $action );
+							$show_ability_controls = true;
+						}
                     ?>
                         <div class="wpwh-trigger-item<?php echo $is_active ? ' wpwh-trigger-item--active' : ''; ?> wpwh-table-container" id="<?php echo esc_attr( 'webhook-action-' . $action['action'] ); ?>">
                             <div class="wpwh-table-header">
@@ -350,7 +357,28 @@ if ( empty( $active_trigger ) ) {
 											<?php echo wp_kses_post( isset( $action['name'] ) ? $action['name'] : $action['action'] ); ?>
 										</div>
 									</h2>
-									<div class="wpwh-trigger-webhook-name wpwh-text-small"><?php echo esc_html( $action['action'] ); ?></div>
+									<div class="d-flex flex-column align-items-end">
+										<div class="wpwh-trigger-webhook-name wpwh-text-small"><?php echo esc_html( $action['action'] ); ?></div>
+										<?php if( $show_ability_controls ) : ?>
+											<div class="d-flex align-items-center mt-2">
+												<span class="wpwh-ability-pill wpwh-text-small mr-3<?php echo ! empty( $ability_ui['is_exposed'] ) ? ' is-active' : ''; ?>" data-wpwh-ability-pill="<?php echo esc_attr( $action['action'] ); ?>" <?php echo empty( $ability_ui['is_exposed'] ) ? 'style="display:none;"' : ''; ?>><?php echo esc_html__( 'Ability', 'wp-webhooks' ); ?></span>
+												<span class="wpwh-text-small mr-2"><?php echo esc_html__( 'Expose as Ability', 'wp-webhooks' ); ?></span>
+												<div class="wpwh-toggle wpwh-toggle--on-off" data-tippy="" data-tippy-content="<?php echo esc_attr__( 'Expose this action as a WordPress Ability', 'wp-webhooks' ); ?>">
+													<input
+														type="checkbox"
+														id="wpwh-ability-toggle-header-<?php echo esc_attr( $action['action'] ); ?>"
+														class="wpwh-toggle__input"
+														data-wpwh-event="toggle-ability"
+														data-wpwh-event-type="receive"
+														data-wpwh-action-slug="<?php echo esc_attr( $action['action'] ); ?>"
+														data-wpwh-ability-readonly="<?php echo ! empty( $ability_ui['annotation']['readonly'] ) ? 'yes' : 'no'; ?>"
+														<?php echo ! empty( $ability_ui['is_exposed'] ) ? 'checked="checked"' : ''; ?>
+													>
+													<label class="wpwh-toggle__btn" for="wpwh-ability-toggle-header-<?php echo esc_attr( $action['action'] ); ?>"></label>
+												</div>
+											</div>
+										<?php endif; ?>
+									</div>
 								</div>
                                 <div class="wpwh-content mb-0">
                                     <?php echo wp_kses_post( $action['short_description'] ); ?>
@@ -597,6 +625,77 @@ if ( empty( $active_trigger ) ) {
                                                     <input type="submit" name="submit" id="submit-<?php echo esc_attr( $action['action'] ); ?>" class="wpwh-btn wpwh-btn--secondary" value="<?php echo esc_attr( WPWHPRO()->helpers->translate( 'Test action', 'admin-settings' ) ); ?>">
                                                 </div>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                                <?php if( $show_ability_controls ) : ?>
+                                <div class="wpwh-accordion__item">
+                                    <button class="wpwh-accordion__heading wpwh-btn wpwh-btn--link wpwh-btn--block text-left collapsed" type="button" data-toggle="collapse" data-target="#wpwh_accordion_expose_ability_<?php echo esc_attr( $action['action'] ); ?>" aria-expanded="true" aria-controls="wpwh_accordion_expose_ability_<?php echo esc_attr( $action['action'] ); ?>">
+                                        <span><?php echo esc_html__( 'Expose as Ability', 'wpwhpro-page-actions'); ?></span>
+                                        <span class="text-secondary">
+                                            <span class="wpwh-text-expand"><?php echo esc_html__( 'Expand', 'wpwhpro-page-actions'); ?></span>
+                                            <span class="wpwh-text-close"><?php echo esc_html__( 'Close', 'wpwhpro-page-actions'); ?></span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="9" fill="none" class="ml-1">
+                                                <defs />
+                                                <path stroke="#F1592A" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l7 7 7-7" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <div id="wpwh_accordion_expose_ability_<?php echo esc_attr( $action['action'] ); ?>" class="wpwh-accordion__content collapse" aria-labelledby="headingAbility">
+                                        <div class="wpwh-content">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="wpwh-toggle wpwh-toggle--on-off mr-3">
+                                                    <input
+                                                        type="checkbox"
+                                                        id="wpwh-ability-toggle-accordion-<?php echo esc_attr( $action['action'] ); ?>"
+                                                        class="wpwh-toggle__input"
+                                                        data-wpwh-event="toggle-ability"
+                                                        data-wpwh-event-type="receive"
+                                                        data-wpwh-action-slug="<?php echo esc_attr( $action['action'] ); ?>"
+                                                        data-wpwh-ability-readonly="<?php echo ! empty( $ability_ui['annotation']['readonly'] ) ? 'yes' : 'no'; ?>"
+                                                        <?php echo ! empty( $ability_ui['is_exposed'] ) ? 'checked="checked"' : ''; ?>
+                                                    >
+                                                    <label class="wpwh-toggle__btn" for="wpwh-ability-toggle-accordion-<?php echo esc_attr( $action['action'] ); ?>"></label>
+                                                </div>
+                                                <strong><?php echo esc_html__( 'Expose this action as a WordPress Ability', 'wp-webhooks' ); ?></strong>
+                                            </div>
+
+                                            <table class="wpwh-table wpwh-table--in-content wpwh-text-small mb-3">
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="wpwh-text-left wpwh-w-25"><?php echo esc_html__( 'Ability name', 'wp-webhooks' ); ?></th>
+                                                        <td><code><?php echo esc_html( $ability_ui['ability_name'] ); ?></code></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="wpwh-text-left wpwh-w-25"><?php echo esc_html__( 'Safety', 'wp-webhooks' ); ?></th>
+                                                        <td>
+                                                            <?php if( ! empty( $ability_ui['annotation']['readonly'] ) ) : ?>
+                                                                <?php echo esc_html__( 'Read-only action. This can be exposed in one click.', 'wp-webhooks' ); ?>
+                                                            <?php elseif( ! empty( $ability_ui['annotation']['destructive'] ) ) : ?>
+                                                                <?php echo esc_html__( 'Destructive action. Enabling this ability requires explicit confirmation.', 'wp-webhooks' ); ?>
+                                                            <?php else : ?>
+                                                                <?php echo esc_html__( 'Non-read-only action. Enabling this ability requires explicit confirmation.', 'wp-webhooks' ); ?>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="wpwh-text-left wpwh-w-25"><?php echo esc_html__( 'Permission', 'wp-webhooks' ); ?></th>
+                                                        <td><?php echo sprintf( wp_kses_post( __( 'Callers need the %s capability on their authenticated WordPress user.', 'wp-webhooks' ) ), '<code>' . esc_html( $ability_ui['permission'] ) . '</code>' ); ?></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <?php if( ! empty( $ability_ui['explorer_url'] ) ) : ?>
+                                                <a
+                                                    href="<?php echo esc_url( $ability_ui['explorer_url'] ); ?>"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    data-wpwh-ability-explorer="<?php echo esc_attr( $action['action'] ); ?>"
+                                                    <?php echo empty( $ability_ui['is_exposed'] ) ? 'style="display:none;"' : ''; ?>
+                                                ><?php echo esc_html__( 'View in Abilities Explorer', 'wp-webhooks' ); ?></a>
+                                            <?php endif; ?>
+                                            <span class="wpwh-ability-toggle-message wpwh-text-small ml-3" data-wpwh-ability-message="<?php echo esc_attr( $action['action'] ); ?>"></span>
                                         </div>
                                     </div>
                                 </div>

@@ -84,6 +84,7 @@ class WP_Webhooks_Pro_Run{
 
 		WPWHPRO()->auth->execute();
 		WPWHPRO()->extensions->execute();
+		WPWHPRO()->abilities->execute();
 
 	}
 
