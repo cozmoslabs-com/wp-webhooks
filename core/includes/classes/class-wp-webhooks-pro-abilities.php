@@ -13,6 +13,11 @@ class WP_Webhooks_Pro_Abilities {
 	const NAMESPACE_NAME         = 'wp-webhooks';
 	const CATEGORY_NAME          = 'wp-webhooks';
 	const SCHEMA_CACHE_VERSION   = '2';
+	const CONSUMER_ACTIONS       = array(
+		'run_ability',
+		'list_abilities',
+		'describe_ability',
+	);
 
 	/**
 	 * The main page name for nonce validation.
@@ -142,7 +147,7 @@ class WP_Webhooks_Pro_Abilities {
 		}
 
 		if( ! $this->is_action_allowed_for_ability( $action ) ){
-			$response['msg'] = __( 'This premium action requires an active license before it can be exposed as an ability.', 'wp-webhooks' );
+			$response['msg'] = $this->get_action_not_allowed_message( $action );
 			echo json_encode( $response );
 			die();
 		}
@@ -221,11 +226,47 @@ class WP_Webhooks_Pro_Abilities {
 	public function is_action_allowed_for_ability( $action ) {
 		$is_allowed = true;
 
+		if( $this->is_ability_consumer_action( $action ) ){
+			$is_allowed = false;
+		}
+
 		if( $this->is_action_premium( $action ) ){
 			$is_allowed = $this->is_license_active();
 		}
 
 		return apply_filters( 'wpwhpro/abilities/is_action_allowed_for_ability', $is_allowed, $action );
+	}
+
+	/**
+	 * Check whether an action consumes abilities and should not be exposed as an ability itself.
+	 *
+	 * @param array $action
+	 *
+	 * @return bool
+	 */
+	private function is_ability_consumer_action( $action ) {
+		$action_slug = isset( $action['action'] ) ? $action['action'] : '';
+
+		return in_array( $action_slug, self::CONSUMER_ACTIONS, true );
+	}
+
+	/**
+	 * Return the reason why an action cannot be exposed as an ability.
+	 *
+	 * @param array $action
+	 *
+	 * @return string
+	 */
+	private function get_action_not_allowed_message( $action ) {
+		if( $this->is_ability_consumer_action( $action ) ){
+			return __( 'This action consumes abilities and cannot be exposed as an ability.', 'wp-webhooks' );
+		}
+
+		if( $this->is_action_premium( $action ) && ! $this->is_license_active() ){
+			return __( 'This premium action requires an active license before it can be exposed as an ability.', 'wp-webhooks' );
+		}
+
+		return __( 'This action cannot be exposed as an ability.', 'wp-webhooks' );
 	}
 
 	/**
@@ -291,6 +332,11 @@ class WP_Webhooks_Pro_Abilities {
 					'action'       => $action['action'],
 					'readonly'     => $annotation['readonly'],
 					'destructive'  => $annotation['destructive'],
+					'annotations'  => array(
+						'readonly'    => $annotation['readonly'],
+						'destructive' => $annotation['destructive'],
+						'idempotent'  => $annotation['readonly'],
+					),
 				),
 			),
 		);
@@ -366,7 +412,7 @@ class WP_Webhooks_Pro_Abilities {
 			'data'    => array(),
 		);
 
-		$return_args = WPWHPRO()->integrations->execute_actions( $return_data, $action_slug, $response_body );
+		$return_args = WPWHPRO()->integrations->execute_actions( $return_data, $action_slug, '', '', $response_body );
 
 		return $this->normalize_action_return( $return_args );
 	}

@@ -1775,10 +1775,10 @@ var Triggers = function Triggers() {
     // Select the trigger if URL has a #hash that matches the trigger ID
     if (window.location.hash) {
       $('[data-wpwh-trigger-id][href="' + window.location.hash + '"]').trigger('click');
-    } else if (!$triggerIds.find('.wpwh-trigger-search__item--active')) {
+    } else if (!$triggerIds.filter('.wpwh-trigger-search__item--active').length) {
       $triggerIds.first().trigger('click');
     } else {
-      $triggerIds.find('.wpwh-trigger-search__item--active').first().trigger('click');
+      $triggerIds.filter('.wpwh-trigger-search__item--active').first().trigger('click');
     }
   });
 };

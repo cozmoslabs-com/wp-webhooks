@@ -778,7 +778,7 @@ class WP_Webhooks_Pro_Webhook {
 
 						if( empty( $is_valid_auth['success'] ) ){
 							status_header( 401 );
-							$return['msg'] = $is_valid_auth['msg'];
+							$return['msg'] = isset( $is_valid_auth['msg'] ) ? $is_valid_auth['msg'] : WPWHPRO()->helpers->translate( 'The configured authentication template could not validate this request.', 'webhooks-auth-response-error' );
 
 							$webhook_response = WPWHPRO()->webhook->echo_response_data( $return );
 							die();
@@ -801,7 +801,7 @@ class WP_Webhooks_Pro_Webhook {
 			do_action( 'wpwhpro/webhooks/add_webhooks_actions', $action, $response_ident_value, $response_api_key );
 
 			//since 3.2.0
-			$return_data = WPWHPRO()->integrations->execute_actions( $default_return_data, $action, $response_ident_value, $response_api_key );
+			$return_data = WPWHPRO()->integrations->execute_actions( $default_return_data, $action, $response_ident_value, $response_api_key, $response_body );
 		} else {
 			$default_return_data['msg'] = WPWHPRO()->helpers->translate("The webhook action was prevented from execution due to the wpwhpro/webhooks/validate_webhook_action filter returning false.", 'action-add-webhook-actions' );
 			$return_data = $default_return_data;

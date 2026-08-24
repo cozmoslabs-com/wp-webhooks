@@ -311,7 +311,7 @@ if ( empty( $active_trigger ) ) {
                                 $action_name .= '<span class="integration-pro">Pro</span>';
                             }
                         ?>
-                            <a href="#webhook-action-<?php echo esc_attr( $action['action'] ); ?>" data-wpwh-trigger-id="<?php echo esc_attr( $action['action'] ); ?>" class="wpwh-trigger-search__item<?php echo $is_active ? ' wpwh-trigger-search__item--active' : ''; ?>"><?php echo wp_kses_post( $action_name ); ?></a>
+                            <a href="#webhook-action-catalog-<?php echo esc_attr( $action['action'] ); ?>" data-wpwh-trigger-id="<?php echo esc_attr( $action['action'] ); ?>" class="wpwh-trigger-search__item<?php echo $is_active ? ' wpwh-trigger-search__item--active' : ''; ?>"><?php echo wp_kses_post( $action_name ); ?></a>
                         <?php endforeach; ?>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -345,7 +345,7 @@ if ( empty( $active_trigger ) ) {
 							$show_ability_controls = true;
 						}
                     ?>
-                        <div class="wpwh-trigger-item<?php echo $is_active ? ' wpwh-trigger-item--active' : ''; ?> wpwh-table-container" id="<?php echo esc_attr( 'webhook-action-' . $action['action'] ); ?>">
+                        <div class="wpwh-trigger-item<?php echo $is_active ? ' wpwh-trigger-item--active' : ''; ?> wpwh-table-container" id="<?php echo esc_attr( 'webhook-action-catalog-' . $action['action'] ); ?>">
                             <div class="wpwh-table-header">
                                 <div class="mb-2 d-flex align-items-center justify-content-between">
 									<h2 class="d-flex align-items-end" data-wpwh-trigger-name>
@@ -739,10 +739,15 @@ if ( empty( $active_trigger ) ) {
 
 <?php foreach( $webhooks as $webhook => $webhook_data ) :
     $uid = $webhook;
+    $abilities_consumer_actions = array( 'run_ability', 'list_abilities', 'describe_ability' );
+    $destructive_ability_actions = array( 'run_ability', 'describe_ability' );
 
     //Map default action_attributes if available
     $settings = array();
+    $settings_data = array();
     if( ! empty( $webhook_data['settings'] ) ){
+
+        $settings_data = $webhook_data['settings'];
 
         if( isset( $webhook_data['settings']['data'] ) ){
             $settings = (array) $webhook_data['settings']['data'];
@@ -756,6 +761,13 @@ if ( empty( $active_trigger ) ) {
 
     //Map dynamic settings
     $required_settings = WPWHPRO()->settings->get_required_action_settings();
+    $has_custom_ability_settings = (
+        ( isset( $settings_data['wpwhpro_abilities_run_as_user'] ) && ! empty( absint( $settings_data['wpwhpro_abilities_run_as_user'] ) ) )
+        || ( isset( $settings_data['wpwhpro_abilities_allow_destructive'] ) && (int) $settings_data['wpwhpro_abilities_allow_destructive'] === 1 )
+    );
+    $show_ability_run_as_setting = in_array( $webhook, $abilities_consumer_actions, true ) || $has_custom_ability_settings;
+    $show_ability_destructive_setting = in_array( $webhook, $destructive_ability_actions, true ) || ( isset( $settings_data['wpwhpro_abilities_allow_destructive'] ) && (int) $settings_data['wpwhpro_abilities_allow_destructive'] === 1 );
+
     foreach( $required_settings as $settings_ident => $settings_data ){
 
         if( $settings_ident == 'wpwhpro_action_authentication' ){
@@ -764,6 +776,14 @@ if ( empty( $active_trigger ) ) {
             } else {
                 unset( $required_settings[ $settings_ident ] ); //if empty
             }
+        }
+
+        if( $settings_ident === 'wpwhpro_abilities_run_as_user' && ! $show_ability_run_as_setting ){
+            unset( $required_settings[ $settings_ident ] );
+        }
+
+        if( $settings_ident === 'wpwhpro_abilities_allow_destructive' && ! $show_ability_destructive_setting ){
+            unset( $required_settings[ $settings_ident ] );
         }
 
     }
@@ -815,6 +835,7 @@ if ( empty( $active_trigger ) ) {
 
                                             $is_checked = ( $setting['type'] == 'checkbox' && $setting['default_value'] == 'yes' ) ? 'checked' : '';
                                             $value = ( $setting['type'] != 'checkbox' && isset( $setting['default_value'] ) ) ? $setting['default_value'] : '1';
+                                            $setting_input_min_width = $setting_name === 'wpwhpro_abilities_run_as_user' ? '230px' : '170px';
 
                                             if( isset( $settings_data[ $setting_name ] ) ){
                                                 $value = $settings_data[ $setting_name ];
@@ -826,12 +847,12 @@ if ( empty( $active_trigger ) ) {
                                                 <td>
                                                     <?php if( in_array( $setting['type'], array( 'text', 'checkbox' ) ) ) : ?>
                                                         <?php if ( $setting['type'] === 'text' ): ?>
-                                                            <input class="wpwh-form-input wpwh-w-100" id="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" value="<?php echo esc_attr( is_scalar( $value ) ? (string) $value : '' ); ?>" style="min-width:170px;" />
+                                                            <input class="wpwh-form-input wpwh-w-100" id="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" value="<?php echo esc_attr( is_scalar( $value ) ? (string) $value : '' ); ?>" style="min-width:<?php echo esc_attr( $setting_input_min_width ); ?>;" />
                                                         <?php else: ?>
                                                             <input id="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" value="<?php echo esc_attr( is_scalar( $value ) ? (string) $value : '' ); ?>" <?php echo $is_checked; ?> />
                                                         <?php endif; ?>
                                                     <?php elseif( $setting['type'] === 'select' && isset( $setting['choices'] ) ) : ?>
-                                                        <select class="wpwh-form-input wpwh-w-100" name="<?php echo esc_attr( $setting_name ); ?><?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? '[]' : ''; ?>" <?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? 'multiple' : ''; ?> style="min-width:170px;">
+                                                        <select class="wpwh-form-input wpwh-w-100" name="<?php echo esc_attr( $setting_name ); ?><?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? '[]' : ''; ?>" <?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? 'multiple' : ''; ?> style="min-width:<?php echo esc_attr( $setting_input_min_width ); ?>;">
                                                             <?php
                                                                 if( isset( $settings_data[ $setting_name ] ) ){
                                                                     $settings_data[ $setting_name ] = ( is_array( $settings_data[ $setting_name ] ) ) ? array_flip( $settings_data[ $setting_name ] ) : $settings_data[ $setting_name ];
