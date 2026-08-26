@@ -80,11 +80,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_list_abilitie
 			'short_description' => __( 'Discover registered WordPress Abilities available to this WP Webhooks endpoint.', 'wp-webhooks' ),
 			'description'       => __( 'List registered WordPress Abilities available to the configured endpoint user.', 'wp-webhooks' ),
 			'integration'       => 'wp-webhooks',
-			'settings'          => array(
-				'data' => array(
-					'wpwhpro_abilities_run_as_user' => $this->get_run_as_user_setting(),
-				),
-			),
 		);
 
 		}
@@ -233,13 +228,23 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_list_abilitie
 		}
 
 		private function get_endpoint_run_as_user_id(){
-			$current_webhook = WPWHPRO()->webhook->get_current_webhook_action();
+			$settings = $this->get_action_settings();
 
-			if( is_array( $current_webhook ) && isset( $current_webhook['settings']['wpwhpro_abilities_run_as_user'] ) ){
-				return absint( $current_webhook['settings']['wpwhpro_abilities_run_as_user'] );
+			if( isset( $settings['wpwhpro_abilities_run_as_user'] ) ){
+				return absint( $settings['wpwhpro_abilities_run_as_user'] );
 			}
 
 			return 0;
+		}
+
+		private function get_action_settings(){
+			$settings = get_option( 'wpwhpro_abilities_consumer_action_settings', array() );
+
+			if( ! is_array( $settings ) || ! isset( $settings['list_abilities'] ) || ! is_array( $settings['list_abilities'] ) ){
+				return array();
+			}
+
+			return $settings['list_abilities'];
 		}
 
 		private function get_run_as_user_setting(){

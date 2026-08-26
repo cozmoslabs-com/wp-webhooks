@@ -652,15 +652,6 @@ class WP_Webhooks_Pro_Settings{
 	 * @return array - the action settings
 	 */
 	private function load_required_action_settings(){
-		$ability_user_choices = array(
-			'0' => array( 'label' => WPWHPRO()->helpers->translate( 'No user (anonymous)', 'wpwhpro-fields-action-required-settings' ) ),
-		);
-
-		foreach( get_users( array( 'fields' => array( 'ID', 'user_login', 'user_email' ) ) ) as $user ){
-			$label = ! empty( $user->user_email ) ? $user->user_email : $user->user_login;
-			$ability_user_choices[ (string) $user->ID ] = array( 'label' => $label );
-		}
-
 		$fields = array(
 
 			'wpwhpro_action_authentication' => array(
@@ -674,23 +665,6 @@ class WP_Webhooks_Pro_Settings{
 				'placeholder' => '',
 				'default_value' => '',
 				'description' => WPWHPRO()->helpers->translate('Set a custom authentication template in case the other endpoint requires authentication. Currently, only API Keys and Basic Auth is allowed for webhook actions.', 'wpwhpro-fields-action-required-settings')
-			),
-			'wpwhpro_abilities_run_as_user' => array(
-				'id'            => 'wpwhpro_abilities_run_as_user',
-				'type'          => 'select',
-				'label'         => WPWHPRO()->helpers->translate( 'Execute abilities as user', 'wpwhpro-fields-action-required-settings' ),
-				'choices'       => $ability_user_choices,
-				'multiple'      => false,
-				'placeholder'   => '',
-				'default_value' => '0',
-				'description'   => WPWHPRO()->helpers->translate( 'Choose the WordPress user used for WordPress Ability permission checks and execution on this Action URL. No user means anonymous.', 'wpwhpro-fields-action-required-settings' ),
-			),
-			'wpwhpro_abilities_allow_destructive' => array(
-				'id'            => 'wpwhpro_abilities_allow_destructive',
-				'type'          => 'checkbox',
-				'label'         => WPWHPRO()->helpers->translate( 'Allow destructive abilities', 'wpwhpro-fields-action-required-settings' ),
-				'default_value' => '',
-				'description'   => WPWHPRO()->helpers->translate( 'Allow this Action URL to describe or execute abilities that are not read-only. Keep this disabled unless this endpoint is intentionally allowed to change site data.', 'wpwhpro-fields-action-required-settings' ),
 			),
 
 		);

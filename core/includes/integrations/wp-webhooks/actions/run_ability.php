@@ -76,12 +76,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_run_ability' 
 			'short_description' => __( 'Execute any registered WordPress Ability through the WP Webhooks endpoint.', 'wp-webhooks' ),
 			'description'       => __( 'Execute a registered WordPress Ability through an authenticated WP Webhooks Action URL.', 'wp-webhooks' ),
 			'integration'       => 'wp-webhooks',
-			'settings'          => array(
-				'data' => array(
-					'wpwhpro_abilities_run_as_user' => $this->get_run_as_user_setting(),
-					'wpwhpro_abilities_allow_destructive' => $this->get_allow_destructive_setting(),
-				),
-			),
 		);
 
 		}
@@ -254,10 +248,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_run_ability' 
 		}
 
 		private function get_endpoint_run_as_user_id(){
-			$current_webhook = WPWHPRO()->webhook->get_current_webhook_action();
+			$settings = $this->get_action_settings();
 
-			if( is_array( $current_webhook ) && isset( $current_webhook['settings']['wpwhpro_abilities_run_as_user'] ) ){
-				return absint( $current_webhook['settings']['wpwhpro_abilities_run_as_user'] );
+			if( isset( $settings['wpwhpro_abilities_run_as_user'] ) ){
+				return absint( $settings['wpwhpro_abilities_run_as_user'] );
 			}
 
 			return 0;
@@ -287,14 +281,24 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_run_ability' 
 		}
 
 		private function endpoint_allows_destructive_abilities( $response_body ){
-			$current_webhook = WPWHPRO()->webhook->get_current_webhook_action();
+			$settings = $this->get_action_settings();
 			$enabled = false;
 
-			if( is_array( $current_webhook ) && isset( $current_webhook['settings']['wpwhpro_abilities_allow_destructive'] ) ){
-				$enabled = (int) $current_webhook['settings']['wpwhpro_abilities_allow_destructive'] === 1;
+			if( isset( $settings['wpwhpro_abilities_allow_destructive'] ) ){
+				$enabled = (int) $settings['wpwhpro_abilities_allow_destructive'] === 1;
 			}
 
 			return apply_filters( 'wpwhpro/abilities/allow_destructive', $enabled, 'run_ability', $response_body );
+		}
+
+		private function get_action_settings(){
+			$settings = get_option( 'wpwhpro_abilities_consumer_action_settings', array() );
+
+			if( ! is_array( $settings ) || ! isset( $settings['run_ability'] ) || ! is_array( $settings['run_ability'] ) ){
+				return array();
+			}
+
+			return $settings['run_ability'];
 		}
 
 		private function get_request_value( $response_body, $key ){

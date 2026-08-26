@@ -63,12 +63,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_describe_abil
 			'short_description' => __( 'Fetch the schema and metadata for a registered WordPress Ability.', 'wp-webhooks' ),
 			'description'       => __( 'Fetch the schema, metadata, and examples for a registered WordPress Ability.', 'wp-webhooks' ),
 			'integration'       => 'wp-webhooks',
-			'settings'          => array(
-				'data' => array(
-					'wpwhpro_abilities_run_as_user' => $this->get_run_as_user_setting(),
-					'wpwhpro_abilities_allow_destructive' => $this->get_allow_destructive_setting(),
-				),
-			),
 		);
 
 		}
@@ -112,11 +106,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_describe_abil
 			$ability = wp_get_ability( $ability_name );
 			if( empty( $ability ) ){
 				$return_args['msg'] = __( 'The requested ability could not be found.', 'action-describe_ability-error' );
-				return $return_args;
-			}
-
-			if( $this->is_destructive_ability( $ability ) && ! $this->endpoint_allows_destructive_abilities( $response_body ) ){
-				$return_args['msg'] = __( 'This ability is marked as destructive. Enable destructive abilities in this endpoint settings before describing it.', 'action-describe_ability-error' );
 				return $return_args;
 			}
 
@@ -200,10 +189,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_describe_abil
 		}
 
 		private function get_endpoint_run_as_user_id(){
-			$current_webhook = WPWHPRO()->webhook->get_current_webhook_action();
+			$settings = $this->get_action_settings();
 
-			if( is_array( $current_webhook ) && isset( $current_webhook['settings']['wpwhpro_abilities_run_as_user'] ) ){
-				return absint( $current_webhook['settings']['wpwhpro_abilities_run_as_user'] );
+			if( isset( $settings['wpwhpro_abilities_run_as_user'] ) ){
+				return absint( $settings['wpwhpro_abilities_run_as_user'] );
 			}
 
 			return 0;
@@ -222,25 +211,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wp_webhooks_Actions_describe_abil
 			);
 		}
 
-		private function get_allow_destructive_setting(){
-			return array(
-				'id'            => 'wpwhpro_abilities_allow_destructive',
-				'type'          => 'checkbox',
-				'label'         => __( 'Allow destructive abilities', 'wp-webhooks' ),
-				'default_value' => '',
-				'description'   => __( 'Allow this endpoint to describe abilities marked as destructive. Keep this disabled unless this endpoint is intentionally allowed to expose schemas for destructive operations.', 'wp-webhooks' ),
-			);
-		}
+		private function get_action_settings(){
+			$settings = get_option( 'wpwhpro_abilities_consumer_action_settings', array() );
 
-		private function endpoint_allows_destructive_abilities( $response_body ){
-			$current_webhook = WPWHPRO()->webhook->get_current_webhook_action();
-			$enabled = false;
-
-			if( is_array( $current_webhook ) && isset( $current_webhook['settings']['wpwhpro_abilities_allow_destructive'] ) ){
-				$enabled = (int) $current_webhook['settings']['wpwhpro_abilities_allow_destructive'] === 1;
+			if( ! is_array( $settings ) || ! isset( $settings['describe_ability'] ) || ! is_array( $settings['describe_ability'] ) ){
+				return array();
 			}
 
-			return apply_filters( 'wpwhpro/abilities/allow_destructive', $enabled, 'describe_ability', $response_body );
+			return $settings['describe_ability'];
 		}
 
 		private function get_request_value( $response_body, $key ){

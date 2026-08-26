@@ -51,9 +51,44 @@ if( isset( $_POST['ironikus-webhook-action-name'] ) ){
 	}
 }
 
+if( isset( $_POST['ironikus-ability-action-settings-action'] ) ){
+    if ( check_admin_referer( $action_nonce_data['action'], $action_nonce_data['arg'] ) && current_user_can( WPWHPRO()->settings->get_admin_cap() ) ) {
+        $ability_action = sanitize_title( wp_unslash( $_POST['ironikus-ability-action-settings-action'] ) );
+        $ability_actions_with_settings = array( 'run_ability', 'list_abilities', 'describe_ability' );
+
+        if( in_array( $ability_action, $ability_actions_with_settings, true ) ){
+            $ability_action_settings = get_option( 'wpwhpro_abilities_consumer_action_settings', array() );
+            $ability_action_settings = is_array( $ability_action_settings ) ? $ability_action_settings : array();
+
+            $ability_action_settings[ $ability_action ] = array(
+                'wpwhpro_abilities_run_as_user' => isset( $_POST['wpwhpro_abilities_run_as_user'] ) ? absint( $_POST['wpwhpro_abilities_run_as_user'] ) : 0,
+            );
+
+            if( $ability_action === 'run_ability' ){
+                $ability_action_settings[ $ability_action ]['wpwhpro_abilities_allow_destructive'] = isset( $_POST['wpwhpro_abilities_allow_destructive'] ) ? 1 : 0;
+            }
+
+            update_option( 'wpwhpro_abilities_consumer_action_settings', $ability_action_settings, false );
+            echo WPWHPRO()->helpers->create_admin_notice( 'The ability action settings have been saved.', 'success', true );
+        }
+    }
+}
+
 //Sort webhooks
 $grouped_actions = array();
 $grouped_actions_pro = array();
+$ability_consumer_actions = array( 'run_ability', 'list_abilities', 'describe_ability' );
+$ability_consumer_destructive_actions = array( 'run_ability' );
+$ability_consumer_settings = get_option( 'wpwhpro_abilities_consumer_action_settings', array() );
+$ability_consumer_settings = is_array( $ability_consumer_settings ) ? $ability_consumer_settings : array();
+$ability_consumer_user_choices = array(
+    '0' => WPWHPRO()->helpers->translate( 'No user (anonymous)', 'wpwhpro-page-actions' ),
+);
+
+foreach( get_users( array( 'fields' => array( 'ID', 'user_login', 'user_email' ) ) ) as $ability_user ){
+    $ability_user_label = ! empty( $ability_user->user_email ) ? $ability_user->user_email : $ability_user->user_login;
+    $ability_consumer_user_choices[ (string) $ability_user->ID ] = $ability_user_label;
+}
 
 foreach( $actions as $identkey => $webhook_action ){
     $group = 'ungrouped';
@@ -344,6 +379,12 @@ if ( empty( $active_trigger ) ) {
 							$ability_ui = WPWHPRO()->abilities->get_action_ability_ui_data( $action );
 							$show_ability_controls = true;
 						}
+
+                        $show_ability_consumer_settings = in_array( $action['action'], $ability_consumer_actions, true );
+                        $ability_consumer_action_settings = isset( $ability_consumer_settings[ $action['action'] ] ) && is_array( $ability_consumer_settings[ $action['action'] ] ) ? $ability_consumer_settings[ $action['action'] ] : array();
+                        $ability_consumer_run_as_user = isset( $ability_consumer_action_settings['wpwhpro_abilities_run_as_user'] ) ? absint( $ability_consumer_action_settings['wpwhpro_abilities_run_as_user'] ) : 0;
+                        $ability_consumer_allow_destructive = isset( $ability_consumer_action_settings['wpwhpro_abilities_allow_destructive'] ) ? (int) $ability_consumer_action_settings['wpwhpro_abilities_allow_destructive'] === 1 : false;
+                        $ability_consumer_settings_url = add_query_arg( 'wpwh-action', $action['action'], $clear_form_url ) . '#nav-webhook-actions';
                     ?>
                         <div class="wpwh-trigger-item<?php echo $is_active ? ' wpwh-trigger-item--active' : ''; ?> wpwh-table-container" id="<?php echo esc_attr( 'webhook-action-catalog-' . $action['action'] ); ?>">
                             <div class="wpwh-table-header">
@@ -629,6 +670,72 @@ if ( empty( $active_trigger ) ) {
                                     </div>
                                 </div>
                                 <?php endif; ?>
+                                <?php if( $show_ability_consumer_settings ) : ?>
+                                <div class="wpwh-accordion__item">
+                                    <button class="wpwh-accordion__heading wpwh-btn wpwh-btn--link wpwh-btn--block text-left collapsed" type="button" data-toggle="collapse" data-target="#wpwh_accordion_ability_action_settings_<?php echo esc_attr( $action['action'] ); ?>" aria-expanded="true" aria-controls="wpwh_accordion_ability_action_settings_<?php echo esc_attr( $action['action'] ); ?>">
+                                        <span><?php echo esc_html__( 'Ability action settings', 'wp-webhooks' ); ?></span>
+                                        <span class="text-secondary">
+                                            <span class="wpwh-text-expand"><?php echo esc_html__( 'Expand', 'wp-webhooks' ); ?></span>
+                                            <span class="wpwh-text-close"><?php echo esc_html__( 'Close', 'wp-webhooks' ); ?></span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="9" fill="none" class="ml-1">
+                                                <defs />
+                                                <path stroke="#F1592A" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l7 7 7-7" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <div id="wpwh_accordion_ability_action_settings_<?php echo esc_attr( $action['action'] ); ?>" class="wpwh-accordion__content collapse" aria-labelledby="headingAbilityActionSettings">
+                                        <div class="wpwh-content">
+                                            <form method="post" action="<?php echo esc_url( $ability_consumer_settings_url ); ?>">
+                                                <input type="hidden" name="ironikus-ability-action-settings-action" value="<?php echo esc_attr( $action['action'] ); ?>">
+                                                <?php echo WPWHPRO()->helpers->get_nonce_field( $action_nonce_data ); ?>
+                                                <table class="wpwh-table wpwh-table--in-content wpwh-text-small mb-3">
+                                                    <tbody>
+                                                        <tr valign="top">
+                                                            <td>
+                                                                <select class="wpwh-form-input wpwh-w-100" name="wpwhpro_abilities_run_as_user" style="min-width:230px;">
+                                                                    <?php foreach( $ability_consumer_user_choices as $ability_user_id => $ability_user_label ) : ?>
+                                                                        <option value="<?php echo esc_attr( $ability_user_id ); ?>" <?php selected( (string) $ability_consumer_run_as_user, (string) $ability_user_id ); ?>><?php echo esc_html( $ability_user_label ); ?></option>
+                                                                    <?php endforeach; ?>
+                                                                </select>
+                                                            </td>
+                                                            <td scope="row" valign="top">
+                                                                <label class="wpwh-form-label">
+                                                                    <strong><?php echo esc_html__( 'Execute abilities as user', 'wp-webhooks' ); ?></strong>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <?php if( $action['action'] === 'list_abilities' ) : ?>
+                                                                    <?php echo esc_html__( 'Choose the WordPress user used for ability discovery permission checks. Only abilities this user can execute are listed.', 'wp-webhooks' ); ?>
+                                                                <?php elseif( $action['action'] === 'describe_ability' ) : ?>
+                                                                    <?php echo esc_html__( 'Choose the WordPress user used for ability permission checks. The ability schema is only returned if this user can execute the ability.', 'wp-webhooks' ); ?>
+                                                                <?php else : ?>
+                                                                    <?php echo esc_html__( 'Choose the WordPress user used for ability permission checks and execution. The ability permission callback is still enforced.', 'wp-webhooks' ); ?>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                        </tr>
+                                                        <?php if( in_array( $action['action'], $ability_consumer_destructive_actions, true ) ) : ?>
+                                                        <tr valign="top">
+                                                            <td>
+                                                                <input id="wpwhpro_abilities_allow_destructive_<?php echo esc_attr( $action['action'] ); ?>" name="wpwhpro_abilities_allow_destructive" type="checkbox" value="1" <?php checked( $ability_consumer_allow_destructive ); ?> />
+                                                            </td>
+                                                            <td scope="row" valign="top">
+                                                                <label class="wpwh-form-label" for="wpwhpro_abilities_allow_destructive_<?php echo esc_attr( $action['action'] ); ?>">
+                                                                    <strong><?php echo esc_html__( 'Allow destructive abilities', 'wp-webhooks' ); ?></strong>
+                                                                </label>
+                                                            </td>
+                                                            <td>
+                                                                <?php echo esc_html__( 'Allow this action to execute abilities marked as destructive. Keep this disabled unless this action is intentionally allowed to delete, uninstall, overwrite, or otherwise perform destructive operations.', 'wp-webhooks' ); ?>
+                                                            </td>
+                                                        </tr>
+                                                        <?php endif; ?>
+                                                    </tbody>
+                                                </table>
+                                                <input type="submit" class="wpwh-btn wpwh-btn--secondary wpwh-btn--sm" value="<?php echo esc_attr__( 'Save Settings', 'wp-webhooks' ); ?>">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
                                 <?php if( $show_ability_controls ) : ?>
                                 <div class="wpwh-accordion__item">
                                     <button class="wpwh-accordion__heading wpwh-btn wpwh-btn--link wpwh-btn--block text-left collapsed" type="button" data-toggle="collapse" data-target="#wpwh_accordion_expose_ability_<?php echo esc_attr( $action['action'] ); ?>" aria-expanded="true" aria-controls="wpwh_accordion_expose_ability_<?php echo esc_attr( $action['action'] ); ?>">
@@ -740,7 +847,7 @@ if ( empty( $active_trigger ) ) {
 <?php foreach( $webhooks as $webhook => $webhook_data ) :
     $uid = $webhook;
     $abilities_consumer_actions = array( 'run_ability', 'list_abilities', 'describe_ability' );
-    $destructive_ability_actions = array( 'run_ability', 'describe_ability' );
+    $destructive_ability_actions = array( 'run_ability' );
 
     //Map default action_attributes if available
     $settings = array();
