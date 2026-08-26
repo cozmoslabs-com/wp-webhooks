@@ -12,7 +12,7 @@ class WP_Webhooks_Pro_Abilities {
 	const OPTION_EXPOSED_ACTIONS = 'wpwhpro_abilities_exposed_actions';
 	const NAMESPACE_NAME         = 'wp-webhooks';
 	const CATEGORY_NAME          = 'wp-webhooks';
-	const SCHEMA_CACHE_VERSION   = '2';
+	const SCHEMA_CACHE_VERSION   = '3';
 	const CONSUMER_ACTIONS       = array(
 		'run_ability',
 		'list_abilities',
@@ -328,6 +328,9 @@ class WP_Webhooks_Pro_Abilities {
 				'output_schema'       => $this->map_returns_to_output_schema( $action ),
 				'meta'                => array(
 					'show_in_rest' => true,
+					'mcp'          => array(
+						'public' => true,
+					),
 					'integration'  => isset( $action['integration'] ) ? $action['integration'] : '',
 					'action'       => $action['action'],
 					'readonly'     => $annotation['readonly'],
