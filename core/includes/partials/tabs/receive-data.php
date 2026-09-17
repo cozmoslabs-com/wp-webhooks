@@ -716,7 +716,10 @@ if ( empty( $active_trigger ) ) {
                                                         <?php if( in_array( $action['action'], $ability_consumer_destructive_actions, true ) ) : ?>
                                                         <tr valign="top">
                                                             <td>
-                                                                <input id="wpwhpro_abilities_allow_destructive_<?php echo esc_attr( $action['action'] ); ?>" name="wpwhpro_abilities_allow_destructive" type="checkbox" value="1" <?php checked( $ability_consumer_allow_destructive ); ?> />
+                                                                <div class="wpwh-toggle wpwh-toggle--on-off">
+                                                                    <input id="wpwhpro_abilities_allow_destructive_<?php echo esc_attr( $action['action'] ); ?>" name="wpwhpro_abilities_allow_destructive" class="wpwh-toggle__input" type="checkbox" value="1" <?php checked( $ability_consumer_allow_destructive ); ?> />
+                                                                    <label class="wpwh-toggle__btn" for="wpwhpro_abilities_allow_destructive_<?php echo esc_attr( $action['action'] ); ?>"></label>
+                                                                </div>
                                                             </td>
                                                             <td scope="row" valign="top">
                                                                 <label class="wpwh-form-label" for="wpwhpro_abilities_allow_destructive_<?php echo esc_attr( $action['action'] ); ?>">
@@ -956,7 +959,10 @@ if ( empty( $active_trigger ) ) {
                                                         <?php if ( $setting['type'] === 'text' ): ?>
                                                             <input class="wpwh-form-input wpwh-w-100" id="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" value="<?php echo esc_attr( is_scalar( $value ) ? (string) $value : '' ); ?>" style="min-width:<?php echo esc_attr( $setting_input_min_width ); ?>;" />
                                                         <?php else: ?>
-                                                            <input id="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" type="<?php echo esc_attr( $setting['type'] ); ?>" value="<?php echo esc_attr( is_scalar( $value ) ? (string) $value : '' ); ?>" <?php echo $is_checked; ?> />
+                                                            <div class="wpwh-toggle wpwh-toggle--on-off">
+                                                                <input id="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>" name="<?php echo esc_attr( $setting_name ); ?>" class="wpwh-toggle__input" type="<?php echo esc_attr( $setting['type'] ); ?>" value="<?php echo esc_attr( is_scalar( $value ) ? (string) $value : '' ); ?>" <?php echo $is_checked; ?> />
+                                                                <label class="wpwh-toggle__btn" for="wpwh-input-id-<?php echo esc_attr( $setting_name ); ?>-<?php echo esc_attr( $webhook ); ?>"></label>
+                                                            </div>
                                                         <?php endif; ?>
                                                     <?php elseif( $setting['type'] === 'select' && isset( $setting['choices'] ) ) : ?>
                                                         <select class="wpwh-form-input wpwh-w-100" name="<?php echo esc_attr( $setting_name ); ?><?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? '[]' : ''; ?>" <?php echo ( isset( $setting['multiple'] ) && $setting['multiple'] ) ? 'multiple' : ''; ?> style="min-width:<?php echo esc_attr( $setting_input_min_width ); ?>;">
