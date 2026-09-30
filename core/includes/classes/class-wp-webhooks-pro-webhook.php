@@ -958,12 +958,12 @@ class WP_Webhooks_Pro_Webhook {
 				}
 
 				//Allow unsafe URLs
-				if( $settings_name === 'wpwhpro_trigger_allow_unsafe_urls' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_trigger_allow_unsafe_urls' && (int) $settings_data === 1 ){
 					$allow_unsafe_urls = true;
 				}
 
 				//Allow unverified SSL
-				if( $settings_name === 'wpwhpro_trigger_allow_unverified_ssl' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_trigger_allow_unverified_ssl' && (int) $settings_data === 1 ){
 					$allow_unverified_ssl = true;
 				}
 
@@ -974,35 +974,35 @@ class WP_Webhooks_Pro_Webhook {
 
 			foreach( $webhook['settings'] as $settings_name => $settings_data ){
 
-				if( $settings_name === 'wpwhpro_user_must_be_logged_in' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_user_must_be_logged_in' && (int) $settings_data === 1 ){
 					if( ! is_user_logged_in() ){
 						$response['msg'] = WPWHPRO()->helpers->translate( 'Trigger not sent because the settings did not match.', 'wpwhpro-admin-webhooks' );
 						$response['is_valid'] = false;
 					}
 				}
 
-				if( $settings_name === 'wpwhpro_user_must_be_logged_out' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_user_must_be_logged_out' && (int) $settings_data === 1 ){
 					if( is_user_logged_in() ){
 						$response['msg'] = WPWHPRO()->helpers->translate( 'Trigger not sent because the settings did not match.', 'wpwhpro-admin-webhooks' );
 						$response['is_valid'] = false;
 					}
 				}
 
-				if( $settings_name === 'wpwhpro_trigger_backend_only' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_trigger_backend_only' && (int) $settings_data === 1 ){
 					if( ! is_admin() ){
 						$response['msg'] = WPWHPRO()->helpers->translate( 'Trigger not sent because the settings did not match.', 'wpwhpro-admin-webhooks' );
 						$response['is_valid'] = false;
 					}
 				}
 
-				if( $settings_name === 'wpwhpro_trigger_frontend_only' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_trigger_frontend_only' && (int) $settings_data === 1 ){
 					if( is_admin() ){
 						$response['msg'] = WPWHPRO()->helpers->translate( 'Trigger not sent because the settings did not match.', 'wpwhpro-admin-webhooks' );
 						$response['is_valid'] = false;
 					}
 				}
 
-				if( $settings_name === 'wpwhpro_trigger_single_instance_execution' && (integer) $settings_data === 1 ){
+				if( $settings_name === 'wpwhpro_trigger_single_instance_execution' && (int) $settings_data === 1 ){
 					
 					$all_processed_triggers = $this->get_processed_triggers();
 					if( is_array( $all_processed_triggers ) && ! empty( $all_processed_triggers ) && isset( $all_processed_triggers[ $webhook_name . '_' . $webhook_url_name ] ) ){
