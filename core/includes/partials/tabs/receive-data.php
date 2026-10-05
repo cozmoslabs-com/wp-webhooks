@@ -399,11 +399,19 @@ if ( empty( $active_trigger ) ) {
 										</div>
 									</h2>
 									<div class="d-flex flex-column align-items-end">
-										<div class="wpwh-trigger-webhook-name wpwh-text-small"><?php echo esc_html( $action['action'] ); ?></div>
-										<?php if( $show_ability_controls ) : ?>
+										<div class="wpwh-trigger-webhook-name wpwh-trigger-webhook-name--chip"><?php echo esc_html( $action['action'] ); ?></div>
+										<?php if( $show_ability_controls ) :
+											$ability_label_enabled  = esc_html__( 'Ability: Enabled', 'wp-webhooks' );
+											$ability_label_disabled = esc_html__( 'Ability: Disabled', 'wp-webhooks' );
+											$ability_is_exposed     = ! empty( $ability_ui['is_exposed'] );
+											?>
 											<div class="d-flex align-items-center mt-2">
-												<span class="wpwh-ability-pill wpwh-text-small mr-3<?php echo ! empty( $ability_ui['is_exposed'] ) ? ' is-active' : ''; ?>" data-wpwh-ability-pill="<?php echo esc_attr( $action['action'] ); ?>" <?php echo empty( $ability_ui['is_exposed'] ) ? 'style="display:none;"' : ''; ?>><?php echo esc_html__( 'Ability', 'wp-webhooks' ); ?></span>
-												<span class="wpwh-text-small mr-2"><?php echo esc_html__( 'Expose as Ability', 'wp-webhooks' ); ?></span>
+												<span
+													class="wpwh-ability-pill wpwh-text-small mr-3 <?php echo $ability_is_exposed ? 'is-enabled' : 'is-disabled'; ?>"
+													data-wpwh-ability-pill="<?php echo esc_attr( $action['action'] ); ?>"
+													data-wpwh-label-enabled="<?php echo esc_attr( $ability_label_enabled ); ?>"
+													data-wpwh-label-disabled="<?php echo esc_attr( $ability_label_disabled ); ?>"
+												><?php echo $ability_is_exposed ? $ability_label_enabled : $ability_label_disabled; ?></span>
 												<div class="wpwh-toggle wpwh-toggle--on-off" data-tippy="" data-tippy-content="<?php echo esc_attr__( 'Expose this action as a WordPress Ability', 'wp-webhooks' ); ?>">
 													<input
 														type="checkbox"

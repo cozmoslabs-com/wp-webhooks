@@ -1977,7 +1977,14 @@ exports.default = function () {
               $thisEl.prop('checked', !enabled);
             } else {
               $('[data-wpwh-action-slug="' + actionSlug + '"]').prop('checked', enabled);
-              $('[data-wpwh-ability-pill="' + actionSlug + '"]').toggle(enabled).toggleClass('is-active', enabled);
+              var $abilityPill = $('[data-wpwh-ability-pill="' + actionSlug + '"]');
+              $abilityPill.removeClass('is-enabled is-disabled').addClass(enabled ? 'is-enabled' : 'is-disabled');
+              $abilityPill.each(function () {
+                var $pill = $(this);
+                $pill.text(enabled
+                  ? ($pill.data('wpwh-label-enabled') || 'Ability: Enabled')
+                  : ($pill.data('wpwh-label-disabled') || 'Ability: Disabled'));
+              });
 
               var $explorerLink = $('[data-wpwh-ability-explorer="' + actionSlug + '"]');
               if ($explorerLink.length) {
