@@ -804,6 +804,19 @@ if ( empty( $active_trigger ) ) {
                                                 </tbody>
                                             </table>
 
+                                                <div class="wpwh-ability-notice">
+                                                	<svg class="wpwh-ability-notice__icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                                		<circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/>
+                                                		<path d="M10 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                                		<circle cx="10" cy="6.2" r="1.1" fill="currentColor"/>
+                                                	</svg>
+                                                	<div class="wpwh-ability-notice__body wpwh-text-small">
+                                                		<strong class="wpwh-ability-notice__title"><?php echo esc_html__( 'You need an MCP server to use this', 'wp-webhooks' ); ?></strong>
+                                                		<p><?php echo esc_html__( 'Turning this on adds the action to the WordPress ability registry, where other software can discover it. The registry is only a list - on its own, nothing calls the action.', 'wp-webhooks' ); ?></p>
+                                                		<p><?php echo esc_html__( 'To run it from an AI assistant, this site also needs a plugin that connects that registry to the Model Context Protocol (MCP); several are available in the plugin directory. Whichever client calls it, the request still runs as a real WordPress user and the permission above is always enforced.', 'wp-webhooks' ); ?></p>
+                                                	</div>
+                                                </div>
+
                                             <?php if( ! empty( $ability_ui['explorer_url'] ) ) : ?>
                                                 <a
                                                     href="<?php echo esc_url( $ability_ui['explorer_url'] ); ?>"
