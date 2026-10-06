@@ -12,7 +12,7 @@ class WP_Webhooks_Pro_Abilities {
 	const OPTION_EXPOSED_ACTIONS = 'wpwhpro_abilities_exposed_actions';
 	const NAMESPACE_NAME         = 'wp-webhooks';
 	const CATEGORY_NAME          = 'wp-webhooks';
-	const SCHEMA_CACHE_VERSION   = '3';
+	const SCHEMA_CACHE_VERSION   = '4';
 	const CONSUMER_ACTIONS       = array(
 		'run_ability',
 		'list_abilities',
@@ -312,11 +312,7 @@ class WP_Webhooks_Pro_Abilities {
 
 		$ability_name = $this->get_ability_name_from_action( $action );
 		$annotation   = $this->get_action_annotation( $action );
-		$description  = $this->get_plain_text_description( isset( $action['description'] ) ? $action['description'] : '' );
-
-		if( empty( $description ) && ! empty( $action['short_description'] ) ){
-			$description = $this->get_plain_text_description( $action['short_description'] );
-		}
+		$description  = $this->get_ability_description( $action );
 
 		$ability = array(
 			'name' => $ability_name,
@@ -790,6 +786,35 @@ class WP_Webhooks_Pro_Abilities {
 	}
 
 	/**
+	 * Build the description an AI client sees for an exposed action.
+	 *
+	 * `short_description` is a single clean sentence written for humans reading the
+	 * action list, which is exactly the shape an MCP client wants. The `description`
+	 * field is the structured docs payload and is only used as a fallback.
+	 *
+	 * @param array $action
+	 *
+	 * @return string
+	 */
+	private function get_ability_description( $action ) {
+		$description = '';
+
+		if( ! empty( $action['short_description'] ) ){
+			$description = $this->get_plain_text_description( $action['short_description'] );
+		}
+
+		if( empty( $description ) && isset( $action['description'] ) ){
+			$description = $this->get_plain_text_description( $action['description'] );
+		}
+
+		if( empty( $description ) && ! empty( $action['name'] ) ){
+			$description = $this->get_plain_text_description( $action['name'] );
+		}
+
+		return apply_filters( 'wpwhpro/abilities/ability_description', $description, $action );
+	}
+
+	/**
 	 * Return a plain-text description from WPW metadata.
 	 *
 	 * @param mixed $description
@@ -798,6 +823,17 @@ class WP_Webhooks_Pro_Abilities {
 	 */
 	private function get_plain_text_description( $description ) {
 		if( is_array( $description ) ){
+			/*
+			 * WPW action descriptions are a structured array that builds the docs UI
+			 * (endpoint_type, steps, tipps, custom, webhook_name, webhook_slug).
+			 * Only the prose parts belong in an ability description - the rest is
+			 * scaffolding that would otherwise be fed to the AI as if it were meaning.
+			 */
+			$description = array_diff_key(
+				$description,
+				array_flip( array( 'endpoint_type', 'webhook_name', 'webhook_slug' ) )
+			);
+
 			$description = implode( ' ', array_map( array( $this, 'get_plain_text_description' ), $description ) );
 		}
 
