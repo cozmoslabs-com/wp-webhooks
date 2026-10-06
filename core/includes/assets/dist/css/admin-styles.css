@@ -2863,11 +2863,11 @@ tr.performing-event td:after { width: 100%; height: 100%; background-color: rgba
 
 .wpwh .wpwh-ability-pill.is-disabled:before { background-color: #C0392B; }
 
-.wpwh .wpwh-ability-notice { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-align: start; -webkit-align-items: flex-start; -ms-flex-align: start; align-items: flex-start; background-color: #EEF5FC; border-radius: 8px; padding: 16px 20px; padding:  1rem 1.25rem; margin-top: 20px; margin-top:  1.25rem; }
+.wpwh .wpwh-ability-notice { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; -webkit-box-align: start; -webkit-align-items: flex-start; -ms-flex-align: start; align-items: flex-start; background-color: #EEF5FC; border-radius: 8px; padding: 16px 20px; padding:  1rem 1.25rem; margin-top: 20px; margin-top:  1.25rem; margin-bottom: 28px; margin-bottom:  1.75rem; }
 
-.wpwh .wpwh-ability-notice__icon { -webkit-box-flex: 0; -webkit-flex: none; -ms-flex: none; flex: none; width: 20px; height: 20px; color: #0B74EC; margin-right: 12px; margin-right:  0.75rem; margin-top: 2px; }
+.wpwh .wpwh-ability-notice__icon { -webkit-box-flex: 0; -webkit-flex: none; -ms-flex: none; flex: none; width: 28px; height: 28px; color: #0B74EC; margin-right: 14px; margin-right:  0.875rem; margin-top: -2px; }
 
-.wpwh .wpwh-ability-notice__title { display: block; font-weight: 700; color: #0A3049; margin-bottom: 6px; margin-bottom:  0.375rem; }
+.wpwh .wpwh-ability-notice__title { display: block; font-weight: 700; font-size: 1rem; color: #0A3049; margin-bottom: 6px; margin-bottom:  0.375rem; }
 
 .wpwh .wpwh-ability-notice__body { color: #1F3D52; line-height: 1.55; }
 

@@ -811,9 +811,9 @@ if ( empty( $active_trigger ) ) {
                                                 		<circle cx="10" cy="6.2" r="1.1" fill="currentColor"/>
                                                 	</svg>
                                                 	<div class="wpwh-ability-notice__body wpwh-text-small">
-                                                		<strong class="wpwh-ability-notice__title"><?php echo esc_html__( 'You need an MCP server to use this', 'wp-webhooks' ); ?></strong>
+                                                		<strong class="wpwh-ability-notice__title"><?php echo esc_html__( 'An MCP server is required to use this ability', 'wp-webhooks' ); ?></strong>
                                                 		<p><?php echo esc_html__( 'Turning this on adds the action to the WordPress ability registry, where other software can discover it. The registry is only a list - on its own, nothing calls the action.', 'wp-webhooks' ); ?></p>
-                                                		<p><?php echo esc_html__( 'To run it from an AI assistant, this site also needs a plugin that connects that registry to the Model Context Protocol (MCP); several are available in the plugin directory. Whichever client calls it, the request still runs as a real WordPress user and the permission above is always enforced.', 'wp-webhooks' ); ?></p>
+                                                		<p><?php echo esc_html__( 'Running it from an AI assistant requires an MCP server on this site - a plugin that connects the ability registry to the Model Context Protocol. If one is already active, it picks up this ability automatically. Whichever client calls it, the request still runs as a real WordPress user and the permission above is always enforced.', 'wp-webhooks' ); ?></p>
                                                 	</div>
                                                 </div>
 
