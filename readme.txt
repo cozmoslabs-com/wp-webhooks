@@ -315,11 +315,14 @@ Yes. WP Webhooks includes three actions for this: Run ability, List abilities an
 
 == Screenshots ==
 
-1. Automate everything: exchange data between your website and different services
-2. Send data to external services on specific events
-3. Receive data from external services to do something on your website
-4. List of available webhook actions that you can use to send data from an external service to your WordPress site
-5. Add authentication to every trigger and action for workflow automations
+1. Your automation hub: connect your website, plugins and services with no-code webhooks.
+2. Send data to external services when something happens on your site.
+3. Receive data from external services and run actions on your website, with every argument documented.
+4. List of available webhook actions that you can use to send data from an external service to your WordPress site.
+5. Add authentication to every trigger and action for workflow automations.
+6. Turn any webhook action into a WordPress Ability with one switch.
+7. See the ability name, safety level and required capability before you expose an action to AI assistants through MCP.
+8. Run any registered WordPress Ability from an incoming webhook, with control over the user and destructive abilities.
 
 == Changelog ==
 = 3.4.3: July 15, 2026 =
