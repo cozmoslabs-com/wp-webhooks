@@ -262,7 +262,7 @@ $active_trigger = isset( $_GET['wpwh-trigger'] ) ? sanitize_text_field( $_GET['w
 											<?php echo wp_kses_post( $trigger_name ); ?>
 										</div>
 									</h2>
-									<div class="wpwh-trigger-webhook-name wpwh-text-small"><?php echo esc_html( $webhook_name ); ?></div>
+									<div class="wpwh-trigger-webhook-name wpwh-trigger-webhook-name--chip"><?php echo esc_html( $webhook_name ); ?></div>
 								</div>
 								<div class="wpwh-content mb-4">
 									<?php echo wp_kses_post( $trigger['short_description'] ); ?>
