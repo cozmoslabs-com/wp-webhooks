@@ -5,7 +5,7 @@ Contributors: ironikus, cozmoslabs
 Donate link: https://wp-webhooks.com/pricing/
 Tags: webhooks, automation, automate, automator, zapier, api, connector, integrations, automations, create user
 Requires at least: 4.7
-Tested up to: 7.0
+Tested up to: 7.1
 Stable Tag: 3.4.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
