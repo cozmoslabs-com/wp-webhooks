@@ -18,7 +18,7 @@ WP Webhooks lets you connect your website, plugins and apps together using power
 
 [Browse 100+ Integrations](https://wp-webhooks.com/integrations/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro) | [Compare Free vs Pro](https://wp-webhooks.com/compare-wp-webhooks-pro/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro%20Compare) | [Features](https://wp-webhooks.com/features/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro)
 
-WP Webhooks Automations can be used in three different ways: 
+WP Webhooks Automations can be used in the following ways:
 
 **Trigger (Send Data):**
 A trigger sends information from your WordPress website on a specific event (e.g. when a user logs in), to any API or external service of your choice (e.g. Zapier, Make, Pabbly, ...).
@@ -28,6 +28,9 @@ An action is the reversed way of the trigger. It allows you to receive data on y
 
 **Flows ([Pro](https://wp-webhooks.com/))**
 A Flow allows you to connect both the triggers and actions together and create tasks that are executed in a consecutive order. E.g. When [a new user is created](https://wp-webhooks.com/integrations/wordpress/triggers/create_user/) (trigger), [send an email](https://wp-webhooks.com/integrations/wordpress/actions/send_email/) to the user.
+
+**Abilities (AI agents & MCP):**
+Expose any WP Webhooks action as a [WordPress Ability](https://developer.wordpress.org/apis/abilities-api/) that AI assistants and agents can run. Turn an action on from the Receive Data screen and it is registered as an ability (for example `wp-webhooks/wordpress-create-post`) with an input schema, an output schema and a permission check. Exposed abilities are available over the WordPress REST API, and with an MCP server such as the [MCP Adapter](https://github.com/WordPress/mcp-adapter) they become tools for MCP clients like Claude and Cursor. You can also go the other way and run any ability registered on your site through a webhook. Requires WordPress 6.9 or newer.
 
 To give you some practical automation examples, here are a few things you can do via our plugin: 
 
@@ -60,6 +63,8 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Supports XML, JSON, plain text/HTML, forms, and form urlencode
 * Supports the following request methods: POST (Default), GET, HEAD, PUT, DELETE, TRACE, OPTIONS, PATCH
 * Supports Zapier, Pabbly, Make, Integrately, automate.io and many more
+* Expose any action as a WordPress Ability so AI agents and MCP clients can run it, with a per-action on/off toggle
+* Run, list and describe WordPress Abilities from an external service through a webhook
 
 **[Paid Member Subscriptions](https://wp-webhooks.com/integrations/paid-member-subscriptions/) related integrations**
 
@@ -296,15 +301,40 @@ Yes, you can! Please visit our [Request an integration](https://wp-webhooks.com/
 
 If you are looking for a full list of differences between our free and pro version, we suggest taking a look at our [comparison table](https://wp-webhooks.com/compare-wp-webhooks-pro/?utm_source=wordpress&utm_medium=description&utm_campaign=WP%20Webhooks%20Pro%20Compare).
 
+= Can AI assistants use my WP Webhooks actions? =
+
+Yes. You can expose any WP Webhooks action as a [WordPress Ability](https://developer.wordpress.org/apis/abilities-api/) from the Receive Data screen. Each exposed action is registered with an input schema, an output schema and a permission check, so it can be discovered and run over the WordPress REST API or by an AI agent. To let an external assistant such as Claude or Cursor call your abilities, you also need an MCP server on your site, for example the free [MCP Adapter](https://github.com/WordPress/mcp-adapter). The REST API works without it.
+
+= Which actions are exposed to AI, and is it safe? =
+
+Nothing is exposed until you turn it on. Exposure is set per action and is off by default, so you publish only the operations you choose. Read-only actions (such as "Get post") are marked as read-only; exposing an action that changes or deletes data asks you to confirm first. Every ability runs behind a permission check, and premium actions require an active license before they can be exposed.
+
+= Can I run abilities from other plugins through a webhook? =
+
+Yes. WP Webhooks includes three actions for this: Run ability, List abilities and Describe ability. They let an external service discover and execute any ability registered on your site, including abilities from WordPress core or other plugins, through a standard webhook URL. You can choose which user these actions run as, and running abilities that change data is kept behind a separate setting.
+
 == Screenshots ==
 
-1. Automate everything: exchange data between your website and different services
-2. Send data to external services on specific events
-3. Receive data from external services to do something on your website
-4. List of available webhook actions that you can use to send data from an external service to your WordPress site
-5. Add authentication to every trigger and action for workflow automations
+1. Your automation hub: connect your website, plugins and services with no-code webhooks.
+2. Send data to external services when something happens on your site.
+3. Receive data from external services and run actions on your website, with every argument documented.
+4. List of available webhook actions that you can use to send data from an external service to your WordPress site.
+5. Add authentication to every trigger and action for workflow automations.
+6. Turn any webhook action into a WordPress Ability with one switch.
+7. See the ability name, safety level and required capability before you expose an action to AI assistants through MCP.
+8. Run any registered WordPress Ability from an incoming webhook, with control over the user and destructive abilities.
 
 == Changelog ==
+= 3.5.0: October 07, 2026 =
+**New:**
+
+* WordPress Abilities API integration. Expose any WP Webhooks action as a WordPress Ability (WordPress 6.9+) with a per-action toggle on the Receive Data screen. Exposed actions are registered with input and output schemas and a permission check, and are available over the REST API and to MCP clients through an MCP server such as the MCP Adapter.
+* New actions to consume abilities: Run ability, List abilities and Describe ability. Discover and run any ability registered on your site from an external service through a webhook, with a configurable run-as user.
+
+**Enhancements:**
+
+* Exposing an action that is not read-only now asks for confirmation first, and read-only, destructive and idempotent annotations are added to each ability for AI clients.
+
 = 3.4.3: July 15, 2026 =
 **Enhancements:**
 
