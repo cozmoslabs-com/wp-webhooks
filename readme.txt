@@ -325,6 +325,16 @@ Yes. WP Webhooks includes three actions for this: Run ability, List abilities an
 8. Run any registered WordPress Ability from an incoming webhook, with control over the user and destructive abilities.
 
 == Changelog ==
+= 3.5.0: October 07, 2026 =
+**New:**
+
+* WordPress Abilities API integration. Expose any WP Webhooks action as a WordPress Ability (WordPress 6.9+) with a per-action toggle on the Receive Data screen. Exposed actions are registered with input and output schemas and a permission check, and are available over the REST API and to MCP clients through an MCP server such as the MCP Adapter.
+* New actions to consume abilities: Run ability, List abilities and Describe ability. Discover and run any ability registered on your site from an external service through a webhook, with a configurable run-as user.
+
+**Enhancements:**
+
+* Exposing an action that is not read-only now asks for confirmation first, and read-only, destructive and idempotent annotations are added to each ability for AI clients.
+
 = 3.4.3: July 15, 2026 =
 **Enhancements:**
 
