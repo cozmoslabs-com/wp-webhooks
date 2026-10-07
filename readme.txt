@@ -63,7 +63,7 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Supports XML, JSON, plain text/HTML, forms, and form urlencode
 * Supports the following request methods: POST (Default), GET, HEAD, PUT, DELETE, TRACE, OPTIONS, PATCH
 * Supports Zapier, Pabbly, Make, Integrately, automate.io and many more
-* Expose any action as a WordPress Ability (WordPress 6.9+) so AI agents and MCP clients can run it, with a per-action on/off toggle
+* Expose any action as a WordPress Ability so AI agents and MCP clients can run it, with a per-action on/off toggle
 * Run, list and describe WordPress Abilities from an external service through a webhook
 
 **[Paid Member Subscriptions](https://wp-webhooks.com/integrations/paid-member-subscriptions/) related integrations**
@@ -303,7 +303,7 @@ If you are looking for a full list of differences between our free and pro versi
 
 = Can AI assistants use my WP Webhooks actions? =
 
-Yes. On WordPress 6.9 or newer you can expose any WP Webhooks action as a [WordPress Ability](https://developer.wordpress.org/apis/abilities-api/) from the Receive Data screen. Each exposed action is registered with an input schema, an output schema and a permission check, so it can be discovered and run over the WordPress REST API or by an AI agent. To let an external assistant such as Claude or Cursor call your abilities, you also need an MCP server on your site, for example the free [MCP Adapter](https://github.com/WordPress/mcp-adapter). The REST API works without it.
+Yes. You can expose any WP Webhooks action as a [WordPress Ability](https://developer.wordpress.org/apis/abilities-api/) from the Receive Data screen. Each exposed action is registered with an input schema, an output schema and a permission check, so it can be discovered and run over the WordPress REST API or by an AI agent. To let an external assistant such as Claude or Cursor call your abilities, you also need an MCP server on your site, for example the free [MCP Adapter](https://github.com/WordPress/mcp-adapter). The REST API works without it.
 
 = Which actions are exposed to AI, and is it safe? =
 
