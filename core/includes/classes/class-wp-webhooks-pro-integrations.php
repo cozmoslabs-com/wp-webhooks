@@ -412,9 +412,12 @@ class WP_Webhooks_Pro_Integrations {
      * @param string $action
      * @return array The data we return to the webhook caller
      */
-    public function execute_actions( $default_return_data, $action ){
+    public function execute_actions( $default_return_data, $action, $response_ident_value = '', $response_api_key = '', $response_body = array() ){
         $return_data = $default_return_data;
-        $response_body = WPWHPRO()->helpers->get_response_body();
+
+        if( empty( $response_body ) ){
+            $response_body = WPWHPRO()->helpers->get_response_body();
+        }
 
         if( ! empty( $this->integrations ) ){
             foreach( $this->integrations as $si ){
@@ -429,7 +432,7 @@ class WP_Webhooks_Pro_Integrations {
             }
         }
 
-        return apply_filters( 'wpwhpro/integrations/execute_actions', $return_data );
+        return apply_filters( 'wpwhpro/integrations/execute_actions', $return_data, $action, $response_body, $default_return_data, $response_ident_value, $response_api_key );
     }
 
     /**

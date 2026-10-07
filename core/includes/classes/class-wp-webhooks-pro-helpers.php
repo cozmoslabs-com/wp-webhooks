@@ -971,19 +971,18 @@ class WP_Webhooks_Pro_Helpers {
             echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_bf_notification' ) . '</div>';
         }
 
-        // AI integrations notice
-        $message = '<p><strong>' . esc_html__( 'New AI Integrations Available for WP Webhooks!', 'wp-webhooks' ) . '</strong></p>';
-        $message .= '<p>' . esc_html__( 'Take your automations to the next level with our latest AI integrations:', 'wp-webhooks' ) . '</p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/gemini/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'Google Gemini', 'wp-webhooks' ) . '</a> ' . esc_html__( '(with Nano Banana support)', 'wp-webhooks' ) . '</p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/openai/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'OpenAI ChatGPT 5.5', 'wp-webhooks' ) . '</a></p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/claude/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'Claude Opus 4.7', 'wp-webhooks' ) . '</a></p>';
-        $message .= '<p><a href="https://wp-webhooks.com/integrations/openrouter/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">' . esc_html__( 'OpenRouter', 'wp-webhooks' ) . '</a></p>';
-        $message .= '<p style="display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 20px;">
-                        <span>' . esc_html__( 'Unlock these integrations and more by upgrading to WP Webhooks Pro.', 'wp-webhooks' ) . '</span>
-                        <a class="button-primary" href="https://wp-webhooks.com/pricing/?utm_source=wp-dashboard&utm_medium=client-site&utm_campaign=ai-integrations" target="_blank">'. esc_html__( 'Upgrade now', 'wp-webhooks' ) .'</a>
-                    </p>';
+        // abilities notice - make users aware that actions can be exposed as WordPress abilities
+        // - shown to everyone, but only plugin managers get the button, since the actions tab needs the plugin capability
+        $message  = '<p><strong>' . esc_html__( 'Your WP Webhooks actions can now be WordPress abilities', 'wp-webhooks' ) . '</strong></p>';
+        $message .= '<p>' . esc_html__( 'Any action, like creating a user or updating an order, can be registered as a WordPress ability. An AI assistant connected to your site through an MCP server can then discover it and run it.', 'wp-webhooks' ) . '</p>';
+        $message .= '<p>' . esc_html__( 'Nothing is exposed until you turn it on. Open an action, expand "Expose as Ability," and pick the capability callers need. Each request runs as a real WordPress user and has to have that capability.', 'wp-webhooks' ) . '</p>';
 
-        echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_ai_integrations_notification' ) . '</div>';
+        if( current_user_can( WPWHPRO()->settings->get_admin_cap( 'abilities_notice' ) ) ){
+            $actions_url = admin_url( 'admin.php?page=' . WPWHPRO()->settings->get_page_name() . '&wpwhprovrs=receive-data&wpwh-action=create_user#nav-webhook-actions' );
+            $message .= '<p><a class="button-primary" href="' . esc_url( $actions_url ) . '">' . esc_html__( 'Browse my actions', 'wp-webhooks' ) . '</a></p>';
+        }
+
+        echo '<div style="max-width: 1270px; margin-left: auto; margin-right: auto;">' . $this->create_admin_notice( $message, 'info', false, 'wpwh_abilities_notification' ) . '</div>';
 
         // payload policy notice — make existing users aware of the new sensitive-field control
         // - shown only to plugin managers who already have trigger webhooks (existing webhooks still send the full payload)

@@ -114,6 +114,14 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 		public $acf;
 
 		/**
+		 * WPWHPRO Abilities Object.
+		 *
+		 * @var object|WP_Webhooks_Pro_Abilities
+		 * @since 3.4.4
+		 */
+		public $abilities;
+
+		/**
 		 * Throw error on object clone.
 		 *
 		 * Cloning instances of the class is forbidden.
@@ -163,6 +171,7 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 				self::$instance->extensions		= new WP_Webhooks_Pro_Extensions();
 				self::$instance->polling      	= new WP_Webhooks_Pro_Polling();
 				self::$instance->acf      		= new WP_Webhooks_Pro_ACF();
+				self::$instance->abilities      = new WP_Webhooks_Pro_Abilities();
 
 				/**
 				 * Used to launch our integrations
@@ -207,6 +216,7 @@ if ( ! class_exists( 'WP_Webhooks_Pro' ) ) :
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-extensions.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-polling.php';
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-acf.php';
+			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-abilities.php';
 
 			require_once WPWH_PLUGIN_DIR . 'core/includes/classes/class-wp-webhooks-pro-run.php';
 		}
