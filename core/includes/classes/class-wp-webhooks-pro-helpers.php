@@ -973,12 +973,12 @@ class WP_Webhooks_Pro_Helpers {
 
         // abilities notice - make users aware that actions can be exposed as WordPress abilities
         // - shown to everyone, but only plugin managers get the button, since the actions tab needs the plugin capability
-        $message  = '<p><strong>' . esc_html__( 'Your WP Webhooks actions can now be exposed as WordPress abilities.', 'wp-webhooks' ) . '</strong></p>';
-        $message .= '<p>' . esc_html__( 'Every action - creating a user, publishing a post, updating an order and everything else WP Webhooks already does - can be registered in the WordPress ability registry. From there, an AI assistant connected to your site through an MCP server can discover the action and run it for you.', 'wp-webhooks' ) . '</p>';
-        $message .= '<p>' . esc_html__( 'Nothing is exposed until you turn it on. Open an action, use "Expose as Ability" and pick the capability callers need - the request always runs as a real WordPress user and that permission is always enforced.', 'wp-webhooks' ) . '</p>';
+        $message  = '<p><strong>' . esc_html__( 'Your WP Webhooks actions can now be WordPress abilities', 'wp-webhooks' ) . '</strong></p>';
+        $message .= '<p>' . esc_html__( 'Any action, like creating a user or updating an order, can be registered as a WordPress ability. An AI assistant connected to your site through an MCP server can then discover it and run it.', 'wp-webhooks' ) . '</p>';
+        $message .= '<p>' . esc_html__( 'Nothing is exposed until you turn it on. Open an action, expand "Expose as Ability," and pick the capability callers need. Each request runs as a real WordPress user and has to have that capability.', 'wp-webhooks' ) . '</p>';
 
         if( current_user_can( WPWHPRO()->settings->get_admin_cap( 'abilities_notice' ) ) ){
-            $actions_url = admin_url( 'admin.php?page=' . WPWHPRO()->settings->get_page_name() . '&wpwhprovrs=receive-data' );
+            $actions_url = admin_url( 'admin.php?page=' . WPWHPRO()->settings->get_page_name() . '&wpwhprovrs=receive-data&wpwh-action=create_user#nav-webhook-actions' );
             $message .= '<p><a class="button-primary" href="' . esc_url( $actions_url ) . '">' . esc_html__( 'Browse my actions', 'wp-webhooks' ) . '</a></p>';
         }
 

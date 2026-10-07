@@ -783,7 +783,7 @@ if ( empty( $active_trigger ) ) {
                                                 <tbody>
                                                     <tr>
                                                         <th class="wpwh-text-left wpwh-w-25"><?php echo esc_html__( 'Ability name', 'wp-webhooks' ); ?></th>
-                                                        <td><code><?php echo esc_html( $ability_ui['ability_name'] ); ?></code></td>
+                                                        <td><code class="wpwh-inline-chip"><?php echo esc_html( $ability_ui['ability_name'] ); ?></code></td>
                                                     </tr>
                                                     <tr>
                                                         <th class="wpwh-text-left wpwh-w-25"><?php echo esc_html__( 'Safety', 'wp-webhooks' ); ?></th>
@@ -799,7 +799,7 @@ if ( empty( $active_trigger ) ) {
                                                     </tr>
                                                     <tr>
                                                         <th class="wpwh-text-left wpwh-w-25"><?php echo esc_html__( 'Permission', 'wp-webhooks' ); ?></th>
-                                                        <td><?php echo sprintf( wp_kses_post( __( 'Callers need the %s capability on their authenticated WordPress user.', 'wp-webhooks' ) ), '<code>' . esc_html( $ability_ui['permission'] ) . '</code>' ); ?></td>
+                                                        <td><?php echo sprintf( wp_kses_post( __( 'Callers need the %s capability on their authenticated WordPress user.', 'wp-webhooks' ) ), '<code class="wpwh-inline-chip">' . esc_html( $ability_ui['permission'] ) . '</code>' ); ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -811,9 +811,9 @@ if ( empty( $active_trigger ) ) {
                                                 		<circle cx="10" cy="6.2" r="1.1" fill="currentColor"/>
                                                 	</svg>
                                                 	<div class="wpwh-ability-notice__body wpwh-text-small">
-                                                		<strong class="wpwh-ability-notice__title"><?php echo esc_html__( 'An MCP server is required to use this ability', 'wp-webhooks' ); ?></strong>
-                                                		<p><?php echo esc_html__( 'Turning this on adds the action to the WordPress ability registry, where other software can discover it. The registry is only a list - on its own, nothing calls the action.', 'wp-webhooks' ); ?></p>
-                                                		<p><?php echo esc_html__( 'Running it from an AI assistant requires an MCP server on this site - a plugin that connects the ability registry to the Model Context Protocol. If one is already active, it picks up this ability automatically. Whichever client calls it, the request still runs as a real WordPress user and the permission above is always enforced.', 'wp-webhooks' ); ?></p>
+                                                		<strong class="wpwh-ability-notice__title"><?php echo esc_html__( 'You\'ll need an MCP server to use this ability', 'wp-webhooks' ); ?></strong>
+                                                		<p><?php echo esc_html__( 'Turning this on adds the action to the WordPress ability registry, a list that other software can read. The registry doesn\'t run anything on its own.', 'wp-webhooks' ); ?></p>
+                                                		<p><?php echo sprintf( wp_kses_post( __( 'For an AI assistant to run this action, install an MCP server on this site, like the official %s. It connects WordPress abilities to the Model Context Protocol and picks this one up automatically. Whichever client calls it, the action runs as a real WordPress user and needs the capability above.', 'wp-webhooks' ) ), '<a href="' . esc_url( 'https://wordpress.org/plugins/mcp-adapter/' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'MCP Adapter plugin', 'wp-webhooks' ) . '</a>' ); ?></p>
                                                 	</div>
                                                 </div>
 
