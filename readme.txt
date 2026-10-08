@@ -62,7 +62,7 @@ https://www.youtube.com/watch?v=EfagA_9Uy7o
 * Optimized settings page for more control
 * Supports XML, JSON, plain text/HTML, forms, and form urlencode
 * Supports the following request methods: POST (Default), GET, HEAD, PUT, DELETE, TRACE, OPTIONS, PATCH
-* Supports Zapier, Pabbly, Make, Integrately, automate.io and many more
+* Supports Zapier, Pabbly, Make, Integrately and many more
 * Expose any action as a WordPress Ability so AI agents and MCP clients can run it, with a per-action on/off toggle
 * Run, list and describe WordPress Abilities from an external service through a webhook
 
@@ -245,7 +245,7 @@ Here are some of our premium features for [WP Webhooks Pro](https://wp-webhooks.
 * Update posts with post meta (ACF supported)
 * Bulk webhook action to trigger multiple actions at the same time
 * Shortcode webhook action that fires once the shortcode is called
-* Trigger a webhok via a custom link or button on your website
+* Trigger a webhook via a custom link or button on your website
 * WordPress hook webhook action that fires once a specific filter of the WordPress API was called
 * Data Mapping engine to manipulate your incoming/outgoing data
 * Whitelabel feature (see comparison table)
@@ -262,6 +262,7 @@ WP Webhooks Pro includes powerful AI integrations to help you build smarter and 
 * [Google Gemini (with Nano Banana support)](https://wp-webhooks.com/integrations/gemini/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
 * [OpenAI ChatGPT](https://wp-webhooks.com/integrations/openai/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
 * [Open Router](https://wp-webhooks.com/integrations/openrouter/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
+* [Anthropic Claude](https://wp-webhooks.com/integrations/claude/?utm_source=wp.org&utm_medium=wpw-description-page&utm_campaign=wpwfree)
 
 Use these integrations to connect your WordPress site with modern AI services via webhooks and automate content creation, data processing, and more.
 
@@ -273,7 +274,7 @@ Our premium extensions for [WP Webhooks Pro](https://wp-webhooks.com/?utm_source
 
 = Questions? =
 
-In case you have questions, feel free to reach out to us at any time. We also offer consulting in case you want to archive a bigger project with our plugin.
+In case you have questions, feel free to reach out to us at any time.
 
 = For devs =
 
