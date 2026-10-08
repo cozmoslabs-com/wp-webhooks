@@ -313,6 +313,10 @@ Nothing is exposed until you turn it on. Exposure is set per action and is off b
 
 Yes. WP Webhooks includes three actions for this: Run ability, List abilities and Describe ability. They let an external service discover and execute any ability registered on your site, including abilities from WordPress core or other plugins, through a standard webhook URL. You can choose which user these actions run as, and running abilities that change data is kept behind a separate setting.
 
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the WP Webhooks plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/00c6b031-29ac-46a5-b4d4-e1d0054864bf). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. Your automation hub: connect your website, plugins and services with no-code webhooks.
