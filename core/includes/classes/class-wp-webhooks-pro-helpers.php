@@ -18,6 +18,16 @@
 class WP_Webhooks_Pro_Helpers {
 
 	/**
+	 * Notice IDs that can be dismissed for good. dismiss_notifications() stores the ID
+	 * as a user meta key, so it accepts only these.
+	 */
+	const DISMISSIBLE_NOTIFICATIONS = array(
+		'wpwh_abilities_notification',
+		'wpwh_bf_notification',
+		'wpwh_payload_policy_notification',
+	);
+
+	/**
      * Variable to check if translations
      * are active or not
      *
@@ -239,8 +249,8 @@ class WP_Webhooks_Pro_Helpers {
     function dismiss_notifications(){
         if( !empty( $_GET['action'] ) && $_GET['action'] === 'wpwh_dismiss_notification' ){
             if( !empty( $_GET['notification'] ) && !empty( $_GET['nonce'] ) ){
-                if( wp_verify_nonce( $_GET['nonce'], 'wpwh_dismiss_notification' ) ){
-                    update_user_meta( get_current_user_id(), sanitize_text_field( $_GET['notification'] ), 'true' );
+                if( wp_verify_nonce( $_GET['nonce'], 'wpwh_dismiss_notification' ) && in_array( $_GET['notification'], self::DISMISSIBLE_NOTIFICATIONS, true ) ){
+                    update_user_meta( get_current_user_id(), $_GET['notification'], 'true' );
 
                     wp_redirect( remove_query_arg( array( 'action', 'notification', 'nonce' ) ) );
                     die();
