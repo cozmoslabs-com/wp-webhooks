@@ -105,60 +105,24 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 
 		public function validate_path( $path, $allowed_extensions = 'jpg,jpeg,png' ) {
 
-            // Decode any URL encoding
-            $path = urldecode( $path );
-
-            // If the file is not within the Contact Form 7 upload directory, reject it
-            if ( strpos( $path, 'wpcf7_uploads' ) === false ) {
-                return false;
-            }
-
-            // Immediately reject any path traversal attempts
-            if ( strpos( $path, '../' ) !== false || strpos( $path, '..\\' ) !== false ) {
+            if ( ! is_string( $path ) || preg_match( '/[\x00-\x1F]/', $path ) || ! function_exists( 'wpcf7_upload_tmp_dir' ) ) {
                 return '';
             }
 
-            // Remove WordPress absolute path if it exists
-            if ( strpos( $path, ABSPATH ) !== false ) {
-                $path = str_replace( ABSPATH, '', $path );
-            }
+            $upload_dir = realpath( wpcf7_upload_tmp_dir() );
+            $real_path  = realpath( $path );
 
-            // Detect custom wp-content folder name (if defined)
-            $custom_folder = ( defined( 'WP_CONTENT_FOLDERNAME' ) && WP_CONTENT_FOLDERNAME ) ? WP_CONTENT_FOLDERNAME : 'wp-content';
-
-            // Remove the wp-content folder prefix from the path
-            if ( strpos( $path, $custom_folder ) !== false ) {
-                $path = str_replace( $custom_folder, '', $path );
-            }
-
-            // Remove any null bytes
-            $path = str_replace( chr(0), '', $path );
-
-            // Normalize the path to always start from wp-content directory
-            $path = WP_CONTENT_DIR . '/' . ltrim( $path, '/' );
-
-            // Extract the filename from the path
-            $filename = basename( $path );
-
-            // Sanitize the filename using WordPress built-in function
-            $filename = sanitize_file_name( $filename );
-
-            // Get the file extension in lowercase
-            $ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
-
-            // Define allowed extensions
-            $allowed_extensions = explode( ',', $allowed_extensions );
-
-            // Check if the file extension is allowed
-            if ( ! in_array( $ext, $allowed_extensions, true ) ) {
+            if ( ! $upload_dir || ! $real_path || ! is_file( $real_path ) || strpos( $real_path, trailingslashit( $upload_dir ) ) !== 0 ) {
                 return '';
             }
 
-            // Rebuild the full sanitized path
-            $path = dirname( $path ) . '/' . $filename;
+            $ext = strtolower( pathinfo( $real_path, PATHINFO_EXTENSION ) );
 
-            // Return sanitized and validated file path
-            return $path;
+            if ( ! in_array( $ext, explode( ',', $allowed_extensions ), true ) ) {
+                return '';
+            }
+
+            return $real_path;
 
         }
 

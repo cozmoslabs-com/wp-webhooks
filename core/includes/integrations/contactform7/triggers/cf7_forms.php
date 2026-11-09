@@ -248,6 +248,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 		}
 		$sub_directory .= $starting_random;
 
+		$submission     = WPCF7_Submission::get_instance();
+		$uploaded_paths = array();
+		if( $submission ){
+			foreach( $submission->uploaded_files() as $files ){
+				$uploaded_paths = array_merge( $uploaded_paths, (array) $files );
+			}
+		}
+
 		$webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'cf7_forms' );
 		foreach( $webhooks as $webhook ){
 
@@ -294,8 +302,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 						if( is_array( $single_data_array['form_submit_data'] ) ){
 							foreach( $single_data_array['form_submit_data'] as $single_form_data_key => $single_form_data ){
 								if( is_array( $single_form_data ) && isset( $single_form_data['file_name'] ) ){
-									$path = $form_helpers->get_upload_dir( true, $sub_directory );
-                                    
                                     // Think this changed at some point for CF7 and they return an array of files. We allow both variants to work.
                                     $file_name     = $single_form_data['file_name'];
                                     $absolute_path = $single_form_data['absolute_path'];
@@ -307,6 +313,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
                                     if( is_array( $single_form_data['absolute_path'] ) ){
                                         $absolute_path = $single_form_data['absolute_path'][0];
                                     }
+
+                                    // Any posted field can mimic this array shape, so only copy files Contact Form 7 itself received in this submission.
+                                    if( ! in_array( $absolute_path, $uploaded_paths, true ) ){
+                                        continue;
+                                    }
+
+									$path = $form_helpers->get_upload_dir( true, $sub_directory );
 
                                     // Validate file_name and absolute_path before copying
                                     $file_name     = $form_helpers->validate_filename( $file_name, $webhook['settings']['wpwhpro_cf7_preserve_files_allowed_extensions'] );
