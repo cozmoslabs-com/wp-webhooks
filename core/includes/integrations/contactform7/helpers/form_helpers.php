@@ -35,14 +35,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Helpers_form_helpers
 			$current_stamp = time();
 
 			foreach( $preserved_files as $preserved_files_key => $single_file ){
-				if( $single_file['time_to_delete'] < $current_stamp ){
+				if( $single_file['time_to_delete'] <= $current_stamp ){
 
 					if( file_exists( $single_file['file_path'] ) ){
 						wp_delete_file( $single_file['file_path'] );
-						unset( $preserved_files[ $preserved_files_key ] );
-						$update = true;
 					}
-					
+
+					unset( $preserved_files[ $preserved_files_key ] );
+					$update = true;
 				}
 			}
 

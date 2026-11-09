@@ -42,6 +42,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 				'arguments' => 2,
 				'delayed'   => false,
 			),
+			array(
+				'type'      => 'action',
+				'hook'      => 'wpwhpro_cf7_clear_preserved_files',
+				'callback'  => array( WPWHPRO()->integrations->get_helper( 'contactform7', 'form_helpers' ), 'wpwhpro_cf7_clear_preserved_files' ),
+				'priority'  => 10,
+				'arguments' => 0,
+				'delayed'   => false,
+			),
 		);
 	}
 
@@ -334,13 +342,17 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 										);
 
 										if( $preserve_files_duration !== 0 ){
+											$time_to_delete = time() + $preserve_files_duration;
 											$preserved_files = $form_helpers->get_preserved_files();
 											$preserved_files[] = array(
 												'time_created'   => time(),
-												'time_to_delete' => ( time() + $preserve_files_duration ),
+												'time_to_delete' => $time_to_delete,
 												'file_path'      => $path . '/' . $file_name,
 											);
 											$form_helpers->update_preserved_files( $preserved_files );
+
+											// The timestamp argument keeps WordPress from merging this event with one scheduled less than ten minutes away.
+											wp_schedule_single_event( $time_to_delete, 'wpwhpro_cf7_clear_preserved_files', array( $time_to_delete ) );
 										}
 										
 									}
