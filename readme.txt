@@ -1,4 +1,4 @@
-=== WP Webhooks - Automate repetitive tasks by creating powerful automation workflows directly within WordPress ===
+=== WP Webhooks Automation - Automate repetitive tasks by creating powerful WordPress automation workflows ===
 Author URI: https://wp-webhooks.com/about/
 Plugin URI: https://wp-webhooks.com/
 Contributors: ironikus, cozmoslabs
@@ -329,6 +329,14 @@ Please report security bugs found in the source code of the WP Webhooks plugin t
 7. Run any registered WordPress Ability from an incoming webhook, with control over the user and destructive abilities.
 
 == Changelog ==
+= 3.5.1: November 11, 2026 =
+**Fix:**
+
+* Security: the Contact Form 7 trigger now preserves only files that Contact Form 7 received, so a crafted form field can no longer copy other files from the server. Reported by Nathan Cross (CyberBadger)
+* Security: dismissing an admin notice now accepts only the plugin's own notice IDs, so a logged-in user can no longer write other user meta on their account. Reported by Nathan Cross (CyberBadger)
+* Security: the WordPress file actions keep every local path inside wp-content, including encoded traversal paths and the move_folder action. copy_file and move_file now accept only http and https remote sources
+* Contact Form 7: preserved files are now deleted when their preserve duration expires
+
 = 3.5.0: October 07, 2026 =
 **New:**
 
