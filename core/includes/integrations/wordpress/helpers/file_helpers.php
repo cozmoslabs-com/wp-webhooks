@@ -47,6 +47,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 
             $path = str_replace( chr(0), '', urldecode( $path ) );
 
+            if( strpos( $path, $root_folder . '/' ) === 0 ){
+                $path = substr( $path, strlen( $root_folder ) );
+            }
+
 			if( strpos( $path, ABSPATH ) !== FALSE ){
 				$path = str_replace( ABSPATH, '', $path );
 			}
@@ -349,7 +353,21 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		 * @param String $source – Source of files being moved
 		 * @param String $target – Destination of files being moved
 		 */
-		function move_folder( $source, $target, $mode = 0777, $recursive = false ){
+		public function move_folder( $source, $target, $mode = 0777, $recursive = false ){
+			$source = $this->validate_path( $source );
+			$target = $this->validate_path( $target );
+
+			if( empty( $source ) || empty( $target ) ){
+				return array(
+					'success' => false,
+					'data' => array()
+				);
+			}
+
+			return $this->move_validated_folder( $source, $target, $mode, $recursive );
+		}
+
+		private function move_validated_folder( $source, $target, $mode = 0777, $recursive = false ){
 			$return = array(
 				'success' => false,
 				'data' => array()
@@ -398,7 +416,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 	                    $allsuccessful = false;
                     }
 
-					$data = call_user_func( array( $this, 'move_folder' ), $f->getRealPath(), "$target/$f" );
+					$data = $this->move_validated_folder( $f->getRealPath(), "$target/$f" );
 					$return['data']['folder'][] = array(
 						'data' => array(
                             'folder_data' => $data,
