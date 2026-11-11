@@ -42,6 +42,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 				'arguments' => 2,
 				'delayed'   => false,
 			),
+			array(
+				'type'      => 'action',
+				'hook'      => 'wpwhpro_cf7_clear_preserved_files',
+				'callback'  => array( WPWHPRO()->integrations->get_helper( 'contactform7', 'form_helpers' ), 'wpwhpro_cf7_clear_preserved_files' ),
+				'priority'  => 10,
+				'arguments' => 0,
+				'delayed'   => false,
+			),
 		);
 	}
 
@@ -248,6 +256,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 		}
 		$sub_directory .= $starting_random;
 
+		$submission     = WPCF7_Submission::get_instance();
+		$uploaded_paths = array();
+		if( $submission ){
+			foreach( $submission->uploaded_files() as $files ){
+				$uploaded_paths = array_merge( $uploaded_paths, (array) $files );
+			}
+		}
+
 		$webhooks = WPWHPRO()->webhook->get_hooks( 'trigger', 'cf7_forms' );
 		foreach( $webhooks as $webhook ){
 
@@ -294,8 +310,6 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 						if( is_array( $single_data_array['form_submit_data'] ) ){
 							foreach( $single_data_array['form_submit_data'] as $single_form_data_key => $single_form_data ){
 								if( is_array( $single_form_data ) && isset( $single_form_data['file_name'] ) ){
-									$path = $form_helpers->get_upload_dir( true, $sub_directory );
-                                    
                                     // Think this changed at some point for CF7 and they return an array of files. We allow both variants to work.
                                     $file_name     = $single_form_data['file_name'];
                                     $absolute_path = $single_form_data['absolute_path'];
@@ -307,6 +321,13 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
                                     if( is_array( $single_form_data['absolute_path'] ) ){
                                         $absolute_path = $single_form_data['absolute_path'][0];
                                     }
+
+                                    // Any posted field can mimic this array shape, so only copy files Contact Form 7 itself received in this submission.
+                                    if( ! in_array( $absolute_path, $uploaded_paths, true ) ){
+                                        continue;
+                                    }
+
+									$path = $form_helpers->get_upload_dir( true, $sub_directory );
 
                                     // Validate file_name and absolute_path before copying
                                     $file_name     = $form_helpers->validate_filename( $file_name, $webhook['settings']['wpwhpro_cf7_preserve_files_allowed_extensions'] );
@@ -321,13 +342,17 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_contactform7_Triggers_cf7_forms' 
 										);
 
 										if( $preserve_files_duration !== 0 ){
+											$time_to_delete = time() + $preserve_files_duration;
 											$preserved_files = $form_helpers->get_preserved_files();
 											$preserved_files[] = array(
 												'time_created'   => time(),
-												'time_to_delete' => ( time() + $preserve_files_duration ),
+												'time_to_delete' => $time_to_delete,
 												'file_path'      => $path . '/' . $file_name,
 											);
 											$form_helpers->update_preserved_files( $preserved_files );
+
+											// The timestamp argument keeps WordPress from merging this event with one scheduled less than ten minutes away.
+											wp_schedule_single_event( $time_to_delete, 'wpwhpro_cf7_clear_preserved_files', array( $time_to_delete ) );
 										}
 										
 									}
