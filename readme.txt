@@ -1,4 +1,4 @@
-=== WP Webhooks - Automate repetitive tasks by creating powerful automation workflows directly within WordPress ===
+=== WP Webhooks Automation - Automate repetitive tasks by creating powerful WordPress automation workflows ===
 Author URI: https://wp-webhooks.com/about/
 Plugin URI: https://wp-webhooks.com/
 Contributors: ironikus, cozmoslabs
