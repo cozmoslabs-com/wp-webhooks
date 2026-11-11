@@ -84,6 +84,18 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
         }
 
 		/**
+		 * PHP opens anything else as a local path, including "http:x://../" and
+		 * a scheme whose wrapper is not loaded, so only these prefixes count as remote.
+		 */
+		private function validate_source( $source ){
+			if( is_string( $source ) && preg_match( '#^(https?)://#i', $source, $scheme ) && in_array( strtolower( $scheme[1] ), stream_get_wrappers(), true ) ){
+				return $source;
+			}
+
+			return $this->validate_path( $source );
+		}
+
+		/**
 		 * Deletes a directory including all its data
 		 *
 		 * @param $dir - path of the directory
@@ -220,10 +232,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		 */
 		public function copy_file( $source, $target ){
 
-		    if( strpos( $source, '://' ) === FALSE ){
-			    $source = $this->validate_path( $source );
-            }
-
+			$source = $this->validate_source( $source );
 			$target = $this->validate_path( $target );
 
 			if( empty( $source ) || empty( $target ) )
@@ -325,17 +334,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
                 'success' => false,
             );
 
-			if( is_dir( $source ) ){
-				return $return;
-			}
-
-			if( strpos( $source, '://' ) === FALSE ){
-				$source = $this->validate_path( $source );
-			}
-
+			$source = $this->validate_source( $source );
 			$target = $this->validate_path( $target );
 
-			if( empty( $source ) || empty( $target ) )
+			if( empty( $source ) || empty( $target ) || is_dir( $source ) )
 				return $return;
 
 			//Use copy since rename doesn't move files larger than 4GB on PHP 5.+
