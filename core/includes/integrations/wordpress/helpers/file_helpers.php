@@ -41,9 +41,11 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		 */
 		public function validate_path( $path ){
 		    $root_folder = $this->root_folder();
-		    if( empty( $root_folder ) ){
+		    if( empty( $root_folder ) || ! is_string( $path ) ){
 		        return false;
             }
+
+            $path = str_replace( chr(0), '', urldecode( $path ) );
 
 			if( strpos( $path, ABSPATH ) !== FALSE ){
 				$path = str_replace( ABSPATH, '', $path );
@@ -54,15 +56,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 			if( strpos( $path, $custom_folder ) !== FALSE ){
 				$path = str_replace( $custom_folder, '', $path );
 			}
-            
-            // Remove any path traversal sequences
-            $path = str_replace( [ '../', '..\\' ] , '', $path);
-    
-            // Remove null bytes
-            $path = str_replace( chr(0), '', $path );
-            
-            // Decode any URL encoding
-            $path = urldecode( $path );
+
+            if( in_array( '..', preg_split( '#[/\\\\]#', $path ), true ) ){
+                return false;
+            }
 
             //Backwards compatibility
             $validate = true;
@@ -169,6 +166,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		public function create_file( $file, $text = '', $mode = 'w' ){
 
 			$file = $this->validate_path( $file );
+
+			if( empty( $file ) ){
+				return false;
+			}
 
 			$myfile = fopen( $file, $mode );
 			fwrite( $myfile, $text );
