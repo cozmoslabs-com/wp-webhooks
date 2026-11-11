@@ -41,8 +41,14 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		 */
 		public function validate_path( $path ){
 		    $root_folder = $this->root_folder();
-		    if( empty( $root_folder ) ){
+		    if( empty( $root_folder ) || ! is_string( $path ) ){
 		        return false;
+            }
+
+            $path = str_replace( chr(0), '', urldecode( $path ) );
+
+            if( strpos( $path, $root_folder . '/' ) === 0 ){
+                $path = substr( $path, strlen( $root_folder ) );
             }
 
 			if( strpos( $path, ABSPATH ) !== FALSE ){
@@ -54,15 +60,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 			if( strpos( $path, $custom_folder ) !== FALSE ){
 				$path = str_replace( $custom_folder, '', $path );
 			}
-            
-            // Remove any path traversal sequences
-            $path = str_replace( [ '../', '..\\' ] , '', $path);
-    
-            // Remove null bytes
-            $path = str_replace( chr(0), '', $path );
-            
-            // Decode any URL encoding
-            $path = urldecode( $path );
+
+            if( in_array( '..', preg_split( '#[/\\\\]#', $path ), true ) ){
+                return false;
+            }
 
             //Backwards compatibility
             $validate = true;
@@ -81,6 +82,18 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 
 		    return $path;
         }
+
+		/**
+		 * PHP opens anything else as a local path, including "http:x://../" and
+		 * a scheme whose wrapper is not loaded, so only these prefixes count as remote.
+		 */
+		private function validate_source( $source ){
+			if( is_string( $source ) && preg_match( '#^(https?)://#i', $source, $scheme ) && in_array( strtolower( $scheme[1] ), stream_get_wrappers(), true ) ){
+				return $source;
+			}
+
+			return $this->validate_path( $source );
+		}
 
 		/**
 		 * Deletes a directory including all its data
@@ -170,6 +183,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 
 			$file = $this->validate_path( $file );
 
+			if( empty( $file ) ){
+				return false;
+			}
+
 			$myfile = fopen( $file, $mode );
 			fwrite( $myfile, $text );
 			fclose( $myfile );
@@ -215,10 +232,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		 */
 		public function copy_file( $source, $target ){
 
-		    if( strpos( $source, '://' ) === FALSE ){
-			    $source = $this->validate_path( $source );
-            }
-
+			$source = $this->validate_source( $source );
 			$target = $this->validate_path( $target );
 
 			if( empty( $source ) || empty( $target ) )
@@ -320,17 +334,10 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
                 'success' => false,
             );
 
-			if( is_dir( $source ) ){
-				return $return;
-			}
-
-			if( strpos( $source, '://' ) === FALSE ){
-				$source = $this->validate_path( $source );
-			}
-
+			$source = $this->validate_source( $source );
 			$target = $this->validate_path( $target );
 
-			if( empty( $source ) || empty( $target ) )
+			if( empty( $source ) || empty( $target ) || is_dir( $source ) )
 				return $return;
 
 			//Use copy since rename doesn't move files larger than 4GB on PHP 5.+
@@ -348,7 +355,21 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 		 * @param String $source – Source of files being moved
 		 * @param String $target – Destination of files being moved
 		 */
-		function move_folder( $source, $target, $mode = 0777, $recursive = false ){
+		public function move_folder( $source, $target, $mode = 0777, $recursive = false ){
+			$source = $this->validate_path( $source );
+			$target = $this->validate_path( $target );
+
+			if( empty( $source ) || empty( $target ) ){
+				return array(
+					'success' => false,
+					'data' => array()
+				);
+			}
+
+			return $this->move_validated_folder( $source, $target, $mode, $recursive );
+		}
+
+		private function move_validated_folder( $source, $target, $mode = 0777, $recursive = false ){
 			$return = array(
 				'success' => false,
 				'data' => array()
@@ -397,7 +418,7 @@ if ( ! class_exists( 'WP_Webhooks_Integrations_wordpress_Helpers_file_helpers' )
 	                    $allsuccessful = false;
                     }
 
-					$data = call_user_func( array( $this, 'move_folder' ), $f->getRealPath(), "$target/$f" );
+					$data = $this->move_validated_folder( $f->getRealPath(), "$target/$f" );
 					$return['data']['folder'][] = array(
 						'data' => array(
                             'folder_data' => $data,
